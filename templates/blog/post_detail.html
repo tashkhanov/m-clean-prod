@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta_title %}{{ post.seo_title|default:post.title }}{% if not post.seo_title %} | Блог M-Clean{% endif %}{% endblock %}
+{% block meta_description %}{{ post.seo_description|default:post.excerpt }}{% endblock %}
+
+{% block og_title %}{{ post.seo_title|default:post.title }}{% endblock %}
+{% block og_description %}{{ post.seo_description|default:post.excerpt }}{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ post.title }}",
+    "description": "{{ post.excerpt }}",
+    "datePublished": "{{ post.published_at|date:'c' }}",
+    "dateModified": "{{ post.published_at|date:'c' }}",
+    "author": {
+        "@type": "Organization",
+        "name": "M-Clean"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "M-Clean"
+    }
+}
+</script>
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+<article class="post-detail">
+    <div class="post-detail__header">
+        <div class="container">
+            <div class="post-detail__meta">
+                {% if post.category %}
+                <span class="post-detail__category">{{ post.category.name }}</span>
+                {% endif %}
+                <span class="post-detail__date">{{ post.published_at|date:"d F Y" }}</span>
+            </div>
+            <h1 class="post-detail__title">{{ post.title }}</h1>
+        </div>
+    </div>
+    
+{% if post.image %}
+     <div class="post-detail__hero-image">
+         <div class="container">
+             <img src="{{ post.image.url }}" alt="{{ post.title }}" width="1200" height="630">
+         </div>
+     </div>
+     {% endif %}
+    
+    <div class="post-detail__content">
+        <div class="container">
+            <div class="post-detail__article">
+                {{ post.content|safe }}
+            </div>
+        </div>
+    </div>
+    
+    {% if related %}
+    <div class="post-detail__related section section--green">
+        <div class="container">
+            <h2 class="section__title" style="text-align: center; margin-bottom: var(--space-xl);">Похожие статьи</h2>
+            <div class="blog-grid">
+                {% for r in related %}
+                <a href="{% url 'blog:post_detail' r.slug %}" class="blog-card">
+                    {% if r.image %}
+                    <div class="blog-card__image">
+                        <img src="{{ r.image.url }}" alt="{{ r.title }}" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div class="blog-card__body">
+                        <h3 class="blog-card__title">{{ r.title }}</h3>
+                        <p class="blog-card__excerpt">{{ r.excerpt }}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</article>
+
+{% endblock %}

@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Отзывы <span class="hero__title-accent">клиентов</span>
+            </h1>
+            <p class="hero__description">
+                Более {{ clients_count }} довольных клиентов доверяют нам чистку своей мебели
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- RATINGS SECTION -->
+<section class="section section--green" id="ratings">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши рейтинги</h2>
+            <p class="section__subtitle">Средняя оценка на площадках</p>
+        </div>
+        
+        <div class="ratings-grid fade-in">
+            <div class="rating-card">
+                <div class="rating-card__source">Яндекс</div>
+                <div class="rating-card__stars">
+                    {% for i in range_5 %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if i <= ratings.yandex %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% endfor %}
+                </div>
+                <div class="rating-card__value">{{ ratings.yandex|default:"5.0" }}</div>
+            </div>
+            
+            <div class="rating-card">
+                <div class="rating-card__source">2ГИС</div>
+                <div class="rating-card__stars">
+                    {% for i in range_5 %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if i <= ratings.2gis %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% endfor %}
+                </div>
+                <div class="rating-card__value">{{ ratings.2gis|default:"5.0" }}</div>
+            </div>
+            
+            <div class="rating-card">
+                <div class="rating-card__source">Google</div>
+                <div class="rating-card__stars">
+                    {% for i in range_5 %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="{% if i <= ratings.google %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% endfor %}
+                </div>
+                <div class="rating-card__value">{{ ratings.google|default:"5.0" }}</div>
+            </div>
+        </div>
+        
+        <p class="text-center text-muted fade-in" style="margin-top: var(--space-md);">
+            Всего отзывов: {{ total_count }}
+        </p>
+    </div>
+</section>
+
+<!-- REVIEWS GRID -->
+<section class="section" id="reviews-list">
+    <div class="container">
+        <div class="reviews-grid" id="reviews-container">
+            {% for review in reviews %}
+            <div class="review-card fade-in">
+                <div class="review-card__header">
+                    <div class="review-card__author">
+                        <div class="review-card__avatar">{{ review.name|first }}</div>
+                        <div class="review-card__info">
+                            <span class="review-card__name">{{ review.name }}</span>
+                            <span class="review-card__source">{{ review.get_source_display }}</span>
+                        </div>
+                    </div>
+                    <div class="review-card__stars">
+                        {% for i in "12345" %}
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if forloop.counter <= review.rating %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="review-card__text">{{ review.text }}</p>
+                <span class="review-card__date">{{ review.date|date:"d.m.Y" }}</span>
+            </div>
+            {% empty %}
+            <div class="review-card fade-in">
+                <div class="review-card__header">
+                    <div class="review-card__author">
+                        <div class="review-card__avatar">А</div>
+                        <div class="review-card__info">
+                            <span class="review-card__name">Алия</span>
+                            <span class="review-card__source">Яндекс</span>
+                        </div>
+                    </div>
+                    <div class="review-card__stars">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </div>
+                </div>
+                <p class="review-card__text">Отличная химчистка! Диван стал как новый. Мастер приехал вовремя, всё сделал аккуратно. Рекомендую!</p>
+                <span class="review-card__date">15.01.2025</span>
+            </div>
+            
+            <div class="review-card fade-in">
+                <div class="review-card__header">
+                    <div class="review-card__author">
+                        <div class="review-card__avatar">М</div>
+                        <div class="review-card__info">
+                            <span class="review-card__name">Марат</span>
+                            <span class="review-card__source">2ГИС</span>
+                        </div>
+                    </div>
+                    <div class="review-card__stars">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </div>
+                </div>
+                <p class="review-card__text">Заказывал чистку матраса. Приехал мастер с профессиональным оборудованием. Результат превзошёл ожидания!</p>
+                <span class="review-card__date">10.01.2025</span>
+            </div>
+            
+            <div class="review-card fade-in">
+                <div class="review-card__header">
+                    <div class="review-card__author">
+                        <div class="review-card__avatar">Е</div>
+                        <div class="review-card__info">
+                            <span class="review-card__name">Елена</span>
+                            <span class="review-card__source">Google</span>
+                        </div>
+                    </div>
+                    <div class="review-card__stars">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </div>
+                </div>
+                <p class="review-card__text">Чистка кресла прошла отлично! Пятна от кофе удалились полностью. Химия безопасная, запаха не осталось.</p>
+                <span class="review-card__date">05.01.2025</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if reviews.has_next %}
+        <div class="load-more-wrap fade-in" style="text-align: center; margin-top: var(--space-2xl);">
+            <button class="btn btn--secondary" id="load-more-reviews" data-page="1">
+                Загрузить ещё
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section section--green">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Оставьте свой отзыв</h2>
+            <p class="section__subtitle">Или читайте нас на независимых площадках</p>
+        </div>
+        
+        <div class="platform-links fade-in">
+            <a href="{{ settings.url_reviews_yandex|default:'#' }}" target="_blank" rel="noopener" class="platform-card">
+                <div class="platform-card__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm1 17h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <div class="platform-card__info">
+                    <span class="platform-card__name">Яндекс</span>
+                    <span class="platform-card__rating">{{ ratings.yandex|default:"5.0" }} ★</span>
+                </div>
+                <span class="platform-card__arrow">→</span>
+            </a>
+            
+            <a href="{{ settings.url_reviews_google|default:'#' }}" target="_blank" rel="noopener" class="platform-card">
+                <div class="platform-card__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg>
+                </div>
+                <div class="platform-card__info">
+                    <span class="platform-card__name">Google</span>
+                    <span class="platform-card__rating">{{ ratings.google|default:"5.0" }} ★</span>
+                </div>
+                <span class="platform-card__arrow">→</span>
+            </a>
+            
+            <a href="{{ settings.url_reviews_2gis|default:'#' }}" target="_blank" rel="noopener" class="platform-card">
+                <div class="platform-card__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </div>
+                <div class="platform-card__info">
+                    <span class="platform-card__name">2ГИС</span>
+                    <span class="platform-card__rating">{{ ratings.2gis|default:"5.0" }} ★</span>
+                </div>
+                <span class="platform-card__arrow">→</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreBtn = document.getElementById('load-more-reviews');
+    const container = document.getElementById('reviews-container');
+    
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', async function() {
+            const page = parseInt(this.dataset.page) + 1;
+            this.textContent = 'Загрузка...';
+            this.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/reviews/?page=${page}`);
+                const data = await response.json();
+                
+                data.reviews.forEach(review => {
+                    const stars = Array(5).fill().map((_, i) => 
+                        `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < review.rating ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+                    ).join('');
+                    
+                    const card = document.createElement('div');
+                    card.className = 'review-card fade-in visible';
+                    card.innerHTML = `
+                        <div class="review-card__header">
+                            <div class="review-card__author">
+                                <div class="review-card__avatar">${review.name[0]}</div>
+                                <div class="review-card__info">
+                                    <span class="review-card__name">${review.name}</span>
+                                    <span class="review-card__source">${review.source}</span>
+                                </div>
+                            </div>
+                            <div class="review-card__stars">${stars}</div>
+                        </div>
+                        <p class="review-card__text">${review.text}</p>
+                        <span class="review-card__date">${review.date}</span>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                if (data.has_next) {
+                    this.dataset.page = page;
+                    this.textContent = 'Загрузить ещё';
+                    this.disabled = false;
+                } else {
+                    this.parentElement.remove();
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                this.textContent = 'Ошибка загрузки';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

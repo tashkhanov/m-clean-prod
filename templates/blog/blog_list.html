@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Блог M-Clean",
+    "description": "Полезные статьи о химчистке мебели, уходе за мягкой мебелью и текстилем",
+    "url": "https://m-clean.kz/blog/"
+}
+</script>
+{{ block.super }}
+{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Наш <span class="hero__title-accent">блог</span>
+            </h1>
+            <p class="hero__description">
+                Полезные статьи о химчистке мебели, уходе за текстилем и советы профессионалов.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section section--green">
+    <div class="container">
+        {% if categories %}
+        <div class="blog-filters">
+            <a href="{% url 'blog:blog_list' %}" class="blog-filter {% if not active_category %}active{% endif %}">Все</a>
+            {% for cat in categories %}
+            <a href="{% url 'blog:blog_list' %}?category={{ cat.slug }}" class="blog-filter {% if active_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <h2 class="sr-only">Список статей</h2>
+        
+        <div class="blog-grid">
+            {% for post in posts %}
+            <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
+                {% if post.image %}
+                <div class="blog-card__image">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="800" height="450" loading="lazy">
+                </div>
+                {% endif %}
+                <div class="blog-card__body">
+                    {% if post.category %}
+                    <span class="blog-card__category">{{ post.category.name }}</span>
+                    {% endif %}
+                    <h3 class="blog-card__title">{{ post.title }}</h3>
+                    <p class="blog-card__excerpt">{{ post.excerpt }}</p>
+                    <span class="blog-card__date">{{ post.published_at|date:"d.m.Y" }}</span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="blog-empty">
+                <p>Статьи скоро появятся</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

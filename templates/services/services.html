@@ -1,0 +1,687 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    /* Immediate Layout Fixes for Curtains */
+    .cbtn {
+        width: 32px !important;
+        height: 32px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        background: #fff !important;
+        border-radius: 50% !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        transition: all 0.2s !important;
+        color: #64748b !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        box-sizing: border-box !important;
+    }
+    .cbtn:hover {
+        border-color: #28C460 !important;
+        color: #28C460 !important;
+        background: #edfaf3 !important;
+    }
+    .cqty {
+        font-size: 15px !important;
+        font-weight: 800 !important;
+        min-width: 24px !important;
+        text-align: center !important;
+        color: #1e293b !important;
+        margin: 0 4px !important;
+    }
+    .counter-mini {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 12px 16px !important;
+        background: rgba(40, 196, 96, 0.04) !important;
+        border-top: 1px dashed rgba(40, 196, 96, 0.2) !important;
+        margin-top: 8px !important;
+    }
+    .counter-mini-label {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+    }
+    .info-badge {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        margin-bottom: 8px !important;
+        border: 1px solid transparent !important;
+    }
+    .info-badge--warning {
+        background: rgba(255, 248, 225, 0.8) !important;
+        border-color: rgba(255, 224, 130, 0.6) !important;
+        color: #856404 !important;
+    }
+    .info-badge--success {
+        background: rgba(40, 196, 96, 0.08) !important;
+        border-color: rgba(40, 196, 96, 0.2) !important;
+        color: #166534 !important;
+    }
+    .info-badge svg {
+        flex-shrink: 0 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Наши <span class="hero__title-accent">услуги</span>
+            </h1>
+            <p class="hero__description">
+                Профессиональная химчистка любых видов мебели и текстиля.
+                Рассчитайте стоимость онлайн.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section section--green">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Калькулятор стоимости</h2>
+            <p class="section__subtitle">Выберите тип услуги и настройте параметры</p>
+        </div>
+
+        <div class="calc-wrapper fade-in">
+            <div class="calc-params">
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- THREE MAIN TABS                                    -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <h3 class="calc-section-title">Тип услуги</h3>
+                <div class="calc-main-tabs" id="calc-main-tabs">
+                    <button class="calc-main-tab active" data-calc-type="furniture">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-4 0v2H6v-2a2 2 0 00-4 0z"/><path d="M4 18v2M20 18v2"/></svg>
+                        <span>Мебель</span>
+                    </button>
+                    <button class="calc-main-tab" data-calc-type="carpet">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+                        <span>Ковролин</span>
+                    </button>
+                    <button class="calc-main-tab" data-calc-type="curtains">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V4"/><path d="M4 12h16"/></svg>
+                        <span>Шторы</span>
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- FURNITURE WRAPPER (Client logic)                   -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <div id="calc-furniture-wrapper" class="calc-type-container">
+                    <div class="glass-card">
+                        <!-- Master Controls: два переключателя в одну строку -->
+                        <div class="master-seg">
+                            <!-- Тип объекта: Дом / Бизнес -->
+                            <div class="seg-group">
+                                <div class="seg-label">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                    Тип объекта
+                                </div>
+                                <div class="seg">
+                                    <div class="seg-btn tab-btn active" data-tab="home">
+                                        <span class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                                        Для дома
+                                    </div>
+                                    <div class="seg-btn tab-btn" data-tab="business">
+                                        <span class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></span>
+                                        Для бизнеса
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Тип обивки: Ткань / Кожа -->
+                            <div class="seg-group">
+                                <div class="seg-label">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="3" x2="20" y2="3"/></svg>
+                                    Тип обивки
+                                </div>
+                                <div class="seg">
+                                    <div class="seg-btn uph-btn active" data-uph="fabric"><span class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="3" x2="20" y2="3"/></svg></span>Ткань</div>
+                                    <div class="seg-btn uph-btn" data-uph="leather"><span class="si"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>Кожа/экокожа</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leather-note" id="leather-note">Кожа / экокожа — цены увеличены на 50%</div>
+
+                        <!-- Dirt Level -->
+                        <div class="dirt-opts">
+                            <div class="dirt-title">Состояние загрязнения</div>
+                            <div class="radio-opt dirt-btn active" data-dirt="0">
+                                <input type="radio" name="dirt" value="0" checked> Обычное загрязнение
+                                <span class="rbadge">базовая цена</span>
+                            </div>
+                            <div class="radio-opt dirt-btn" data-dirt="0.2">
+                                <input type="radio" name="dirt" value="0.2"> Сильные загрязнения
+                                <span class="rbadge">+20%</span>
+                            </div>
+                            <div class="radio-opt dirt-btn" data-dirt="0.5">
+                                <input type="radio" name="dirt" value="0.5"> После ремонта
+                                <span class="rbadge">+50%</span>
+                            </div>
+                        </div>
+
+                        <!-- ── ПАНЕЛЬ: ДЛЯ ДОМА ── -->
+                        <div id="furn-home" class="furn-panel active">
+                            <div class="calc-accordion">
+                                <div class="accordion-item active">
+                                    <div class="accordion-header">
+                                        <span>Диваны</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-sofas"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Кресла и стулья</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-chairs"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Кровати</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-beds"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Матрасы</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-mattress"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Прочее</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-misc"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── ПАНЕЛЬ: ДЛЯ БИЗНЕСА ── -->
+                        <div id="furn-business" class="furn-panel">
+                            <div class="calc-accordion">
+                                <div class="accordion-item active">
+                                    <div class="accordion-header">
+                                        <span>Стулья и кресла</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-biz-chairs"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Диваны (офис / лаунж)</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-biz-sofas"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Переговорные / конференц</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-biz-conf"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Зоны отдыха</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-biz-lounge"></div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <div class="accordion-header">
+                                        <span>Мягкие стеновые панели</span>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                                    </div>
+                                    <div class="accordion-content">
+                                        <div id="cat-biz-panels"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Global Options -->
+                        <div class="opts-section">
+                            <div class="opts-title">Общие параметры</div>
+                            <div class="opts-grid">
+                                <div class="opt-card" data-opt-id="hair">
+                                    <input type="checkbox" id="furn-hair">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></span>
+                                    <span class="opt-text">Шерсть животных<span class="opt-sub">погонный метр</span></span>
+                                    <span class="opt-price">5 000/м</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="box">
+                                    <input type="checkbox" id="furn-box">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+                                    <span class="opt-text">Чистка ящиков<span class="opt-sub">шт</span></span>
+                                    <span class="opt-price">1 000/шт</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="night">
+                                    <input type="checkbox" id="furn-night">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+                                    <span class="opt-text">Работа после 21:00</span>
+                                    <span class="opt-price ora">+5 000</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="faraway">
+                                    <input type="checkbox" id="furn-faraway">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></span>
+                                    <span class="opt-text">Выезд за 10 км<span class="opt-sub">50 тг/км от 11-го</span></span>
+                                    <span class="opt-price" style="color:var(--ora);background:#fdebd0">уточним</span>
+                                </div>
+                            </div>
+
+                            <div class="qty-adjuster" id="hair-adj">
+                                <span class="qa-label">Кол-во погонных метров:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-qa-key="hairM" data-qa-delta="-1">−</button>
+                                    <span class="cqty" id="hair-m">1</span>
+                                    <button class="cbtn p qa-btn" data-qa-key="hairM" data-qa-delta="1">+</button>
+                                </div>
+                            </div>
+                            <div class="qty-adjuster" id="box-adj">
+                                <span class="qa-label">Количество ящиков:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-qa-key="boxQ" data-qa-delta="-1">−</button>
+                                    <span class="cqty" id="box-q">1</span>
+                                    <button class="cbtn p qa-btn" data-qa-key="boxQ" data-qa-delta="1">+</button>
+                                </div>
+                            </div>
+                            
+                            <div id="furniture-db-options" class="calc-options" style="margin-top:20px;">
+                                {% for option in options %}
+                                {% if option.show_in_furniture %}
+                                <label class="calc-option" data-calc-context="furniture" data-services="{% for svc in option.services.all %}{{ svc.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    <input type="checkbox" name="calc-option" value="{{ option.id }}"
+                                           data-price="{{ option.price }}"
+                                           data-calc-unit="{{ option.calc_unit }}">
+                                    <span class="calc-option__check">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </span>
+                                    <span class="calc-option__name">{{ option.name }}</span>
+                                    <span class="calc-option__price">
+                                        {% if option.calc_unit == 'percentage' %}+{{ option.price }}%{% elif option.calc_unit == 'per_kg' %}+{{ option.price }} ₸/кг{% elif option.calc_unit == 'per_m2' %}+{{ option.price }} ₸/м²{% elif option.calc_unit == 'per_item' %}+{{ option.price }} ₸/шт{% else %}+{{ option.price }} ₸{% endif %}
+                                    </span>
+                                </label>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- CARPET WRAPPER                                     -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <div id="calc-carpet-wrapper" class="calc-type-container" style="display:none;">
+                    <div class="glass-card">
+                        <div class="form-field">
+                            <label class="form-field__label">Общая площадь (м²)</label>
+                            <input type="number" id="carpet-area" class="form-field__input" placeholder="Например: 50" min="0" step="0.1">
+                        </div>
+                        <div class="form-hint" id="carpet-price-hint">Ступенчатые цены: до 25м² — 2000 ₸/м², до 50м² — 1750 ₸/м², до 100м² — 1500 ₸/м², 100м²+ — 1250 ₸/м²</div>
+
+                        <label class="form-field__label" style="margin-top:16px;display:block;">Вариант чистки:</label>
+                        <div class="carpet-mode-toggle">
+                            <label class="carpet-mode-btn active" data-mode="general">
+                                <input type="radio" name="carpet-mode" value="general" checked>
+                                <span>Генеральная</span>
+                            </label>
+                            <label class="carpet-mode-btn" data-mode="eco">
+                                <input type="radio" name="carpet-mode" value="eco">
+                                <span>Эконом</span>
+                            </label>
+                        </div>
+                        <div id="carpet-mode-desc" class="carpet-mode-desc">
+                            <b style="color:#28C460;">Американская технология (IICRC S100)</b>
+                            Капитальная чистка Hot Water Extraction.
+                        </div>
+
+                        <label class="form-field__label" style="margin-top:16px;display:block;">Тип покрытия:</label>
+                        <div class="carpet-material-toggle">
+                            <label class="carpet-material-btn active" data-material="synthetic">
+                                <input type="radio" name="carpet-material" value="synthetic" checked>
+                                <span>Синтетика</span>
+                            </label>
+                            <label class="carpet-material-btn" data-material="natural">
+                                <input type="radio" name="carpet-material" value="natural">
+                                <span>Шерсть / Шёлк</span>
+                            </label>
+                        </div>
+                        <div id="carpet-material-desc" class="carpet-material-desc">
+                            Стандартные офисные и домашние покрытия из полиамида или полипропилена.
+                        </div>
+
+                        <div id="carpet-options" class="calc-options" style="margin-top:16px;">
+                            {% for option in options %}
+                            {% if option.show_in_carpet %}
+                            <label class="calc-option" data-calc-context="carpet" data-services="{% for svc in option.services.all %}{{ svc.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                <input type="checkbox" name="calc-option" value="{{ option.id }}"
+                                       data-price="{{ option.price }}"
+                                       data-calc-unit="{{ option.calc_unit }}">
+                                <span class="calc-option__check">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                </span>
+                                <span class="calc-option__name">{{ option.name }}</span>
+                                <span class="calc-option__price">
+                                    {% if option.calc_unit == 'percentage' %}+{{ option.price }}%{% elif option.calc_unit == 'per_kg' %}+{{ option.price }} ₸/кг{% elif option.calc_unit == 'per_m2' %}+{{ option.price }} ₸/м²{% elif option.calc_unit == 'per_item' %}+{{ option.price }} ₸/шт{% else %}+{{ option.price }} ₸{% endif %}
+                                </span>
+                            </label>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Global Options for Carpet -->
+                        <div class="opts-section">
+                            <div class="opts-title">Общие параметры</div>
+                            <div class="opts-grid">
+                                <div class="opt-card" data-opt-id="hair">
+                                    <input type="checkbox" id="carpet-hair">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></span>
+                                    <span class="opt-text">Шерсть животных<span class="opt-sub">погонный метр</span></span>
+                                    <span class="opt-price">5 000/м</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="box">
+                                    <input type="checkbox" id="carpet-box">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+                                    <span class="opt-text">Чистка ящиков<span class="opt-sub">шт</span></span>
+                                    <span class="opt-price">1 000/шт</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="night">
+                                    <input type="checkbox" id="carpet-night">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+                                    <span class="opt-text">Работа после 21:00</span>
+                                    <span class="opt-price ora">+5 000</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="faraway">
+                                    <input type="checkbox" id="carpet-faraway">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></span>
+                                    <span class="opt-text">Выезд за 10 км<span class="opt-sub">50 тг/км от 11-го</span></span>
+                                    <span class="opt-price" style="color:var(--ora);background:#fdebd0">уточним</span>
+                                </div>
+                            </div>
+
+                            <div class="qty-adjuster" id="carpet-hair-adj">
+                                <span class="qa-label">Кол-во погонных метров:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-qa-key="hairM" data-qa-delta="-1">−</button>
+                                    <span class="cqty" id="carpet-hair-m">1</span>
+                                    <button class="cbtn p qa-btn" data-qa-key="hairM" data-qa-delta="1">+</button>
+                                </div>
+                            </div>
+                            <div class="qty-adjuster" id="carpet-box-adj">
+                                <span class="qa-label">Количество ящиков:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-qa-key="boxQ" data-qa-delta="-1">−</button>
+                                    <span class="cqty" id="carpet-box-q">1</span>
+                                    <button class="cbtn p qa-btn" data-qa-key="boxQ" data-qa-delta="1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- CURTAINS WRAPPER                                   -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <div id="calc-curtains-wrapper" class="calc-type-container" style="display:none;">
+                    <div class="glass-card">
+                        <div class="curtain-mode-toggle">
+                            <label class="curtain-mode-btn active" data-mode="weight">
+                                <input type="radio" name="curtain-mode" value="weight" checked>
+                                <span>Ввести вес</span>
+                            </label>
+                            <label class="curtain-mode-btn" data-mode="windows">
+                                <input type="radio" name="curtain-mode" value="windows">
+                                <span>По окнам</span>
+                            </label>
+                        </div>
+
+                        <div id="curtain-weight-mode">
+                            <div class="form-field">
+                                <label class="form-field__label">Общий вес (кг)</label>
+                                <input type="number" id="curtain-weight" class="form-field__input" placeholder="Например: 5" min="0" step="0.1">
+                            </div>
+                            <div class="form-hint">Точный вес определит мастер при визите.</div>
+                        </div>
+
+                        <div id="curtain-windows-mode" style="display:none;">
+                            <div class="info-badge info-badge--warning">
+                                ПРИМЕРНЫЙ РАСЧЁТ: Точная стоимость фиксируется мастером после взвешивания на месте.
+                            </div>
+                            <div class="form-field">
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                                    <div>
+                                        <label class="form-field__label">Ширина (м)</label>
+                                        <input type="number" id="curtain-w" class="form-field__input" placeholder="Введите ширину" min="0" step="0.1">
+                                    </div>
+                                    <div>
+                                        <label class="form-field__label">Высота (м)</label>
+                                        <input type="number" id="curtain-h" class="form-field__input" placeholder="Введите высоту" min="0" step="0.1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-field__label">Тип ткани</label>
+                                <select id="curtain-type" class="form-field__select">
+                                    {% for coeff in curtain_coeffs %}
+                                    <option value="{{ coeff.coefficient }}">{{ coeff.name }} ({{ coeff.coefficient }} кг/м²)</option>
+                                    {% empty %}
+                                    <option value="0.6">Обычные шторы (0.6 кг/м²)</option>
+                                    <option value="1.1">Блэкаут / Тяжёлые (1.1 кг/м²)</option>
+                                    <option value="0.2">Тюль (0.2 кг/м²)</option>
+                                    <option value="0.4">Римская штора (0.4 кг/м²)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="button" id="add-window-btn" class="btn-add-window">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Добавить в список
+                            </button>
+                            <div id="window-list" class="window-list"></div>
+                        </div>
+
+                        <div id="curtain-addons-group" style="margin-top:20px; display: flex; flex-direction: column; gap: 12px;">
+                            <!-- Option 1: Removal -->
+                            <label class="glass-checkbox">
+                                <input type="checkbox" id="curtain-removal">
+                                <span class="glass-checkbox__box">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                </span>
+                                <span class="glass-checkbox__label">Снятие штор (+400 ₸/кг)</span>
+                            </label>
+
+                            <!-- Option 2: Hanging -->
+                            <label class="glass-checkbox">
+                                <input type="checkbox" id="curtain-hanging">
+                                <span class="glass-checkbox__box">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                </span>
+                                <span class="glass-checkbox__label">Навеска и стяжка (+600 ₸/кг)</span>
+                            </label>
+
+                            <!-- Option 3: Ironing -->
+                            <label class="glass-checkbox">
+                                <input type="checkbox" id="curtain-ironing">
+                                <span class="glass-checkbox__box">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                </span>
+                                <span class="glass-checkbox__label">Глажка / Отпаривание (+500 ₸/м²)</span>
+                            </label>
+
+                            <!-- Option 4: Roman Blinds (with counter) -->
+                            <div id="curtain-roman-container" class="curtain-addon-control">
+                                <label class="glass-checkbox">
+                                    <input type="checkbox" id="curtain-roman">
+                                    <span class="glass-checkbox__box">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                    </span>
+                                    <span class="glass-checkbox__label">Монтаж Римских (3000 ₸/шт)</span>
+                                </label>
+                                <div id="curtain-roman-qty" class="counter-mini" style="display:none;">
+                                    <span class="counter-mini-label">Кол-во изделий:</span>
+                                    <div class="counter">
+                                        <button id="roman-minus" class="cbtn">−</button>
+                                        <span id="roman-val" class="cqty">1</span>
+                                        <button id="roman-plus" class="cbtn p">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info Block (Atele & Hooks) -->
+                        <div class="curtain-footer-info">
+                            <div class="info-badge info-badge--warning">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                <span>Услуги ателье: Ремонт, подшив (индивидуально)</span>
+                            </div>
+                            <div class="info-badge info-badge--success">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                                <span>Крючки: Бесплатная замена сломанных креплений</span>
+                            </div>
+                        </div>
+
+                        <div id="curtain-options" class="calc-options" style="margin-top:16px;">
+                            {% for option in options %}
+                            {% if option.show_in_curtains %}
+                            <label class="calc-option" data-calc-context="curtain" data-services="{% for svc in option.services.all %}{{ svc.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                <input type="checkbox" name="calc-option" value="{{ option.id }}"
+                                       data-price="{{ option.price }}"
+                                       data-calc-unit="{{ option.calc_unit }}">
+                                <span class="calc-option__check">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                                </span>
+                                <span class="calc-option__name">{{ option.name }}</span>
+                                <span class="calc-option__price">
+                                    {% if option.calc_unit == 'percentage' %}+{{ option.price }}%{% elif option.calc_unit == 'per_kg' %}+{{ option.price }} ₸/кг{% elif option.calc_unit == 'per_m2' %}+{{ option.price }} ₸/м²{% elif option.calc_unit == 'per_item' %}+{{ option.price }} ₸/шт{% else %}+{{ option.price }} ₸{% endif %}
+                                </span>
+                            </label>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════ -->
+                <!-- DISCOUNTS                                          -->
+                <!-- ═══════════════════════════════════════════════════ -->
+                <div class="glass-card glass-card--discounts">
+                    <h4 class="discounts-title">Скидки</h4>
+                    <label class="glass-checkbox">
+                        <input type="checkbox" id="calc-new-client">
+                        <span class="glass-checkbox__box">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span class="glass-checkbox__label">Я новый клиент (−5%)</span>
+                    </label>
+                    <label class="glass-checkbox">
+                        <input type="checkbox" id="calc-combo-order">
+                        <span class="glass-checkbox__box">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span class="glass-checkbox__label">Доп. заказ (−15% на мебель)</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="calc-total-panel">
+                <div class="summary-card" id="sticky-total">
+                    <div class="sum-header">
+                        <b>Ваш заказ</b>
+                        <span>Состав и расчёт стоимости</span>
+                    </div>
+                    <div id="order-lines" class="order-lines">
+                        <div class="empty-msg">Выберите позиции для расчёта...</div>
+                    </div>
+                    <div class="total-box">
+                        <div class="tl">Итого к оплате</div>
+                        <div class="tv" id="total-val">0 ₸</div>
+                        <div class="min-note" id="min-note" style="display:none">* Применён минимальный заказ — 20 000 тг</div>
+                    </div>
+                    <div class="disclaimer">
+                        <strong>Предварительный расчёт.</strong> Точная стоимость определяется сотрудником на месте.
+                    </div>
+                    <button class="btn-wa" id="calc-whatsapp-btn" type="button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                        ЗАБРОНИРОВАТЬ ВЫЕЗД
+                    </button>
+                    <button class="btn btn--ghost btn--block" data-modal="modal-lead" id="calc-order" type="button" style="margin-top:10px;">
+                        Оставить заявку
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mobile Floating Total Bar -->
+<div class="mobile-float-bar" id="mobile-float-bar">
+    <div class="mfb-content">
+        <div class="mfb-left">
+            <span class="mfb-label">Итого к оплате:</span>
+            <span class="mfb-val" id="mfb-total">0 ₸</span>
+        </div>
+        <div class="mfb-right">
+            <span>Детали</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+        </div>
+    </div>
+</div>
+
+
+<section class="section">
+    <div class="container">
+        <div class="cta-banner fade-in">
+            <h2 class="cta-banner__title">Не нашли нужную услугу?</h2>
+            <p class="cta-banner__text">Свяжитесь с нами — мы подберём оптимальное решение для вашей задачи</p>
+            <button class="btn btn--large" data-modal="modal-lead">Получить консультацию</button>
+        </div>
+    </div>
+</section>
+
+{{ services_data|json_script:"services-data" }}
+{{ all_options_data|json_script:"all-options-data" }}
+{{ curtain_coeffs_data|json_script:"curtain-coeffs-data" }}
+{{ min_order|json_script:"min-order-data" }}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/calculator.js' %}"></script>
+{% endblock %}

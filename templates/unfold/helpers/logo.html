@@ -1,0 +1,15 @@
+{% load static %}
+<div class="flex items-center gap-3">
+    {% if settings.logo %}
+        <img 
+            src="{{ settings.logo.url }}" 
+            alt="{{ settings.company_name }}" 
+            class="h-10 w-auto max-w-[180px] object-contain flex-shrink-0"
+            style="image-rendering: -webkit-optimize-contrast;"
+        />
+    {% else %}
+        <span class="font-black text-2xl tracking-tight text-primary-600">
+            M-CLEAN
+        </span>
+    {% endif %}
+</div>

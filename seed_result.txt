@@ -1,0 +1,4 @@
+SiteSettings exists
+FAQ created
+SiteSettings: 1
+FAQ: 8

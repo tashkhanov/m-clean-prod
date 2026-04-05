@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Акции и <span class="hero__title-accent">скидки</span>
+            </h1>
+            <p class="hero__description">
+                Выгодные предложения на химчистку мебели в Алматы. 
+                Экономьте до 30% на каждой услуге
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- DISCOUNTS SECTION -->
+<section class="section" id="discounts">
+    <div class="container">
+        <div class="discounts-grid">
+            {% for discount in discounts %}
+            <div class="discount-card fade-in">
+                {% if discount.image %}
+                <div class="discount-card__image">
+                    <img src="{{ discount.image.url }}" alt="{{ discount.title }}" width="400" height="250" loading="lazy">
+                </div>
+                {% endif %}
+                <div class="discount-card__content">
+                    <h3 class="discount-card__title">{{ discount.title }}</h3>
+                    <p class="discount-card__desc">{{ discount.description }}</p>
+                    <div class="discount-card__meta">
+                        {% if discount.discount_percent %}
+                        <span class="discount-card__badge">-{{ discount.discount_percent }}%</span>
+                        {% endif %}
+                        {% if discount.discount_amount %}
+                        <span class="discount-card__badge">-{{ discount.discount_amount }} ₸</span>
+                        {% endif %}
+                        {% if discount.valid_until %}
+                        <span class="discount-card__valid">До {{ discount.valid_until|date:"d.m.Y" }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn--primary" data-modal="modal-lead" data-service-name="Акция: {{ discount.title }}">Получить скидку</button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="discount-card fade-in">
+                <div class="discount-card__image">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=250&fit=crop" alt="Скидка на диван" width="400" height="250" loading="lazy">
+                </div>
+                <div class="discount-card__content">
+                    <h3 class="discount-card__title">Скидка 15% на первый заказ</h3>
+                    <p class="discount-card__desc">При заказе химчистки дивана впервые — скидка 15% на все услуги</p>
+                    <div class="discount-card__meta">
+                        <span class="discount-card__badge">-15%</span>
+                        <span class="discount-card__valid">Бессрочно</span>
+                    </div>
+                    <button class="btn btn--primary" data-modal="modal-lead" data-service-name="Скидка 15% на первый заказ">Получить скидку</button>
+                </div>
+            </div>
+            
+            <div class="discount-card fade-in">
+                <div class="discount-card__image">
+                    <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=250&fit=crop" alt="Комплексная чистка" width="400" height="250" loading="lazy">
+                </div>
+                <div class="discount-card__content">
+                    <h3 class="discount-card__title">Комплексная чистка — скидка 20%</h3>
+                    <p class="discount-card__desc">Закажите чистку дивана + матраса и получите скидку 20% на вторую услугу</p>
+                    <div class="discount-card__meta">
+                        <span class="discount-card__badge">-20%</span>
+                        <span class="discount-card__valid">До 31.12.2025</span>
+                    </div>
+                    <button class="btn btn--primary" data-modal="modal-lead" data-service-name="Комплексная чистка">Получить скидку</button>
+                </div>
+            </div>
+            
+            <div class="discount-card fade-in">
+                <div class="discount-card__image">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=250&fit=crop" alt="Чистка ковров" width="400" height="250" loading="lazy">
+                </div>
+                <div class="discount-card__content">
+                    <h3 class="discount-card__title">Бесплатный выезд по Алматы</h3>
+                    <p class="discount-card__desc">При заказе от 15 000 ₸ — выезд мастера бесплатно в пределах города</p>
+                    <div class="discount-card__meta">
+                        <span class="discount-card__badge">Бесплатно</span>
+                        <span class="discount-card__valid">При заказе от 15 000 ₸</span>
+                    </div>
+                    <button class="btn btn--primary" data-modal="modal-lead" data-service-name="Бесплатный выезд">Получить скидку</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="section section--green">
+    <div class="container">
+        <div class="cta-banner fade-in">
+            <h2 class="cta-banner__title">Хотите получить скидку?</h2>
+            <p class="cta-banner__text">Оставьте заявку и мы подберём лучшее предложение</p>
+            <button class="btn btn--large" data-modal="modal-lead">Получить консультацию</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

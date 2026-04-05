@@ -1,0 +1,297 @@
+ {% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    :root {
+        --primary-vibrant: #10b981;
+        --primary-dark: #059669;
+        --bg-glass: rgba(255, 255, 255, 0.8);
+    }
+
+    .m-container {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 0 20px;
+        font-family: inherit;
+    }
+    
+    .m-header {
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .m-header h1 {
+        font-size: 24px;
+        font-weight: 800;
+        margin: 0;
+        color: #111827;
+    }
+
+    .m-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .m-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-box {
+        padding: 16px;
+        border-radius: 12px;
+        background: #f9fafb;
+        border: 1px solid #f3f4f6;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .stat-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .m-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--primary-vibrant);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .m-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .m-btn:disabled { background: #9ca3af; cursor: not-allowed; transform: none; }
+
+    .progress-wrap {
+        display: none;
+        margin-top: 24px;
+    }
+
+    .progress-bg {
+        height: 12px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #10b981, #34d399);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .log-container {
+        height: 200px;
+        overflow-y: auto;
+        background: #111827;
+        border-radius: 10px;
+        padding: 16px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 13px;
+        color: #10b981;
+        margin-top: 16px;
+    }
+
+    .log-entry { margin-bottom: 4px; border-left: 2px solid #374151; padding-left: 8px; }
+    .log-entry.error { color: #ef4444; }
+    .log-entry.success { color: #34d399; }
+
+    @keyframes spin { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
+    .spin { animation: spin 1s linear infinite; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="m-container">
+    <div class="m-header">
+        <h1>Обслуживание и Оптимизация</h1>
+        <div class="text-sm text-gray-500">Всего заявок в базе: <b>{{ leads_count }}</b></div>
+    </div>
+
+    <div class="m-grid">
+        <div class="stat-box">
+            <div class="stat-label">Моделей для обработки</div>
+            <div class="stat-value">{{ models_count }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Формат вывода</div>
+            <div class="stat-value">WebP (75%)</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Макс. размер</div>
+            <div class="stat-value">1920px</div>
+        </div>
+    </div>
+
+    <div class="m-card">
+        <h3 class="text-lg font-bold mb-4">Полная оптимизация системы</h3>
+        <p class="text-sm text-gray-600 mb-6">
+            Запуск данного процесса сконвертирует все изображения в WebP, уменьшит слишком большие фото, 
+            очистит кэш и удалит неиспользуемые файлы из медиа-библиотеки.
+        </p>
+
+        <button id="start-opt-btn" class="m-btn">
+            <svg id="opt-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <span>Запустить оптимизацию</span>
+        </button>
+
+        <div id="progress-area" class="progress-wrap">
+            <div class="flex justify-between text-sm mb-2">
+                <span id="progress-status">Подготовка...</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bg">
+                <div id="main-progress-bar" class="progress-bar"></div>
+            </div>
+            <div class="log-container" id="log">
+                <div class="log-entry">Ожидание запуска...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="m-grid" id="results-area" style="display:none;">
+        <div class="m-card w-full">
+            <h4 class="font-bold mb-2">Итоги работы:</h4>
+            <div id="final-results-list" class="text-sm space-y-1"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const btn = document.getElementById('start-opt-btn');
+    const icon = document.getElementById('opt-icon');
+    const progressArea = document.getElementById('progress-area');
+    const progressBar = document.getElementById('main-progress-bar');
+    const progressStatus = document.getElementById('progress-status');
+    const progressPercent = document.getElementById('progress-percent');
+    const log = document.getElementById('log');
+    const resultsArea = document.getElementById('results-area');
+    const resultsList = document.getElementById('final-results-list');
+
+    const addLog = (msg, type = '') => {
+        const div = document.createElement('div');
+        div.className = 'log-entry ' + type;
+        div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+    };
+
+    const updateProgress = (p, status) => {
+        progressBar.style.width = p + '%';
+        progressPercent.textContent = Math.round(p) + '%';
+        if (status) progressStatus.textContent = status;
+    };
+
+    btn.onclick = async () => {
+        if (!confirm('Начать оптимизацию всех изображений? Это может занять некоторое время.')) return;
+        
+        btn.disabled = true;
+        icon.classList.add('spin');
+        progressArea.style.display = 'block';
+        resultsArea.style.display = 'none';
+        log.innerHTML = '';
+        addLog('Запуск процесса оптимизации...');
+
+        try {
+            const csrf = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            
+            // 1. Получаем список моделей
+            addLog('Сбор статистики моделей...');
+            const statsRes = await fetch('?action=get_stats', { method: 'POST', headers: {'X-CSRFToken': csrf}});
+            const statsData = await statsRes.json();
+            const models = statsData.stats || [];
+            
+            if (models.length === 0) {
+                addLog('Нет данных для обработки.', 'error');
+                return;
+            }
+
+            const totalSteps = models.length + 2; // Модели + Кэш + Мусор
+            let currentStep = 0;
+
+            // 2. Оптимизируем каждую модель
+            for (const m of models) {
+                currentStep++;
+                const p = (currentStep / totalSteps) * 100;
+                updateProgress(p, `Обработка: ${m.name}...`);
+                addLog(`Начало обработки модели: ${m.name} (${m.count} зап.)`);
+                
+                const formData = new FormData();
+                formData.append('model_id', m.id);
+                
+                const optRes = await fetch('?action=optimize_model', { 
+                    method: 'POST', 
+                    headers: {'X-CSRFToken': csrf},
+                    body: formData
+                });
+                const optData = await optRes.json();
+                addLog(`Завершено: ${m.name}. Оптимизировано полей: ${optData.optimized || 0}`, 'success');
+            }
+
+            // 3. Чистим кэш
+            currentStep++;
+            updateProgress((currentStep / totalSteps) * 100, 'Очистка кэша...');
+            await fetch('?action=clear_cache', { method: 'POST', headers: {'X-CSRFToken': csrf}});
+            addLog('Кэш системы успешно очищен', 'success');
+
+            // 4. Чистим мусор
+            currentStep++;
+            updateProgress((currentStep / totalSteps) * 100, 'Удаление временных файлов...');
+            const cleanRes = await fetch('?action=clean_orphans', { method: 'POST', headers: {'X-CSRFToken': csrf}});
+            const cleanData = await cleanRes.json();
+            addLog(`Очистка завершена. Удалено лишних файлов: ${cleanData.deleted}`, 'success');
+
+            // 5. Финиш
+            updateProgress(100, 'Готово!');
+            addLog('ПРОЦЕСС ПОЛНОСТЬЮ ЗАВЕРШЕН', 'success');
+            icon.classList.remove('spin');
+            
+            resultsArea.style.display = 'block';
+            resultsList.innerHTML = `
+                <div>• Обработано категорий данных: ${models.length}</div>
+                <div>• Удалено неиспользуемых файлов: ${cleanData.deleted}</div>
+                <div>• Состояние системы: Оптимизировано</div>
+            `;
+
+        } catch (err) {
+            addLog('Критическая ошибка: ' + err.message, 'error');
+            icon.classList.remove('spin');
+        } finally {
+            btn.disabled = false;
+        }
+    };
+})();
+</script>
+{% endblock %}
+

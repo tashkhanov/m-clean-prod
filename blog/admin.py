@@ -1,0 +1,42 @@
+from django.contrib import admin
+from unfold.admin import ModelAdmin
+
+from .models import BlogCategory, Post
+from core.admin_actions import make_compress_action
+
+
+compress_blog_images = make_compress_action(
+    image_fields=['image'],
+    quality=75,
+    short_description='Сжать изображение статьи (WebP)'
+)
+
+
+@admin.register(BlogCategory)
+class BlogCategoryAdmin(ModelAdmin):
+    list_display = ('name', 'slug', 'order')
+    list_editable = ('order',)
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name',)
+
+
+@admin.register(Post)
+class PostAdmin(ModelAdmin):
+    list_display = ('title', 'category', 'published_at', 'is_published', 'order')
+    list_editable = ('order', 'is_published')
+    list_filter = ('category', 'is_published', 'published_at')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'excerpt')
+    actions = [compress_blog_images]
+    fieldsets = (
+        ("Основное", {
+            'fields': ('category', 'title', 'slug', 'image', 'excerpt', 'content'),
+        }),
+        ("SEO", {
+            'fields': ('seo_title', 'seo_description'),
+            'classes': ('collapse',),
+        }),
+        ("Публикация", {
+            'fields': ('is_published', 'order'),
+        }),
+    )

@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Технологии и <span class="hero__title-accent">доверие</span>
+            </h1>
+            <p class="hero__description">
+                Профессиональное оборудование и безопасная химия 
+                для идеальной чистки
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- EQUIPMENT SECTION -->
+<section class="section" id="equipment">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наше оборудование</h2>
+            <p class="section__subtitle">Итальянская техника Santoemma и Kärcher</p>
+        </div>
+        
+        <div class="equipment-grid">
+            {% for item in equipment %}
+            <div class="equipment-card fade-in">
+                <div class="equipment-card__image">
+                    {% if item.photo %}
+                    <img src="{{ item.photo.url }}" alt="{{ item.name }}" width="400" height="300" loading="lazy">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop" alt="{{ item.name }}" width="400" height="300" loading="lazy">
+                    {% endif %}
+                </div>
+                <div class="equipment-card__content">
+                    <span class="equipment-card__brand">{{ item.brand }}</span>
+                    <h3 class="equipment-card__name">{{ item.name }}</h3>
+                    <p class="equipment-card__desc">{{ item.description }}</p>
+                    {% if item.features %}
+                    <ul class="equipment-card__features">
+                        {% for feature in item.features.splitlines %}
+                        {% if feature %}
+                        <li>{{ feature }}</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="equipment-card fade-in">
+                <div class="equipment-card__image">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop" alt="Santoemma Sabrina Maxi" width="400" height="300" loading="lazy">
+                </div>
+                <div class="equipment-card__content">
+                    <span class="equipment-card__brand">Santoemma</span>
+                    <h3 class="equipment-card__name">Sabrina Maxi</h3>
+                    <p class="equipment-card__desc">Профессиональная машина для экстракционной чистки мягкой мебели и ковров</p>
+                    <ul class="equipment-card__features">
+                        <li>Мощность всасывания: 2500 мм.в.ст.</li>
+                        <li>Объём бака: 50 литров</li>
+                        <li>Нагрев воды до 150°C</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="equipment-card fade-in">
+                <div class="equipment-card__image">
+                    <img src="https://a.allegroimg.com/original/11caef/7e3db71a4c4e81a5aee0ad36703d/ODKURZACZ-PIORACY-KARCHER-PUZZI-8-1-DO-PRANIA-TAPICERKI-PROSZEK-ZESTAW-XXL-Funkcje-odkurzanie-na-sucho-i-mokro-osuszanie-pranie-zbieranie-plynow" alt="Kärcher Puzzi" width="400" height="300" loading="lazy">
+                </div>
+                <div class="equipment-card__content">
+                    <span class="equipment-card__brand">Kärcher</span>
+                    <h3 class="equipment-card__name">Puzzi 30/4</h3>
+                    <p class="equipment-card__desc">Экстрактор для глубокой чистки текстильных поверхностей</p>
+                    <ul class="equipment-card__features">
+                        <li>Производительность: 30 м²/ч</li>
+                        <li>Давление подачи: 4 бар</li>
+                        <li>Компактный и мобильный</li>
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CHEMICALS SECTION -->
+<section class="section section--green" id="chemicals">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Чистящие средства</h2>
+            <p class="section__subtitle">Безопасная химия от мировых лидеров</p>
+        </div>
+        
+        <div class="chemicals-grid">
+            {% for chemical in chemicals %}
+            <div class="chemical-card fade-in">
+                <div class="chemical-card__image">
+                    {% if chemical.photo %}
+                    <img src="{{ chemical.photo.url }}" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=300&h=300&fit=crop" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+                    {% endif %}
+                </div>
+                <div class="chemical-card__content">
+                    <h3 class="chemical-card__name">{{ chemical.name }}</h3>
+                    <span class="chemical-card__brand">{{ chemical.brand }}</span>
+                    {% if chemical.eco_status %}
+                    <span class="chemical-card__badge chemical-card__badge--{{ chemical.eco_status }}">
+                        {% if chemical.eco_status == 'eco' %}🌱 Экологично
+                        {% elif chemical.eco_status == 'hypo' %}💚 Гипоаллергенно
+                        {% elif chemical.eco_status == 'safe' %}👶 Безопасно для детей и животных
+                        {% else %}✨ Профессиональное
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                    <p class="chemical-card__desc">{{ chemical.description }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="chemical-card fade-in">
+                <div class="chemical-card__image">
+                    <img src="https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=300&h=300&fit=crop" alt="Chemspec" width="300" height="300" loading="lazy">
+                </div>
+                <div class="chemical-card__content">
+                    <h3 class="chemical-card__name">Chemspec</h3>
+                    <span class="chemical-card__brand">USA</span>
+                    <span class="chemical-card__badge chemical-card__badge--safe">👶 Безопасно для детей и животных</span>
+                    <p class="chemical-card__desc">Профессиональная химия для глубокой чистки мебели и ковров</p>
+                </div>
+            </div>
+            <div class="chemical-card fade-in">
+                <div class="chemical-card__image">
+                    <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=300&h=300&fit=crop" alt="Dr. Schnell" width="300" height="300" loading="lazy">
+                </div>
+                <div class="chemical-card__content">
+                    <h3 class="chemical-card__name">Dr. Schnell</h3>
+                    <span class="chemical-card__brand">Germany</span>
+                    <span class="chemical-card__badge chemical-card__badge--eco">🌱 Экологично</span>
+                    <p class="chemical-card__desc">Немецкая химия с сертификатами экологической безопасности</p>
+                </div>
+            </div>
+            <div class="chemical-card fade-in">
+                <div class="chemical-card__image">
+                    <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&h=300&fit=crop" alt="Vanish" width="300" height="300" loading="lazy">
+                </div>
+                <div class="chemical-card__content">
+                    <h3 class="chemical-card__name">Sanpol</h3>
+                    <span class="chemical-card__brand">Kazakhstan</span>
+                    <span class="chemical-card__badge chemical-card__badge--hypo">💚 Гипоаллергенно</span>
+                    <p class="chemical-card__desc">Казахстанская химия для профессиональной чистки</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- TRUST BADGES -->
+<section class="section" id="trust">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Почему нам доверяют</h2>
+            <p class="section__subtitle">Наши гарантии и преимущества</p>
+        </div>
+        
+        <div class="trust-grid fade-in">
+            <div class="trust-badge">
+                <div class="trust-badge__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h3 class="trust-badge__title">Гарантия сохранности</h3>
+                <p class="trust-badge__text">Мы несём полную ответственность за вашу мебель. Если что-то пойдёт не так — возместим стоимость</p>
+            </div>
+            
+            <div class="trust-badge">
+                <div class="trust-badge__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <h3 class="trust-badge__title">Безопасная химия</h3>
+                <p class="trust-badge__text">Используем сертифицированную химию Chemspec USA и Santoemma. Безопасно для детей и животных</p>
+            </div>
+            
+            <div class="trust-badge">
+                <div class="trust-badge__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+                <h3 class="trust-badge__title">Удаляем любые пятна</h3>
+                <p class="trust-badge__text">Даже самые сложные загрязнения — кровь, чернила, кофе, вино. У нас есть решение для каждого пятна</p>
+            </div>
+            
+            <div class="trust-badge">
+                <div class="trust-badge__icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </div>
+                <h3 class="trust-badge__title">8+ лет опыта</h3>
+                <p class="trust-badge__text">Работаем с 2015 года. Более {{ clients_count }} довольных клиентов в Алматы и области</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

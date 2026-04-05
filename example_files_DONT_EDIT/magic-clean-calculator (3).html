@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Clean — Калькулятор химчистки</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g:#32b553;--gl:#edfaf3;--dark:#111827;--gray:#64748b;
+  --radius:20px;--brd:#e8edf2;--ora:#e67e22;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Manrope',sans-serif;background:#f0f4f8;padding:20px 14px 60px;color:var(--dark);}
+
+/* ── LAYOUT ── */
+#calc{max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start;}
+@media(max-width:880px){#calc{grid-template-columns:1fr;}}
+.card{background:#fff;padding:26px;border-radius:var(--radius);box-shadow:0 8px 28px rgba(0,0,0,.07);border:1px solid var(--brd);}
+
+/* ── HEADER ── */
+.hdr{text-align:center;margin-bottom:24px;}
+.logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+.logo-ico{width:42px;height:42px;background:linear-gradient(135deg,var(--g),#27ae60);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(50,181,83,.3);}
+.hdr h2{font-size:26px;font-weight:900;color:var(--g);letter-spacing:1px;}
+.hdr p{font-size:12px;color:var(--gray);font-weight:600;margin:3px 0 8px;}
+.promo{display:inline-block;background:var(--gl);color:#1a7a3a;padding:5px 16px;border-radius:50px;font-size:12px;font-weight:800;border:1px solid #b6e9cc;}
+
+/* ── MASTER SEGMENT (home/biz + fabric/leather) ── */
+.master-seg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+.seg-group{display:flex;flex-direction:column;gap:4px;}
+.seg-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--gray);margin-bottom:2px;}
+.seg{display:flex;background:#f1f5f9;border-radius:12px;padding:4px;gap:0;}
+.seg-btn{flex:1;padding:9px 6px;text-align:center;border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;color:var(--gray);transition:all .22s;user-select:none;line-height:1.3;}
+.seg-btn .si{font-size:14px;display:block;margin-bottom:1px;}
+.seg-btn.active{background:#fff;color:var(--g);box-shadow:0 3px 10px rgba(0,0,0,.08);}
+.seg-btn.leather-active{background:#fff;color:#7d4a00;box-shadow:0 3px 10px rgba(0,0,0,.08);}
+.leather-note{font-size:10px;color:var(--ora);font-weight:800;background:#fff8f0;border:1px solid #f9ca91;border-radius:8px;padding:5px 10px;text-align:center;display:none;}
+.leather-note.visible{display:block;}
+
+/* ── PANELS ── */
+.panel{display:none;}
+.panel.active{display:block;animation:fi .2s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.cat-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--g);margin:18px 0 8px;display:flex;align-items:center;gap:7px;}
+.cat-label::before{content:'';width:3px;height:14px;background:var(--g);border-radius:2px;display:block;}
+
+/* ── ITEM ROW ── */
+.item-row{display:flex;align-items:center;gap:8px;padding:10px 8px;border-bottom:1px solid #f1f5f9;border-radius:10px;transition:background .15s;}
+.item-row:hover{background:#f5fef8;}
+.item-row:last-child{border-bottom:none;}
+.item-ico{font-size:18px;width:26px;text-align:center;flex-shrink:0;}
+.item-info{flex:1;min-width:0;}
+.item-info b{font-size:13px;font-weight:700;display:block;}
+.item-info span{font-size:10px;color:var(--gray);font-weight:600;}
+.item-price{font-weight:800;color:var(--g);font-size:12px;margin:0 4px;min-width:64px;text-align:right;line-height:1.4;}
+.item-price .lp{font-size:9px;color:#aaa;font-weight:600;display:block;}
+.counter{display:flex;align-items:center;gap:6px;}
+.cbtn{width:30px;height:30px;border:1.5px solid #cbd5e1;background:#fff;border-radius:8px;cursor:pointer;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .18s;color:var(--gray);}
+.cbtn:hover{border-color:var(--g);color:var(--g);background:var(--gl);}
+.cbtn.p:hover{background:var(--g);color:#fff;border-color:var(--g);}
+.cqty{width:20px;text-align:center;font-weight:800;font-size:14px;}
+@keyframes bmp{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+.cqty.bmp{animation:bmp .18s ease;}
+
+/* ── MATTRESS ROW ── */
+.mat-row{background:#f8fafc;border-radius:14px;padding:12px;margin-bottom:8px;border:1.5px solid var(--brd);transition:border-color .2s,background .2s;}
+.mat-row.active-mat{border-color:var(--g);background:var(--gl);}
+.mat-top{display:flex;align-items:center;gap:8px;}
+.mat-info{flex:1;}
+.mat-info b{font-size:13px;font-weight:700;display:block;}
+.mat-info span{font-size:10px;color:var(--gray);font-weight:600;}
+.mat-price{font-weight:800;color:var(--g);font-size:12px;min-width:66px;text-align:right;margin:0 4px;line-height:1.4;}
+.mat-price .lp{font-size:9px;color:#aaa;font-weight:600;display:block;}
+.sides-tog{display:flex;background:#fff;border:1.5px solid var(--brd);border-radius:10px;overflow:hidden;margin-top:10px;}
+.side-btn{flex:1;padding:8px 4px;text-align:center;font-size:11px;font-weight:700;cursor:pointer;color:var(--gray);transition:all .18s;user-select:none;}
+.side-btn.active{background:var(--g);color:#fff;}
+
+/* ── ITEM ADDONS (appears under item when qty>0) ── */
+.item-addons{margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;animation:fi .2s ease;}
+.addon-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 4px;border-radius:10px;background:#fff;border:1.5px solid var(--brd);cursor:pointer;font-size:10px;font-weight:700;color:var(--gray);text-align:center;transition:all .18s;user-select:none;line-height:1.3;}
+.addon-chip .aci{font-size:16px;}
+.addon-chip:hover{border-color:#a9dfbf;background:var(--gl);}
+.addon-chip.on{border-color:var(--g);background:var(--gl);color:#1e8449;}
+.addon-price{font-size:9px;color:var(--g);font-weight:800;background:#d5f5e3;padding:1px 5px;border-radius:6px;margin-top:2px;}
+
+/* ── GLOBAL OPTIONS ── */
+.opts-section{margin-top:22px;}
+.opts-title{font-size:11px;font-weight:800;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+.dirt-opts{background:#fff8f0;border:1.5px solid #f9ca91;border-radius:12px;padding:12px;margin-bottom:10px;}
+.dirt-title{font-size:11px;font-weight:800;color:var(--ora);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;}
+.radio-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray);border:1.5px solid transparent;margin-bottom:4px;transition:all .18s;user-select:none;}
+.radio-opt:hover{background:#fff3e0;border-color:#f9ca91;}
+.radio-opt.on{background:#fff3e0;border-color:var(--ora);color:#d35400;}
+.radio-opt input{accent-color:var(--ora);flex-shrink:0;pointer-events:none;}
+.rbadge{margin-left:auto;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:#fdebd0;color:var(--ora);}
+
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.opt-card{background:#f8fafc;padding:11px 12px;border-radius:12px;border:1.5px solid var(--brd);cursor:pointer;display:flex;align-items:flex-start;gap:8px;font-size:12px;font-weight:600;color:var(--gray);transition:all .18s;user-select:none;}
+.opt-card:hover{border-color:#a9dfbf;background:var(--gl);color:var(--g);}
+.opt-card.on{border-color:var(--g);background:var(--gl);color:#1e8449;}
+.opt-card input{accent-color:var(--g);pointer-events:none;flex-shrink:0;margin-top:1px;}
+.opt-ico{font-size:15px;flex-shrink:0;}
+.opt-text{flex:1;}
+.opt-sub{font-size:10px;color:#aaa;font-weight:600;display:block;margin-top:1px;}
+.opt-price{margin-left:auto;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;background:#d5f5e3;color:var(--g);white-space:nowrap;flex-shrink:0;}
+.opt-price.ora{background:#fdebd0;color:var(--ora);}
+
+.qty-adjuster{display:none;background:#f8fafc;border:1.5px solid var(--brd);border-radius:12px;padding:12px;display:none;align-items:center;gap:10px;margin-top:6px;}
+.qty-adjuster.visible{display:flex;}
+.qa-label{font-size:13px;font-weight:700;flex:1;}
+
+/* ── CARPET LINK ── */
+.carpet-link{display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,#e8f4fd,#f0f8ff);border:1.5px solid #bee3f8;border-radius:12px;margin-top:12px;cursor:pointer;text-decoration:none;transition:all .18s;}
+.carpet-link:hover{border-color:#63b3ed;}
+.cl-ico{font-size:22px;}
+.cl-text b{font-size:13px;font-weight:800;color:#2b6cb0;display:block;}
+.cl-text span{font-size:11px;color:#4a90d9;font-weight:600;}
+.cl-arr{margin-left:auto;color:#63b3ed;font-size:18px;font-weight:900;}
+
+/* ── DARK SIDEBAR ── */
+.summary-card{position:sticky;top:20px;background:var(--dark);color:#fff;}
+.sum-header{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #1f2937;}
+.sum-header b{font-size:18px;font-weight:800;}
+.sum-header span{font-size:11px;color:#94a3b8;display:block;margin-top:3px;font-weight:600;}
+.order-lines{font-size:13px;min-height:40px;}
+.empty-msg{color:#4b5563;font-size:13px;font-weight:600;padding:8px 0;}
+.ol{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid #1f2937;}
+.ol:last-of-type{border-bottom:none;}
+.ol .ln{color:#d1d5db;font-weight:600;display:flex;align-items:flex-start;gap:5px;flex:1;flex-wrap:wrap;}
+.ol .ln .oi{font-size:12px;flex-shrink:0;}
+.ol .lv{font-weight:800;white-space:nowrap;margin-left:8px;}
+.lv.pos{color:#f3f4f6;}
+.lv.add{color:#f87171;}
+.lv.disc{color:#4ade80;}
+.lv.warn{color:#fbbf24;}
+.sep{height:1px;background:#1f2937;margin:10px 0;}
+.total-box{margin-top:18px;padding-top:16px;border-top:2px dashed #1f2937;}
+.total-box .tl{font-size:11px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:1px;}
+.total-box .tv{font-size:34px;font-weight:900;color:var(--g);letter-spacing:-1px;margin:4px 0;}
+.min-note{font-size:11px;color:#f87171;font-weight:700;margin-top:4px;}
+.disclaimer{background:#1f2937;border-radius:10px;padding:10px 12px;font-size:10.5px;color:#9ca3af;line-height:1.5;font-weight:600;margin-top:16px;}
+.disclaimer strong{color:#fbbf24;}
+.btn-wa{width:100%;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;padding:17px;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:18px;font-family:'Manrope',sans-serif;letter-spacing:.4px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 20px rgba(37,211,102,.3);transition:all .2s;}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(37,211,102,.4);}
+.btn-wa:active{transform:translateY(0);}
+</style>
+</head>
+<body>
+<div id="calc">
+
+<!-- ══ LEFT CARD ══ -->
+<div class="card">
+  <div class="hdr">
+    <div class="logo-row">
+      <div class="logo-ico">🧹</div>
+      <h2>MAGIC CLEAN</h2>
+    </div>
+    <p>Умный расчёт химчистки в Алматы</p>
+    <div class="promo">🎁 Первый заказ: скидка −5% + выезд 0 тг</div>
+  </div>
+
+  <!-- ── MASTER CONTROLS ── -->
+  <div class="master-seg">
+    <!-- Кому? -->
+    <div class="seg-group">
+      <div class="seg-label">📍 Тип объекта</div>
+      <div class="seg">
+        <div class="seg-btn active" id="sb-home" onclick="pickTab('home',this)">
+          <span class="si">🏠</span>Для дома
+        </div>
+        <div class="seg-btn" id="sb-biz" onclick="pickTab('business',this)">
+          <span class="si">💼</span>Для бизнеса
+        </div>
+      </div>
+    </div>
+    <!-- Обивка? -->
+    <div class="seg-group">
+      <div class="seg-label">🧵 Тип обивки</div>
+      <div class="seg">
+        <div class="seg-btn active" id="sb-fabric" onclick="pickUph('fabric',this)">
+          <span class="si">🧵</span>Ткань
+        </div>
+        <div class="seg-btn" id="sb-leather" onclick="pickUph('leather',this)">
+          <span class="si">🟫</span>Кожа/экокожа
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="leather-note" id="leather-note">🟫 Кожа / экокожа — цены увеличены на 50%</div>
+
+  <!-- HOME -->
+  <div id="home" class="panel active">
+    <div class="cat-label">Диваны</div>
+    <div id="cat-sofas"></div>
+    <div class="cat-label">Кресла и стулья</div>
+    <div id="cat-chairs"></div>
+    <div class="cat-label">Кровати</div>
+    <div id="cat-beds"></div>
+    <div class="cat-label">🛏️ Матрасы</div>
+    <div id="cat-mattress"></div>
+    <div class="cat-label">Прочее</div>
+    <div id="cat-misc"></div>
+  </div>
+
+  <!-- BUSINESS -->
+  <div id="business" class="panel">
+    <div class="cat-label">Стулья и кресла</div>
+    <div id="cat-biz-chairs"></div>
+    <div class="cat-label">Диваны (офис / лаунж)</div>
+    <div id="cat-biz-sofas"></div>
+    <div class="cat-label">Переговорные / конференц</div>
+    <div id="cat-biz-conf"></div>
+    <div class="cat-label">Зоны отдыха</div>
+    <div id="cat-biz-lounge"></div>
+    <div class="cat-label">Мягкие стеновые панели</div>
+    <div id="cat-biz-panels"></div>
+    <a class="carpet-link" href="#" onclick="alert('Переход на калькулятор ковролина');return false;">
+      <span class="cl-ico">🪣</span>
+      <span class="cl-text"><b>Химчистка ковролина и ковров</b><span>Отдельный калькулятор — расчёт по м²</span></span>
+      <span class="cl-arr">→</span>
+    </a>
+  </div>
+
+  <!-- GLOBAL OPTIONS -->
+  <div class="opts-section">
+    <div class="opts-title">⚙️ Общие параметры</div>
+
+    <div class="dirt-opts">
+      <div class="dirt-title">Состояние загрязнения</div>
+      <div class="radio-opt on" id="ro-normal" onclick="pickDirt(this,'0')">
+        <input type="radio" name="dirt" value="0" checked> ✅ Обычное загрязнение
+        <span class="rbadge">базовая цена</span>
+      </div>
+      <div class="radio-opt" id="ro-heavy" onclick="pickDirt(this,'0.2')">
+        <input type="radio" name="dirt" value="0.2"> 💢 Сильные загрязнения
+        <span class="rbadge">+20%</span>
+      </div>
+      <div class="radio-opt" id="ro-renov" onclick="pickDirt(this,'0.5')">
+        <input type="radio" name="dirt" value="0.5"> 🔨 После ремонта
+        <span class="rbadge">+50%</span>
+      </div>
+    </div>
+
+    <div class="opts-grid">
+      <div class="opt-card" id="oc-hair" onclick="tog('hair','oc-hair')">
+        <input type="checkbox" id="hair">
+        <span class="opt-ico">🐾</span>
+        <span class="opt-text">Шерсть животных<span class="opt-sub">погонный метр</span></span>
+        <span class="opt-price">5 000/м</span>
+      </div>
+      <div class="opt-card" id="oc-box" onclick="tog('box','oc-box')">
+        <input type="checkbox" id="box">
+        <span class="opt-ico">📦</span>
+        <span class="opt-text">Чистка ящиков<span class="opt-sub">шт</span></span>
+        <span class="opt-price">1 000/шт</span>
+      </div>
+      <div class="opt-card" id="oc-night" onclick="tog('night','oc-night')">
+        <input type="checkbox" id="night">
+        <span class="opt-ico">🌙</span>
+        <span class="opt-text">Работа после 21:00</span>
+        <span class="opt-price ora">+5 000</span>
+      </div>
+      <div class="opt-card" id="oc-faraway" onclick="tog('faraway','oc-faraway')">
+        <input type="checkbox" id="faraway">
+        <span class="opt-ico">🗺️</span>
+        <span class="opt-text">Выезд за 10 км<span class="opt-sub">50 тг/км от 11-го</span></span>
+        <span class="opt-price" style="color:var(--ora);background:#fdebd0">уточним</span>
+      </div>
+    </div>
+
+    <div class="qty-adjuster" id="hair-adj">
+      <span class="qa-label">🐾 Кол-во погонных метров:</span>
+      <div class="counter">
+        <button class="cbtn" onclick="adjQ('hairM',-1)">−</button>
+        <span class="cqty" id="hair-m">1</span>
+        <button class="cbtn p" onclick="adjQ('hairM',1)">+</button>
+      </div>
+    </div>
+    <div class="qty-adjuster" id="box-adj">
+      <span class="qa-label">📦 Количество ящиков:</span>
+      <div class="counter">
+        <button class="cbtn" onclick="adjQ('boxQ',-1)">−</button>
+        <span class="cqty" id="box-q">1</span>
+        <button class="cbtn p" onclick="adjQ('boxQ',1)">+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RIGHT: DARK SUMMARY ══ -->
+<div class="card summary-card">
+  <div class="sum-header">
+    <b>🧾 Ваш заказ</b>
+    <span>Состав и расчёт стоимости</span>
+  </div>
+  <div id="order-lines" class="order-lines">
+    <div class="empty-msg">Выберите позиции для расчёта...</div>
+  </div>
+  <div class="total-box">
+    <div class="tl">Итого к оплате</div>
+    <div class="tv" id="total-val">0 тг</div>
+    <div class="min-note" id="min-note" style="display:none">* Применён минимальный заказ — 20 000 тг</div>
+  </div>
+  <div class="disclaimer">
+    <strong>⚠️ Предварительный расчёт.</strong> Точная стоимость определяется сотрудником на месте. При отказе от услуг — <strong>2 500 тг</strong> за выезд. До 10 км — бесплатно.
+  </div>
+  <button class="btn-wa" onclick="sendWA()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    ЗАБРОНИРОВАТЬ ВЫЕЗД
+  </button>
+</div>
+
+</div>
+
+<script>
+// ══ CATALOG ══
+const CAT = {
+  sofas:[
+    {id:'s1',e:'🛋️',n:'2-местный диван',d:'100–150 см',p:13000},
+    {id:'s2',e:'🛋️',n:'3-местный диван',d:'150–200 см',p:17000},
+    {id:'s3',e:'🛋️',n:'4-местный диван',d:'200–250 см',p:20000},
+    {id:'s4',e:'📐',n:'Угловой (2+угол)',d:'~200×150 см',p:22000},
+    {id:'s5',e:'📐',n:'Угловой (3+угол)',d:'~250×180 см',p:25000},
+    {id:'s6',e:'📐',n:'Угловой (4+угол)',d:'~300×200 см',p:30000},
+    {id:'s7',e:'🏠',n:'П-образный (6 мест)',d:'300–400 см',p:35000},
+    {id:'s8',e:'🛏️',n:'Спальное место дивана',d:'любой механизм',p:7000},
+  ],
+  chairs:[
+    {id:'c1',e:'💺',n:'Кресло стандартное',d:'50–70 см',p:7500},
+    {id:'c2',e:'💺',n:'Кресло большое (лаунж)',d:'70–100 см',p:10000},
+    {id:'c3',e:'💺',n:'Кресло реклайнер',d:'80–100 см',p:12000},
+    {id:'c4',e:'🍽️',n:'Кухонный уголок',p:12000},
+    {id:'c5',e:'🪑',n:'Стул (мягкая спинка)',p:3000},
+    {id:'c6',e:'🪑',n:'Стул (без спинки)',p:2500},
+  ],
+  beds:[
+    {id:'b1',e:'🛏️',n:'Кровать (изголовье + царги)',d:'90–200 см',p:15000},
+    {id:'b2',e:'🖼️',n:'Изголовье отдельно',d:'90–200 см',p:8000},
+  ],
+  misc:[
+    {id:'p1',e:'🪆',n:'Подушка маленькая',d:'40×30 см',p:1500},
+    {id:'p2',e:'🪆',n:'Подушка средняя',d:'60×40 см',p:2000},
+    {id:'p3',e:'🪆',n:'Подушка большая',d:'70×50 см',p:2500},
+  ],
+  mattress:[
+    {id:'m1',e:'🧸',n:'Матрас детский',d:'60×120 см',p:5000},
+    {id:'m2',e:'🛏️',n:'Матрас односпальный',d:'90×190 см',p:7500},
+    {id:'m3',e:'🛏️',n:'Матрас полутораспальный',d:'120×190 см',p:12500},
+    {id:'m4',e:'🛏️',n:'Матрас двуспальный',d:'190×190 см',p:15000},
+  ],
+  bizChairs:[
+    {id:'o1',e:'🪑',n:'Офисный стул (ткань)',p:2500},
+    {id:'o2',e:'🪑',n:'Офисный стул (кожа/экокожа)',p:2000},
+    {id:'o3',e:'💺',n:'Офисное кресло (стандарт)',p:3500},
+    {id:'o4',e:'👔',n:'Кресло руководителя',p:6000},
+  ],
+  bizSofas:[
+    {id:'os1',e:'🛋️',n:'Диван 2-местный',p:12000},
+    {id:'os2',e:'🛋️',n:'Диван 3-местный',p:17000},
+    {id:'os3',e:'📐',n:'Угловой диван',p:25000},
+  ],
+  bizConf:[
+    {id:'cf1',e:'🪑',n:'Конференц-кресло',p:4000},
+    {id:'cf2',e:'🪑',n:'Мягкий стул (переговорная)',p:3000},
+  ],
+  bizLounge:[
+    {id:'lz1',e:'🟤',n:'Пуф',p:3500},
+    {id:'lz2',e:'🟦',n:'Банкетка',p:6000},
+  ],
+  bizPanels:[
+    {id:'wp1',e:'🧱',n:'Мягкая стеновая панель',d:'за 1 м²',p:3000},
+  ],
+};
+
+// ══ STATE ══
+const cart = {};       // id → {q,p,n,e,baseP,isMat}
+const itemAddons = {}; // id → {drying,odor,stain}
+const matState = {};   // id → {sides:1|2}
+let uphMult = 1;
+let dirtMult = 1;
+let hairM = 1, boxQ = 1;
+
+const fmt = n => Math.round(n).toLocaleString('ru-RU') + ' тг';
+
+// ══ RENDER ══
+function renderItems(list, cid) {
+  const el = document.getElementById(cid);
+  if(!el) return;
+  el.innerHTML = list.map(item => {
+    const dispP = Math.round(item.p * uphMult);
+    return `<div id="irow-${item.id}">
+      <div class="item-row">
+        <span class="item-ico">${item.e}</span>
+        <div class="item-info"><b>${item.n}</b>${item.d?`<span>${item.d}</span>`:''}</div>
+        <div class="item-price" id="ip-${item.id}">${dispP.toLocaleString('ru-RU')} тг${uphMult>1?'<span class="lp">кожа +50%</span>':''}</div>
+        <div class="counter">
+          <button class="cbtn" onclick="chg('${item.id}',-1,${item.p},'${item.n.replace(/'/g,"\\'")}','${item.e}')">−</button>
+          <span class="cqty" id="q-${item.id}">0</span>
+          <button class="cbtn p" onclick="chg('${item.id}',1,${item.p},'${item.n.replace(/'/g,"\\'")}','${item.e}')">+</button>
+        </div>
+      </div>
+      <div id="addons-${item.id}" style="display:none;padding:0 8px 10px;">
+        <div class="item-addons">
+          <div class="addon-chip" id="ac-dry-${item.id}" onclick="togAddon('${item.id}','drying')">
+            <span class="aci">💨</span>Сушка
+            <span class="addon-price">авто</span>
+          </div>
+          <div class="addon-chip" id="ac-odor-${item.id}" onclick="togAddon('${item.id}','odor')">
+            <span class="aci">🌸</span>Запах
+            <span class="addon-price">+20%</span>
+          </div>
+          <div class="addon-chip" id="ac-stain-${item.id}" onclick="togAddon('${item.id}','stain')">
+            <span class="aci">🩸</span>Пятна
+            <span class="addon-price">+15%</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMattresses() {
+  const el = document.getElementById('cat-mattress');
+  if(!el) return;
+  el.innerHTML = CAT.mattress.map(m => {
+    if(!matState[m.id]) matState[m.id] = {sides:1};
+    const dispP = Math.round(m.p * uphMult);
+    const disp2 = Math.round(m.p * 2 * 0.95 * uphMult);
+    return `<div class="mat-row" id="matrow-${m.id}">
+      <div class="mat-top">
+        <span class="item-ico">${m.e}</span>
+        <div class="mat-info"><b>${m.n}</b>${m.d?`<span>${m.d}</span>`:''}</div>
+        <div class="mat-price" id="mp-${m.id}">${dispP.toLocaleString('ru-RU')} тг/ст.${uphMult>1?'<span class="lp">кожа +50%</span>':''}</div>
+        <div class="counter">
+          <button class="cbtn" onclick="chgMat('${m.id}',-1,${m.p},'${m.n.replace(/'/g,"\\'")}','${m.e}')">−</button>
+          <span class="cqty" id="q-${m.id}">0</span>
+          <button class="cbtn p" onclick="chgMat('${m.id}',1,${m.p},'${m.n.replace(/'/g,"\\'")}','${m.e}')">+</button>
+        </div>
+      </div>
+      <div id="mat-details-${m.id}" style="display:none">
+        <div class="sides-tog" style="margin-top:10px">
+          <div class="side-btn active" id="side1-${m.id}" onclick="setSides('${m.id}',1,${m.p})">1 сторона — ${dispP.toLocaleString('ru-RU')} тг</div>
+          <div class="side-btn" id="side2-${m.id}" onclick="setSides('${m.id}',2,${m.p})">2 стороны — ${disp2.toLocaleString('ru-RU')} тг (−5%)</div>
+        </div>
+        <div class="item-addons" style="margin-top:8px">
+          <div class="addon-chip" id="mac-dry-${m.id}" onclick="togAddon('${m.id}','drying')">
+            <span class="aci">💨</span>Сушка<span class="addon-price">авто</span>
+          </div>
+          <div class="addon-chip" id="mac-odor-${m.id}" onclick="togAddon('${m.id}','odor')">
+            <span class="aci">🌸</span>Запах<span class="addon-price">7000/ст</span>
+          </div>
+          <div class="addon-chip" id="mac-wht-${m.id}" onclick="togAddon('${m.id}','whiten')">
+            <span class="aci">⬜</span>Отбеливание<span class="addon-price">10000/ст</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAll() {
+  renderItems(CAT.sofas,     'cat-sofas');
+  renderItems(CAT.chairs,    'cat-chairs');
+  renderItems(CAT.beds,      'cat-beds');
+  renderItems(CAT.misc,      'cat-misc');
+  renderMattresses();
+  renderItems(CAT.bizChairs, 'cat-biz-chairs');
+  renderItems(CAT.bizSofas,  'cat-biz-sofas');
+  renderItems(CAT.bizConf,   'cat-biz-conf');
+  renderItems(CAT.bizLounge, 'cat-biz-lounge');
+  renderItems(CAT.bizPanels, 'cat-biz-panels');
+}
+
+// Refresh all displayed prices when uphMult changes
+function refreshPrices() {
+  // regular items
+  const allItems = [...CAT.sofas,...CAT.chairs,...CAT.beds,...CAT.misc,...CAT.bizChairs,...CAT.bizSofas,...CAT.bizConf,...CAT.bizLounge,...CAT.bizPanels];
+  allItems.forEach(item => {
+    const el = document.getElementById('ip-'+item.id);
+    if(!el) return;
+    const dispP = Math.round(item.p * uphMult);
+    el.innerHTML = dispP.toLocaleString('ru-RU')+' тг'+(uphMult>1?'<span class="lp">кожа +50%</span>':'');
+  });
+  // mattresses
+  CAT.mattress.forEach(m => {
+    const el = document.getElementById('mp-'+m.id);
+    if(!el) return;
+    const dispP = Math.round(m.p * uphMult);
+    const disp2 = Math.round(m.p * 2 * 0.95 * uphMult);
+    el.innerHTML = dispP.toLocaleString('ru-RU')+' тг/ст.'+(uphMult>1?'<span class="lp">кожа +50%</span>':'');
+    // update side buttons text
+    const s1 = document.getElementById('side1-'+m.id);
+    const s2 = document.getElementById('side2-'+m.id);
+    if(s1) s1.textContent = `1 сторона — ${dispP.toLocaleString('ru-RU')} тг`;
+    if(s2) s2.textContent = `2 стороны — ${disp2.toLocaleString('ru-RU')} тг (−5%)`;
+  });
+}
+
+// ══ INTERACTIONS ══
+function chg(id, d, baseP, name, emoji) {
+  if(!cart[id]) cart[id]={q:0,p:baseP,n:name,e:emoji};
+  if(!itemAddons[id]) itemAddons[id]={drying:false,odor:false,stain:false};
+  cart[id].q = Math.max(0, cart[id].q + d);
+  bump(id);
+  // show/hide addons panel
+  const adPanel = document.getElementById('addons-'+id);
+  if(adPanel) adPanel.style.display = cart[id].q > 0 ? 'block' : 'none';
+  calc();
+}
+
+function chgMat(id, d, baseP, name, emoji) {
+  if(!cart[id]) cart[id]={q:0,p:baseP,n:name,e:emoji,isMat:true};
+  if(!itemAddons[id]) itemAddons[id]={drying:false,odor:false,whiten:false};
+  if(!matState[id]) matState[id]={sides:1};
+  cart[id].q = Math.max(0, cart[id].q + d);
+  bump(id);
+  const row = document.getElementById('matrow-'+id);
+  if(row) row.classList.toggle('active-mat', cart[id].q > 0);
+  const det = document.getElementById('mat-details-'+id);
+  if(det) det.style.display = cart[id].q > 0 ? 'block' : 'none';
+  calc();
+}
+
+function setSides(id, sides, baseP) {
+  matState[id].sides = sides;
+  document.getElementById('side1-'+id).classList.toggle('active', sides===1);
+  document.getElementById('side2-'+id).classList.toggle('active', sides===2);
+  calc();
+}
+
+function togAddon(itemId, key) {
+  if(!itemAddons[itemId]) itemAddons[itemId]={};
+  itemAddons[itemId][key] = !itemAddons[itemId][key];
+  // find chip element — mat vs regular
+  const chipId = key==='whiten' ? `mac-wht-${itemId}` : (document.getElementById(`mac-dry-${itemId}`) ? `mac-dry-${itemId}`.replace('dry',key==='drying'?'dry':key==='odor'?'odor':'wht') : null);
+  // try both prefixes
+  const chip = document.getElementById(`ac-${key==='drying'?'dry':key==='odor'?'odor':'stain'}-${itemId}`) ||
+               document.getElementById(`mac-${key==='drying'?'dry':key==='odor'?'odor':'wht'}-${itemId}`);
+  if(chip) chip.classList.toggle('on', itemAddons[itemId][key]);
+  calc();
+}
+
+function bump(id) {
+  const el = document.getElementById('q-'+id);
+  if(!el) return;
+  el.textContent = (cart[id]||{q:0}).q;
+  el.classList.remove('bmp'); void el.offsetWidth; el.classList.add('bmp');
+}
+
+function pickUph(val, el) {
+  uphMult = val==='leather' ? 1.5 : 1;
+  document.querySelectorAll('.seg-group:last-child .seg-btn').forEach(b=>{
+    b.classList.remove('active','leather-active');
+  });
+  el.classList.add(val==='leather'?'leather-active':'active');
+  const note = document.getElementById('leather-note');
+  note.classList.toggle('visible', val==='leather');
+  refreshPrices();
+  calc();
+}
+
+function pickTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.querySelectorAll('.seg-group:first-child .seg-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function pickDirt(el, val) {
+  dirtMult = 1 + parseFloat(val);
+  document.querySelectorAll('.radio-opt').forEach(r=>{r.classList.remove('on');r.querySelector('input').checked=false;});
+  el.classList.add('on'); el.querySelector('input').checked=true;
+  calc();
+}
+
+function tog(id, cid) {
+  const cb = document.getElementById(id);
+  cb.checked = !cb.checked;
+  document.getElementById(cid).classList.toggle('on', cb.checked);
+  if(id==='hair') document.getElementById('hair-adj').classList.toggle('visible', cb.checked);
+  if(id==='box')  document.getElementById('box-adj').classList.toggle('visible', cb.checked);
+  calc();
+}
+
+function adjQ(key, d) {
+  if(key==='hairM') { hairM=Math.max(1,hairM+d); document.getElementById('hair-m').textContent=hairM; }
+  if(key==='boxQ')  { boxQ=Math.max(1,boxQ+d);   document.getElementById('box-q').textContent=boxQ; }
+  calc();
+}
+
+// ══ DRYING ══
+function dryingCost(base) {
+  const pct = base>=200000?.20 : base>=100000?.25 : base>=50000?.25 : .30;
+  return Math.max(5000, base*pct);
+}
+
+// ══ CALCULATE ══
+function calc() {
+  let html = '';
+  let grandBase = 0; // sum after uphMult but before dirtMult — used for drying pct
+
+  // ─ Furniture items ─
+  const allFlat = [...CAT.sofas,...CAT.chairs,...CAT.beds,...CAT.misc,...CAT.bizChairs,...CAT.bizSofas,...CAT.bizConf,...CAT.bizLounge,...CAT.bizPanels];
+  allFlat.forEach(item => {
+    const c = cart[item.id];
+    if(!c||!c.q) return;
+    const lineBase = item.p * uphMult * dirtMult * c.q;
+    grandBase += lineBase;
+    const qty = c.q>1 ? ` ×${c.q}` : '';
+    html += `<div class="ol"><span class="ln"><span class="oi">${c.e}</span>${c.n}${qty}</span><span class="lv pos">${fmt(lineBase)}</span></div>`;
+  });
+
+  // ─ Mattresses ─
+  CAT.mattress.forEach(m => {
+    const c = cart[m.id];
+    if(!c||!c.q) return;
+    const st = matState[m.id]||{sides:1};
+    const sides = st.sides||1;
+    const lineBase = sides===2 ? m.p*2*0.95*uphMult*dirtMult*c.q : m.p*uphMult*dirtMult*c.q;
+    grandBase += lineBase;
+    const qty = c.q>1 ? ` ×${c.q}` : '';
+    const sidesLabel = sides===2 ? ' (2 ст.)' : ' (1 ст.)';
+    html += `<div class="ol"><span class="ln"><span class="oi">${c.e}</span>${c.n}${sidesLabel}${qty}</span><span class="lv pos">${fmt(lineBase)}</span></div>`;
+  });
+
+  if(grandBase===0) {
+    document.getElementById('order-lines').innerHTML='<div class="empty-msg">Выберите позиции для расчёта...</div>';
+    document.getElementById('total-val').textContent='0 тг';
+    document.getElementById('min-note').style.display='none';
+    return;
+  }
+
+  // ─ Modifier labels ─
+  if(uphMult>1)     html+=`<div class="ol"><span class="ln">🟫 Кожа/экокожа (+50%)</span><span class="lv add">учтено</span></div>`;
+  if(dirtMult>1) {
+    const lbl = dirtMult===1.2?'💢 Сильные загрязнения (+20%)':'🔨 После ремонта (+50%)';
+    html+=`<div class="ol"><span class="ln">${lbl}</span><span class="lv add">учтено</span></div>`;
+  }
+
+  let extras = 0;
+
+  // ─ Item-level addons (regular) ─
+  allFlat.forEach(item => {
+    const c = cart[item.id];
+    const ad = itemAddons[item.id];
+    if(!c||!c.q||!ad) return;
+    const lineBase = item.p * uphMult * dirtMult * c.q;
+    if(ad.drying) {
+      const cost = dryingCost(lineBase);
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">💨 Сушка: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+    if(ad.odor) {
+      const cost = lineBase * 0.20;
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">🌸 Удаление запахов: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+    if(ad.stain) {
+      const cost = lineBase * 0.15;
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">🩸 Пятна: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+  });
+
+  // ─ Mattress addons ─
+  CAT.mattress.forEach(m => {
+    const c = cart[m.id];
+    const ad = itemAddons[m.id];
+    if(!c||!c.q||!ad) return;
+    const st = matState[m.id]||{sides:1};
+    const sides = st.sides||1;
+    const lineBase = sides===2 ? m.p*2*0.95*uphMult*c.q : m.p*uphMult*c.q;
+    if(ad.drying) {
+      const cost = dryingCost(lineBase);
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">💨 Сушка: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+    if(ad.odor) {
+      const cost = 7000*sides*c.q;
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">🌸 Удаление запахов: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+    if(ad.whiten) {
+      const cost = 10000*sides*c.q;
+      extras += cost;
+      html+=`<div class="ol"><span class="ln">⬜ Отбеливание: ${c.n}</span><span class="lv add">+${fmt(cost)}</span></div>`;
+    }
+  });
+
+  // ─ Global options ─
+  if(document.getElementById('hair').checked) {
+    const cost = 5000*hairM;
+    extras += cost;
+    html+=`<div class="ol"><span class="ln">🐾 Шерсть (${hairM} пог.м)</span><span class="lv add">+${fmt(cost)}</span></div>`;
+  }
+  if(document.getElementById('box').checked) {
+    const cost = 1000*boxQ;
+    extras += cost;
+    html+=`<div class="ol"><span class="ln">📦 Ящики (${boxQ} шт)</span><span class="lv add">+${fmt(cost)}</span></div>`;
+  }
+  if(document.getElementById('night').checked) {
+    extras += 5000;
+    html+=`<div class="ol"><span class="ln">🌙 После 21:00</span><span class="lv add">+${fmt(5000)}</span></div>`;
+  }
+  if(document.getElementById('faraway').checked) {
+    html+=`<div class="ol"><span class="ln">🗺️ Выезд за 10 км</span><span class="lv warn">уточним</span></div>`;
+  }
+
+  let total = grandBase + extras;
+  html += '<div class="sep"></div>';
+  const disc = total * 0.05;
+  total -= disc;
+  html += `<div class="ol"><span class="ln">🎁 Скидка 5% (первый заказ)</span><span class="lv disc">−${fmt(disc)}</span></div>`;
+
+  const MIN = 20000;
+  const isMin = total > 0 && total < MIN;
+  const fin = isMin ? MIN : total;
+  if(isMin) html+=`<div class="ol"><span class="ln" style="color:#f87171">⚠️ Мин. заказ</span><span class="lv add">${fmt(MIN)}</span></div>`;
+
+  document.getElementById('order-lines').innerHTML = html;
+  document.getElementById('total-val').textContent = fmt(fin);
+  document.getElementById('min-note').style.display = isMin?'block':'none';
+}
+
+// ══ WHATSAPP ══
+function sendWA() {
+  let has=false, msg='Здравствуйте! Заказ химчистки Magic Clean:%0A%0A';
+  const allItems=[...CAT.sofas,...CAT.chairs,...CAT.beds,...CAT.misc,...CAT.mattress,...CAT.bizChairs,...CAT.bizSofas,...CAT.bizConf,...CAT.bizLounge,...CAT.bizPanels];
+  allItems.forEach(item=>{
+    const c=cart[item.id];
+    if(!c||!c.q)return;
+    const st=matState[item.id];
+    const extra=st?` (${st.sides||1} ст.)`:'';
+    msg+=`— ${c.n}${extra}: ${c.q} шт.%0A`;has=true;
+  });
+  if(!has){alert('Пожалуйста, выберите мебель');return;}
+  if(uphMult>1) msg+='%0AОбивка: кожа/экокожа (+50%)%0A';
+  if(dirtMult===1.2) msg+='Загрязнения: сильные (+20%)%0A';
+  if(dirtMult===1.5) msg+='Загрязнения: после ремонта (+50%)%0A';
+  if(document.getElementById('hair').checked) msg+=`Шерсть животных: ${hairM} пог.м%0A`;
+  if(document.getElementById('box').checked) msg+=`Чистка ящиков: ${boxQ} шт%0A`;
+  if(document.getElementById('night').checked) msg+='После 21:00%0A';
+  if(document.getElementById('faraway').checked) msg+='Выезд за 10 км%0A';
+  const tv=document.getElementById('total-val');
+  if(tv) msg+=`%0A*Предварительная стоимость (−5%): ${tv.textContent}*%0A`;
+  msg+='%0AПрошу связаться для подтверждения.';
+  window.open('https://wa.me/77075288004?text='+msg,'_blank');
+}
+
+renderAll();
+calc();
+</script>
+</body>
+</html>

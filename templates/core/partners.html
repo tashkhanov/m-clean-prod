@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Наши <span class="hero__title-accent">партнёры</span>
+            </h1>
+            <p class="hero__description">
+                Компании, которые доверяют нам чистку своей мебели и текстиля
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERS GRID -->
+<section class="section">
+    <div class="container">
+        <div class="partners-page-grid">
+            {% for partner in partners %}
+            <div class="partner-page-card fade-in">
+                {% if partner.url %}
+                <a href="{{ partner.url }}" target="_blank" rel="noopener" class="partner-page-card__link">
+                    <div class="partner-page-card__inner">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-page-card__logo" width="200" height="80" loading="lazy">
+                        <span class="partner-page-card__name">{{ partner.name }}</span>
+                    </div>
+                </a>
+                {% else %}
+                <div class="partner-page-card__inner">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-page-card__logo" width="200" height="80" loading="lazy">
+                    <span class="partner-page-card__name">{{ partner.name }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p class="text-center text-muted" style="grid-column: 1/-1;">Партнёры скоро появятся</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section section--green">
+    <div class="container">
+        <div class="cta-banner fade-in">
+            <h2 class="cta-banner__title">Стать нашим партнёром</h2>
+            <p class="cta-banner__text">Мы всегда открыты к сотрудничеству. Свяжитесь с нами для обсуждения условий</p>
+            <button class="btn btn--large" data-modal="modal-lead">Связаться с нами</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

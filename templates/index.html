@@ -1,0 +1,539 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load embed_video_tags %}
+
+{% block body_class %}home{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero__bg"></div>
+    <div class="container">
+        <div class="hero__grid">
+            <div class="hero__content">
+                <div class="hero__badge hero-animate" data-delay="0">
+                    <span class="hero__badge-dot"></span>
+                    <span>Работаем {{ experience_count }} лет</span>
+                </div>
+                
+                <h1 class="hero__title hero-animate" data-delay="100">
+                    {% if settings.hero_title %}
+                    {{ settings.hero_title|safe }}
+                    {% else %}
+                    Профессиональная<br>
+                    <span class="hero__title-accent">химчистка мебели</span><br>
+                    в Алматы
+                    {% endif %}
+                </h1>
+                
+                <p class="hero__description hero-animate" data-delay="300">
+                    {% if settings.hero_subtitle %}
+                    {{ settings.hero_subtitle }}
+                    {% else %}
+                    Вернём вашей мебели первозданный вид за 2 часа. 
+                    Экологичные средства, гарантия качества на все работы.
+                    {% endif %}
+                </p>
+                
+                <div class="hero__features hero-animate" data-delay="400">
+                    <div class="hero__feature">
+                        <span class="hero__feature-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span>Выезд от 30 минут</span>
+                    </div>
+                    <div class="hero__feature">
+                        <span class="hero__feature-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span>Гарантия до 12 месяцев</span>
+                    </div>
+                </div>
+                
+                <div class="hero__actions hero-animate" data-delay="500">
+                    <button class="btn btn--primary btn--large" data-modal="modal-lead">Вызвать мастера</button>
+                    <a href="{% url 'core:portfolio' %}" class="btn btn--ghost btn--large">Смотреть работы</a>
+                </div>
+                
+                <div class="hero__social-proof hero-animate" data-delay="600">
+                    <span class="hero__rating">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        5.0
+                    </span>
+                    <span class="hero__divider">|</span>
+                    <span class="hero__clients">Нам доверяют более {{ clients_count }} клиентов</span>
+                </div>
+            </div>
+            
+            <div class="hero__visual hero-animate" data-delay="300">
+                <div class="hero__image-wrapper">
+                    <img src="{% if settings.hero_image %}{{ settings.hero_image.url }}{% else %} {% static 'images/main.webp' %} {% endif %}" 
+                         alt="Чистый диван" 
+                         class="hero__image"
+                         width="600"
+                         height="500"
+                         loading="eager"
+                         fetchpriority="high"
+                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px">
+                    
+                    <div class="hero__badge-float hero__badge-float--eco">
+                        <span>🌿</span> Эко-средства
+                    </div>
+                    
+                    <div class="hero__badge-float hero__badge-float--rating">
+                        <span>⭐</span> 5.0 Рейтинг
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section class="section section--green" id="services">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши услуги</h2>
+            <p class="section__subtitle">Профессиональная чистка всех видов мягкой мебели и текстиля</p>
+        </div>
+        
+        <div class="services-grid">
+            {% for service in services %}
+            <a href="{% url 'core:prices' %}" class="service-card fade-in stagger-{{ forloop.counter }}">
+                <div class="service-card__icon">
+                    {% if service.icon == 'sofa' %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-4 0v2H6v-2a2 2 0 00-4 0z"/><path d="M4 18v2M20 18v2"/></svg>
+                    {% elif service.icon == 'carpet' %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+                    {% elif service.icon == 'mattress' %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6V4M18 6V4M2 12h20"/></svg>
+                    {% elif service.icon == 'chair' %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9V6a2 2 0 00-2-2H7a2 2 0 00-2 2v3"/><path d="M3 11v5a2 2 0 002 2h14a2 2 0 002-2v-5a2 2 0 00-4 0H7a2 2 0 00-4 0z"/><path d="M5 18v2M19 18v2"/></svg>
+                    {% elif service.icon == 'curtain' %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V4"/><path d="M4 12h16"/></svg>
+                    {% else %}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+                    {% endif %}
+                </div>
+                <h3 class="service-card__title">{{ service.title }}</h3>
+                <p class="service-card__description">{{ service.short_description }}</p>
+                <div class="service-card__price">
+                    от {{ service.price_from|default:"0" }} ₸
+                    <span class="service-card__price-label">/ услуга</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:prices' %}" class="btn btn--secondary btn--large">Все услуги и цены</a>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="section about" id="about">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about__image fade-in">
+                <img src="{% static 'images/1774892147a537.webp' %}" alt="Профессиональная химчистка" width="600" height="800" loading="lazy">
+            </div>
+            
+            <div class="about__content slide-left">
+                <h2>Почему выбирают M-Clean?</h2>
+                <p class="about__text">
+                    {% if settings.about_short %}
+                    {{ settings.about_short }}
+                    {% else %}
+                    Мы работаем с 2015 года и за это время помогли более {{ clients_count }} клиентам вернуть 
+                    первозданный вид их мебели. Используем профессиональное оборудование и 
+                    экологически безопасные средства.
+                    {% endif %}
+                </p>
+                
+                <div class="about__features">
+                    <div class="about__feature">
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span class="about__feature-text">Оплата после результата — вы платите только если довольны</span>
+                    </div>
+                    <div class="about__feature">
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span class="about__feature-text">Выезд мастера в день обращения</span>
+                    </div>
+                    <div class="about__feature">
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span class="about__feature-text">Гарантия на все работы до 12 месяцев</span>
+                    </div>
+                    <div class="about__feature">
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        <span class="about__feature-text">Работаем без выходных</span>
+                    </div>
+                </div>
+                
+                <button class="btn btn--primary" data-modal="modal-lead">Получить консультацию</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM SECTION -->
+{% if team %}
+<section class="section" id="team">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши мастера</h2>
+            <p class="section__subtitle">Профессионалы с опытом работы от 3 лет</p>
+        </div>
+        
+        <div class="team-grid">
+            {% for member in team %}
+            <div class="team-card fade-in">
+                <div class="team-card__photo">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" width="280" height="280" loading="lazy">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=280&h=280&fit=crop" alt="{{ member.name }}" width="280" height="280" loading="lazy">
+                    {% endif %}
+                </div>
+                <div class="team-card__info">
+                    <h3 class="team-card__name">{{ member.name }}</h3>
+                    <span class="team-card__position">{{ member.get_position_display }}</span>
+                    <div class="team-card__experience">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>{{ member.experience_years }} {% if member.experience_years == 1 %}год{% elif member.experience_years < 5 %}года{% else %}лет{% endif %} опыта</span>
+                    </div>
+                    {% if member.bio %}
+                    <p class="team-card__bio">{{ member.bio }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:about' %}#team" class="btn btn--secondary btn--large">Вся команда</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- HOW WE WORK -->
+<section class="section section--green" id="how-we-work">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Как мы работаем</h2>
+            <p class="section__subtitle">Простой и понятный процесс от заявки до результата</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline__item fade-in stagger-1">
+                <div class="timeline__marker">
+                    <div class="timeline__number">1</div>
+                    <div class="timeline__line"></div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Заявка</h3>
+                    <p class="timeline__description">Оставьте заявку на сайте или позвоните нам</p>
+                </div>
+            </div>
+            
+            <div class="timeline__item fade-in stagger-2">
+                <div class="timeline__marker">
+                    <div class="timeline__number">2</div>
+                    <div class="timeline__line"></div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Консультация и расчёт</h3>
+                    <p class="timeline__description">Менеджер рассчитает стоимость и ответит на вопросы</p>
+                </div>
+            </div>
+            
+            <div class="timeline__item fade-in stagger-3">
+                <div class="timeline__marker">
+                    <div class="timeline__number">3</div>
+                    <div class="timeline__line"></div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Согласование времени</h3>
+                    <p class="timeline__description">Выберите удобное время для выезда мастера</p>
+                </div>
+            </div>
+            
+            <div class="timeline__item fade-in stagger-4">
+                <div class="timeline__marker">
+                    <div class="timeline__number">4</div>
+                    <div class="timeline__line"></div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Выезд мастера</h3>
+                    <p class="timeline__description">Мастер приедет вовремя со всем необходимым оборудованием</p>
+                </div>
+            </div>
+            
+            <div class="timeline__item fade-in stagger-5">
+                <div class="timeline__marker">
+                    <div class="timeline__number">5</div>
+                    <div class="timeline__line"></div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Проведение работ</h3>
+                    <p class="timeline__description">Профессиональная чистка с гарантией результата</p>
+                </div>
+            </div>
+            
+            <div class="timeline__item fade-in stagger-6">
+                <div class="timeline__marker">
+                    <div class="timeline__number">6</div>
+                </div>
+                <div class="timeline__content">
+                    <div class="timeline__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h3 class="timeline__title">Сдача и оплата</h3>
+                    <p class="timeline__description">Вы проверяете результат и оплачиваете работу</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BEFORE/AFTER SECTION -->
+<section class="section" id="portfolio">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Результаты нашей работы</h2>
+            <p class="section__subtitle">До и после профессиональной химчистки</p>
+        </div>
+        
+        <div class="portfolio-grid">
+            {% for work in works %}
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-item__title">{{ work.title }}</div>
+                <div class="portfolio-slider">
+                    {% if work.image_after %}
+                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="500">
+                    {% endif %}
+                    {% if work.image_before %}
+                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="500" style="filter: brightness(0.7) contrast(0.8);">
+                    {% endif %}
+                    <div class="portfolio-slider__line"></div>
+                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
+                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted" style="grid-column: 1/-1; padding: var(--space-xl);">
+                Работы скоро появятся
+            </p>
+            {% endfor %}
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:portfolio' %}" class="btn btn--primary btn--large">Смотреть все работы</a>
+        </div>
+    </div>
+</section>
+
+<!-- REVIEWS SECTION -->
+<section class="section section--green" id="reviews">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Отзывы клиентов</h2>
+            <p class="section__subtitle">Что говорят о нас наши клиенты</p>
+        </div>
+        
+        <div class="reviews-grid">
+            {% for review in reviews|slice:":6" %}
+            <div class="review-card fade-in">
+                <div class="review-card__header">
+                    <div class="review-card__author">
+                        <div class="review-card__avatar">{{ review.name|truncatechars:1|upper }}</div>
+                        <div>
+                            <div class="review-card__name">{{ review.name }}</div>
+                            <span class="source-badge source-badge--{{ review.source }}">{{ review.get_source_display }}</span>
+                        </div>
+                    </div>
+                    <div class="review-card__stars">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            {% else %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="review-card__text">{{ review.text }}</p>
+                <div class="review-card__date">{{ review.date|date:"d.m.Y" }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:reviews' %}" class="btn btn--secondary btn--large">Все отзывы</a>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERS SLIDER -->
+<section class="section">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Среди наших партнеров</h2>
+        </div>
+        
+        <div class="swiper partners-swiper fade-in">
+            <div class="swiper-wrapper">
+                {% for partner in partners %}
+                <div class="swiper-slide">
+                    <div class="partner-card">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-card__logo" width="150" height="60" loading="lazy">
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:partners' %}" class="btn btn--secondary btn--large">Смотреть всех партнеров</a>
+        </div>
+    </div>
+</section>
+
+<!-- VIDEO SECTION -->
+{% if settings.video %}
+{% load embed_video_tags %}
+{% video settings.video as my_video %}
+<section class="section">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Процесс работы</h2>
+            <p class="section__subtitle">Посмотрите, как мы выполняем химчистку</p>
+        </div>
+        
+        <div class="video-block fade-in" onclick="let url='{{ my_video.url }}'; let embedUrl = url.includes('?') ? url + '&autoplay=1&mute=1&rel=0' : url + '?autoplay=1&mute=1&rel=0'; this.innerHTML='<iframe src=\'' + embedUrl + '\' style=\'position:absolute;top:0;left:0;width:100%;height:100%;border:none;\' allow=\'autoplay; encrypted-media; picture-in-picture\' allowfullscreen></iframe>'">
+            <img src="{{ my_video.thumbnail }}" 
+                 alt="Видео процесса работы" 
+                 class="video-block__thumb"
+                 width="1280" 
+                 height="720"
+                 loading="lazy">
+            <button class="video-block__play" aria-label="Воспроизвести видео">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+        </div>
+    </div>
+</section>
+{% endvideo %}
+{% endif %}
+
+
+
+<!-- FAQ SECTION -->
+<section class="section section--green" id="faq">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Часто задаваемые вопросы</h2>
+            <p class="section__subtitle">Ответы на популярные вопросы о химчистке</p>
+        </div>
+        
+        <div class="faq-list">
+            {% for faq in faqs %}
+            <details class="faq-item fade-in">
+                <summary>{{ faq.question }}</summary>
+                <div class="faq-item__answer">
+                    <p>{{ faq.answer }}</p>
+                </div>
+            </details>
+            {% empty %}
+            <details class="faq-item fade-in">
+                <summary>Сколько времени занимает химчистка дивана?</summary>
+                <div class="faq-item__answer">
+                    <p>В среднем химчистка дивана занимает от 1 до 2 часов в зависимости от степени загрязнения и размера мебели.</p>
+                </div>
+            </details>
+            <details class="faq-item fade-in">
+                <summary>Безопасны ли используемые средства?</summary>
+                <div class="faq-item__answer">
+                    <p>Да, мы используем только экологически безопасные средства, которые не содержат агрессивных химикатов.</p>
+                </div>
+            </details>
+            <details class="faq-item fade-in">
+                <summary>Нужно ли подготавливать мебель перед чисткой?</summary>
+                <div class="faq-item__answer">
+                    <p>Нет, никакой подготовки не требуется. Мастер приедет со всем необходимым оборудованием и средствами.</p>
+                </div>
+            </details>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- BLOG SECTION -->
+{% if blog_posts %}
+<section class="section section--green" id="blog">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Полезно знать</h2>
+            <p class="section__subtitle">Советы экспертов по уходу за мебелью</p>
+        </div>
+        
+        <div class="blog-grid">
+            {% for post in blog_posts %}
+            <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
+                {% if post.image %}
+                <div class="blog-card__image">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy">
+                </div>
+                {% endif %}
+                <div class="blog-card__body">
+                    {% if post.category %}
+                    <span class="blog-card__category">{{ post.category.name }}</span>
+                    {% endif %}
+                    <h3 class="blog-card__title">{{ post.title }}</h3>
+                    <p class="blog-card__excerpt">{{ post.excerpt }}</p>
+                    <span class="blog-card__date">{{ post.published_at|date:"d.m.Y" }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'blog:blog_list' %}" class="btn btn--secondary btn--large">Все статьи</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA BANNER -->
+<section class="section">
+    <div class="container">
+        <div class="cta-banner fade-in">
+            <h2 class="cta-banner__title">Остались вопросы?</h2>
+            <p class="cta-banner__text">Получите бесплатную консультацию прямо сейчас. Наш специалист ответит на все ваши вопросы</p>
+            <button class="btn btn--large" data-modal="modal-lead">Оставить заявку</button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
