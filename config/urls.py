@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 from core.sitemaps import StaticPagesSitemap, ServiceSitemap, PostSitemap
 from core.views import maintenance
