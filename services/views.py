@@ -37,7 +37,6 @@ def services_page(request):
             'slug': svc.slug,
             'calc_type': svc.calc_type,
             'base_price': float(svc.base_price),
-            'premium_price': float(svc.premium_price),
             'unit': svc.unit,
             'icon': svc.icon,
             'price_rules': price_rules,
@@ -92,8 +91,8 @@ def services_page(request):
 
 def service_detail(request, slug):
     """Детальная страница услуги."""
-    import json
-    from portfolio.models import Review
+    from portfolio.models import Review, WorkCase
+    from core.models import Faq
     from django.db.models import Avg, Count
     
     settings = SiteSettings.objects.first()
@@ -156,6 +155,11 @@ def service_detail(request, slug):
         'price_rules': price_rules,
     }
 
+    # Additional context for enhanced detail page
+    faqs = Faq.objects.filter(is_active=True)
+    related_works = WorkCase.objects.filter(category=service.category, is_active=True)[:4]
+    recommended_services = Service.objects.filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
+
     context = {
         'settings': settings,
         'service': service,
@@ -165,9 +169,12 @@ def service_detail(request, slug):
         'steps': steps,
         'avg_rating': avg_rating_rounded,
         'review_count': review_count,
-        'all_options_data': all_options_data,  # Python list (json_script handles serialization)
-        'curtain_coeffs_data': curtain_coeffs_data,  # Python list
-        'curtain_coeffs': curtain_coeffs_data,  # for template loop
+        'faqs': faqs,
+        'related_works': related_works,
+        'recommended_services': recommended_services,
+        'all_options_data': all_options_data,
+        'curtain_coeffs_data': curtain_coeffs_data,
+        'curtain_coeffs': curtain_coeffs_data,
         'min_order': min_order,
         'service_for_json': service_for_json,
     }

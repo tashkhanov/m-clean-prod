@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 service_name: document.getElementById('lead-service-name')?.value || '',
                 total_price: document.getElementById('lead-total-price')?.value || '',
                 options: document.getElementById('lead-options')?.value || '',
+                source_page: document.getElementById('lead-source-page')?.value || '',
             };
 
             submitBtn.disabled = true;

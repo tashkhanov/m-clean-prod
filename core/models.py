@@ -142,6 +142,15 @@ class SiteSettings(models.Model):
         blank=True,
         help_text="Описание для поисковой выдачи (до 160 символов)"
     )
+    
+    # Ресурсы
+    watermark = models.ImageField(
+        "Водяной знак", 
+        upload_to="settings/", 
+        blank=True, 
+        null=True,
+        help_text="PNG с прозрачностью для наложения на фото портфолио"
+    )
 
     # Видео
     video = EmbedVideoField(
@@ -343,10 +352,21 @@ class TeamMember(models.Model):
 
 class Certificate(models.Model):
     """Сертификат / благодарственное письмо."""
+    CAT_CHOICES = (
+        ('cert', 'Сертификат'),
+        ('gratitude', 'Благодарственное письмо'),
+    )
+
     title = models.CharField(
         "Название",
         max_length=200,
         help_text="Например: Сертификат IICRC, Благодарность от ТОО..."
+    )
+    category = models.CharField(
+        "Категория",
+        max_length=20,
+        choices=CAT_CHOICES,
+        default='cert'
     )
     image = models.ImageField(
         "Изображение",

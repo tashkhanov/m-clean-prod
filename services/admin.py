@@ -30,7 +30,7 @@ class CategoryAdmin(ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
-    list_display = ('name', 'category', 'calc_type', 'base_price', 'premium_price', 'icon', 'order', 'is_active')
+    list_display = ('name', 'category', 'calc_type', 'base_price', 'icon', 'order', 'is_active')
     list_editable = ('order', 'is_active')
     list_filter = ('category', 'is_active', 'icon', 'calc_type')
     prepopulated_fields = {'slug': ('name',)}
@@ -42,8 +42,8 @@ class ServiceAdmin(ModelAdmin):
             'fields': ('category', 'icon', 'calc_type', 'name', 'slug', 'description', 'image'),
         }),
         ("Цены", {
-            'fields': ('base_price', 'premium_price', 'unit'),
-            'description': "Стандарт — обычная чистка. Премиум — экстрактор Santoemma, химия Chemspec USA, удаление запаха."
+            'fields': ('base_price', 'unit'),
+            'description': "Укажите базовую стоимость за единицу измерения."
         }),
         ("Видео", {
             'fields': ('video',),

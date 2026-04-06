@@ -69,10 +69,10 @@
             </div>
             <div class="equipment-card fade-in">
                 <div class="equipment-card__image">
-                    <img src="https://a.allegroimg.com/original/11caef/7e3db71a4c4e81a5aee0ad36703d/ODKURZACZ-PIORACY-KARCHER-PUZZI-8-1-DO-PRANIA-TAPICERKI-PROSZEK-ZESTAW-XXL-Funkcje-odkurzanie-na-sucho-i-mokro-osuszanie-pranie-zbieranie-plynow" alt="Kärcher Puzzi" width="400" height="300" loading="lazy">
+                    <img src="https://a.allegroimg.com/original/11caef/7e3db71a4c4e81a5aee0ad36703d/ODKURZACZ-PIORACY-KARCHER-PUZZI-8-1-DO-PRANIA-TAPICERKI-PROSZEK-ZESTAW-XXL-Funkcje-odкурзание-на-сухо-и-мокро-осушание-прание-збирка-плынув" alt="Karcher Puzzi" width="400" height="300" loading="lazy">
                 </div>
                 <div class="equipment-card__content">
-                    <span class="equipment-card__brand">Kärcher</span>
+                    <span class="equipment-card__brand">Karcher</span>
                     <h3 class="equipment-card__name">Puzzi 30/4</h3>
                     <p class="equipment-card__desc">Экстрактор для глубокой чистки текстильных поверхностей</p>
                     <ul class="equipment-card__features">
@@ -95,71 +95,85 @@
             <p class="section__subtitle">Безопасная химия от мировых лидеров</p>
         </div>
         
-        <div class="chemicals-grid">
-            {% for chemical in chemicals %}
-            <div class="chemical-card fade-in">
-                <div class="chemical-card__image">
-                    {% if chemical.photo %}
-                    <img src="{{ chemical.photo.url }}" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+        <div class="swiper chemicals-swiper fade-in">
+            <div class="swiper-wrapper">
+                {% for chemical in chemicals %}
+                <div class="swiper-slide">
+                    <div class="chemical-card">
+                        <div class="chemical-card__image">
+                            {% if chemical.photo %}
+                            <img src="{{ chemical.photo.url }}" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+                            {% else %}
+                            <img src="https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=300&h=300&fit=crop" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+                            {% endif %}
+                        </div>
+                        <div class="chemical-card__content">
+                            <h3 class="chemical-card__name">{{ chemical.name }}</h3>
+                            <span class="chemical-card__brand">{{ chemical.brand }}</span>
+                            {% if chemical.eco_status %}
+                            <span class="chemical-card__badge chemical-card__badge--{{ chemical.eco_status }}">
+                                {% if chemical.eco_status == 'eco' %}🌱 Экологично
+                                {% elif chemical.eco_status == 'hypo' %}💚 Гипоаллергенно
+                                {% elif chemical.eco_status == 'safe' %}👶 Безопасно для детей и животных
+                                {% else %}✨ Профессиональное
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                            <p class="chemical-card__desc">{{ chemical.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="swiper-slide">
+                    <div class="no-items fade-in" style="padding: var(--space-xl); text-align: center; background: white; border-radius: var(--radius-lg); width: 100%;">
+                        <p>Чистящие средства скоро будут добавлены</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Add Pagination & Nav -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </div>
+</section>
+
+<!-- CERTIFICATES SECTION -->
+<section class="section" id="certificates">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши сертификаты</h2>
+            <p class="section__subtitle">Подтверждение качества и безопасности наших услуг</p>
+        </div>
+        
+        <div class="cert-grid fade-in">
+            {% for cert in certificates %}
+            <div class="cert-card" data-lightbox="{{ cert.image.url }}">
+                <div class="cert-card__img">
+                    {% if cert.image %}
+                    <img src="{{ cert.image.url }}" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=300&h=300&fit=crop" alt="{{ chemical.name }}" width="300" height="300" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
                     {% endif %}
                 </div>
-                <div class="chemical-card__content">
-                    <h3 class="chemical-card__name">{{ chemical.name }}</h3>
-                    <span class="chemical-card__brand">{{ chemical.brand }}</span>
-                    {% if chemical.eco_status %}
-                    <span class="chemical-card__badge chemical-card__badge--{{ chemical.eco_status }}">
-                        {% if chemical.eco_status == 'eco' %}🌱 Экологично
-                        {% elif chemical.eco_status == 'hypo' %}💚 Гипоаллергенно
-                        {% elif chemical.eco_status == 'safe' %}👶 Безопасно для детей и животных
-                        {% else %}✨ Профессиональное
-                        {% endif %}
-                    </span>
+                <div class="cert-card__body">
+                    <h3 class="cert-card__title">{{ cert.title }}</h3>
+                    {% if cert.issued_by %}
+                    <p class="cert-card__issuer">{{ cert.issued_by }}</p>
                     {% endif %}
-                    <p class="chemical-card__desc">{{ chemical.description }}</p>
                 </div>
             </div>
             {% empty %}
-            <div class="chemical-card fade-in">
-                <div class="chemical-card__image">
-                    <img src="https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=300&h=300&fit=crop" alt="Chemspec" width="300" height="300" loading="lazy">
-                </div>
-                <div class="chemical-card__content">
-                    <h3 class="chemical-card__name">Chemspec</h3>
-                    <span class="chemical-card__brand">USA</span>
-                    <span class="chemical-card__badge chemical-card__badge--safe">👶 Безопасно для детей и животных</span>
-                    <p class="chemical-card__desc">Профессиональная химия для глубокой чистки мебели и ковров</p>
-                </div>
-            </div>
-            <div class="chemical-card fade-in">
-                <div class="chemical-card__image">
-                    <img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=300&h=300&fit=crop" alt="Dr. Schnell" width="300" height="300" loading="lazy">
-                </div>
-                <div class="chemical-card__content">
-                    <h3 class="chemical-card__name">Dr. Schnell</h3>
-                    <span class="chemical-card__brand">Germany</span>
-                    <span class="chemical-card__badge chemical-card__badge--eco">🌱 Экологично</span>
-                    <p class="chemical-card__desc">Немецкая химия с сертификатами экологической безопасности</p>
-                </div>
-            </div>
-            <div class="chemical-card fade-in">
-                <div class="chemical-card__image">
-                    <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300&h=300&fit=crop" alt="Vanish" width="300" height="300" loading="lazy">
-                </div>
-                <div class="chemical-card__content">
-                    <h3 class="chemical-card__name">Sanpol</h3>
-                    <span class="chemical-card__brand">Kazakhstan</span>
-                    <span class="chemical-card__badge chemical-card__badge--hypo">💚 Гипоаллергенно</span>
-                    <p class="chemical-card__desc">Казахстанская химия для профессиональной чистки</p>
-                </div>
+            <div class="no-items fade-in" style="grid-column: 1 / -1; padding: var(--space-xl); text-align: center; background: var(--color-bg-light); border-radius: var(--radius-lg);">
+                <p>Сертификаты появятся здесь в ближайшее время</p>
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- TRUST BADGES -->
+<!-- TRUST BADGES (Restored) -->
 <section class="section" id="trust">
     <div class="container">
         <div class="section__header fade-in">
@@ -216,4 +230,40 @@
     </div>
 </section>
 
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+    <button class="lightbox__close" aria-label="Закрыть">&times;</button>
+    <img class="lightbox__img" src="" alt="">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const swiper = new Swiper('.chemicals-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 24,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 24
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 32
+                }
+            }
+        });
+    });
+</script>
 {% endblock %}

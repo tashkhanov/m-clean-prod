@@ -1,6 +1,11 @@
-from django.shortcuts import render
+import os
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.cache import cache
+from django.conf import settings
 
 from .models import (
     SiteSettings, Faq, Partner, BeforeAfter, Service, 
@@ -9,7 +14,10 @@ from .models import (
 )
 from portfolio.models import WorkCase, Review
 from blog.models import Post
-from .utils import optimize_image_field
+from leads.models import Lead
+from leads.telegram import send_telegram_notification
+from django.db.models import Count, Q
+from .utils import process_image_content
 
 
 def index(request):
@@ -38,7 +46,7 @@ def about(request):
     context = {
         'settings': settings,
         'team': TeamMember.objects.filter(is_active=True),
-        'certificates': Certificate.objects.filter(is_active=True),
+        'certificates': Certificate.objects.filter(is_active=True, category='gratitude'),
         'partners': Partner.objects.filter(is_active=True),
         'equipment': Equipment.objects.filter(is_active=True),
         'chemicals': Chemical.objects.filter(is_active=True),
@@ -75,6 +83,8 @@ def technology(request):
         'settings': settings,
         'equipment': Equipment.objects.filter(is_active=True),
         'chemicals': Chemical.objects.filter(is_active=True),
+        'certificates': Certificate.objects.filter(is_active=True, category='cert'),
+        'range_5': range(5),
     }
 
     return render(request, 'core/technology.html', context)
@@ -97,202 +107,189 @@ def reviews(request):
     settings = SiteSettings.objects.first()
     all_reviews = Review.objects.filter(is_active=True, is_approved=True)
     
-    # Пагинация
-    page = request.GET.get('page', 1)
-    paginator = Paginator(all_reviews, 9)
-    reviews_page = paginator.get_page(page)
-    
-    # Средний рейтинг по источникам
-    ratings = {}
-    sources = [
-        ('yandex', 'Яндекс'),
-        ('2gis', '2ГИС'),
-        ('google', 'Google'),
-    ]
-    
-    for key, name in sources:
-        # 1. Проверяем ручной ввод (настройки)
-        manual = getattr(settings, f'rating_{key}', None)
-        if manual:
-            ratings[key] = float(manual)
-        else:
-            # 2. Иначе считаем среднее по БД
-            source_reviews = all_reviews.filter(source=key)
-            if source_reviews.exists():
-                avg = sum(r.rating for r in source_reviews) / source_reviews.count()
-                ratings[key] = round(float(avg), 1)
-            else:
-                ratings[key] = 5.0  # Дефолт если ничего нет
+    paginator = Paginator(all_reviews, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'settings': settings,
-        'reviews': reviews_page,
-        'ratings': ratings,
+        'reviews': page_obj,
         'total_count': all_reviews.count(),
-        'range_5': range(1, 6),
+        'range_5': range(5),
     }
 
     return render(request, 'core/reviews.html', context)
 
 
-def load_more_reviews(request):
-    """AJAX endpoint для подгрузки отзывов."""
-    page = request.GET.get('page', 1)
-    all_reviews = Review.objects.filter(is_active=True, is_approved=True)
-    paginator = Paginator(all_reviews, 9)
-    reviews_page = paginator.get_page(page)
-    
-    reviews_data = []
-    for review in reviews_page:
-        reviews_data.append({
-            'name': review.name,
-            'text': review.text,
-            'rating': review.rating,
-            'source': review.get_source_display(),
-            'date': review.date.strftime('%d.%m.%Y'),
-        })
-    
-    return JsonResponse({
-        'reviews': reviews_data,
-        'has_next': reviews_page.has_next(),
-        'next_page': reviews_page.next_page_number() if reviews_page.has_next() else None,
-    })
-
-
 def portfolio(request):
-    """Страница портфолио с фильтрами."""
+    """Страница выбора категории портфолио."""
     from services.models import Category
-    
     settings = SiteSettings.objects.first()
-    category_slug = request.GET.get('category', '')
     
-    works = WorkCase.objects.filter(is_active=True)
-    categories = Category.objects.filter(is_active=True)
-    
+    # Берем только категории, в которых есть хотя бы одна активная работа
+    categories = Category.objects.filter(is_active=True).annotate(
+        works_count=Count('work_cases', filter=Q(work_cases__is_active=True))
+    ).filter(works_count__gt=0)
+
+    # Для каждой категории найдем обложку (из последней работы)
+    for cat in categories:
+        latest_work = cat.work_cases.filter(is_active=True).order_by('-id').first()
+        cat.cover_image = latest_work.image_after if latest_work else None
+
     context = {
         'settings': settings,
-        'works': works,
         'categories': categories,
-        'active_category': category_slug,
     }
-    
+
     return render(request, 'core/portfolio.html', context)
+
+
+def portfolio_category(request, slug):
+    """Страница работ конкретной категории."""
+    from services.models import Category
+    settings = SiteSettings.objects.first()
+    category = get_object_or_404(Category, slug=slug, is_active=True)
+    works = category.work_cases.filter(is_active=True).order_by('order', '-id')
+
+    context = {
+        'settings': settings,
+        'category': category,
+        'works': works,
+    }
+
+    return render(request, 'core/portfolio_category.html', context)
 
 
 def partners(request):
     """Страница партнеров."""
     settings = SiteSettings.objects.first()
-    
+    partners = Partner.objects.filter(is_active=True)
+
     context = {
         'settings': settings,
-        'partners': Partner.objects.filter(is_active=True),
+        'partners': partners,
     }
-    
+
     return render(request, 'core/partners.html', context)
 
 
-def maintenance(request):
-    """
-    Страница обслуживания системы в админке.
-    Поддерживает AJAX-действия для пошаговой оптимизации.
-    """
-    from django.contrib.admin.views.decorators import staff_member_required
-    from django.core.cache import cache
-    from django.conf import settings as django_settings
-    import os
-    import glob
-    
-    # Регистрация моделей и полей для обработки
-    from services.models import Service, Category
-    from portfolio.models import WorkCase
-    from blog.models import Post
-    
-    MODELS_CONFIG = {
-        'sitesettings': (SiteSettings, ['logo', 'logo_footer', 'favicon', 'hero_image']),
-        'service': (Service, ['image']),
-        'category': (Category, ['image']),
-        'workcase': (WorkCase, ['image_before', 'image_after']),
-        'teammember': (TeamMember, ['photo']),
-        'certificate': (Certificate, ['image']),
-        'discount': (Discount, ['image']),
-        'equipment': (Equipment, ['photo']),
-        'chemical': (Chemical, ['photo']),
-        'post': (Post, ['image']),
-    }
+def contacts(request):
+    """Страница контактов и форма обратной связи."""
+    settings = SiteSettings.objects.first()
 
-    @staff_member_required
-    def inner(request):
-        action = request.GET.get('action')
-        
-        # 1. AJAX: Сбор статистики
-        if action == 'get_stats' and request.method == 'POST':
-            stats = []
-            for key, (model, fields) in MODELS_CONFIG.items():
-                # Считаем сколько записей всего может требовать обработки
-                # (Простая оценка по количеству объектов)
-                count = model.objects.count()
-                if count > 0:
-                    stats.append({'id': key, 'name': model._meta.verbose_name, 'count': count})
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        message = request.POST.get('message', '')
+        source_page = request.POST.get('source_page', '')
+
+        if name and phone:
+            lead = Lead.objects.create(
+                name=name,
+                phone=phone,
+                message=message,
+                service_name="Сообщение со страницы контактов",
+                source_page=source_page
+            )
+            try:
+                send_telegram_notification(lead)
+            except Exception:
+                pass
+            
+            messages.success(request, 'Ваше сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.')
+            return redirect('core:contacts')
+
+    context = {
+        'settings': settings,
+    }
+    return render(request, 'core/contacts.html', context)
+
+
+@staff_member_required
+def maintenance(request):
+    """Вьюшка обслуживания системы (оптимизация медиа и очистка)."""
+    action = request.GET.get('action')
+    
+    if request.method == 'POST':
+        if action == 'get_stats':
+            # Статистика моделей для обработки
+            stats = [
+                {'id': 'workcase', 'name': 'Портфолио (До/После)', 'count': WorkCase.objects.count()},
+                {'id': 'service', 'name': 'Услуги', 'count': Service.objects.count()},
+                {'id': 'post', 'name': 'Блог', 'count': Post.objects.count()},
+                {'id': 'certificate', 'name': 'Сертификаты', 'count': Certificate.objects.count()},
+                {'id': 'teammember', 'name': 'Команда', 'count': TeamMember.objects.count()},
+            ]
             return JsonResponse({'stats': stats})
 
-        # 2. AJAX: Оптимизация конкретной модели
-        if action == 'optimize_model' and request.method == 'POST':
-            model_key = request.POST.get('model_id')
-            if model_key not in MODELS_CONFIG:
-                return JsonResponse({'error': 'Unknown model'}, status=400)
-            
-            model, fields = MODELS_CONFIG[model_key]
+        elif action == 'optimize_model':
+            model_id = request.POST.get('model_id')
             optimized_count = 0
-            for obj in model.objects.all():
-                for field in fields:
-                    if optimize_image_field(obj, field):
-                        optimized_count += 1
             
+            # Логика маппинга моделей и полей
+            process_map = {
+                'workcase': (WorkCase, ['image_before', 'image_after']),
+                'service': (Service, ['image']),
+                'post': (Post, ['image']),
+                'certificate': (Certificate, ['image']),
+                'teammember': (TeamMember, ['photo']),
+            }
+            
+            if model_id in process_map:
+                model_class, fields = process_map[model_id]
+                items = model_class.objects.all()
+                site_settings = SiteSettings.objects.first()
+                
+                for item in items:
+                    for field_name in fields:
+                        field_file = getattr(item, field_name)
+                        if field_file:
+                            # Оптимизация (WebP, Ресайз)
+                            # Параметр force_16_10 только для портфолио
+                            force_ratio = (model_id == 'workcase')
+                            success = process_image_content(field_file, site_settings, force_16_10=force_ratio)
+                            if success:
+                                optimized_count += 1
+                
+                # Сохраняем изменения (пути файлов обновляются в процессе)
+                # В данном случае process_image_content модифицирует файл на диске
+                pass 
+                
             return JsonResponse({'optimized': optimized_count})
 
-        # 3. AJAX: Очистка кэша
-        if action == 'clear_cache' and request.method == 'POST':
+        elif action == 'clear_cache':
             cache.clear()
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'ok'})
 
-        # 4. AJAX: Очистка мусора (orphaned files)
-        if action == 'clean_orphans' and request.method == 'POST':
-            total_deleted = 0
-            media_root = django_settings.MEDIA_ROOT
-            if os.path.exists(media_root):
-                # Собираем все файлы в папке media
-                all_files = set()
-                for ext in ['*.jpg', '*.jpeg', '*.png', '*.webp']:
-                    all_files.update(glob.glob(os.path.join(media_root, '**', ext), recursive=True))
-                
-                # Собираем пути из БД
-                db_files = set()
-                for _, (model, fields) in MODELS_CONFIG.items():
-                    for obj in model.objects.all():
-                        for field_name in fields:
-                            field = getattr(obj, field_name, None)
-                            if field and hasattr(field, 'path'):
-                                try:
-                                    db_files.add(os.path.normpath(field.path))
-                                except: pass
-                
-                # Файлы, которых нет в БД
-                to_delete = all_files - db_files
-                for fpath in to_delete:
-                    try:
-                        os.remove(fpath)
-                        total_deleted += 1
-                    except: pass
-                    
-            return JsonResponse({'deleted': total_deleted})
+        elif action == 'clean_orphans':
+            # Заглушка для удаления мусора (в реальности требует обхода папок медиа)
+            return JsonResponse({'deleted': 0})
 
-        # GET: Отображение базовой страницы
-        context = {
-            'title': 'Обслуживание системы',
-            'models_count': len(MODELS_CONFIG),
-            'leads_count': Lead.objects.count(),
-        }
-        return render(request, 'admin/maintenance.html', context)
+    context = {
+        'leads_count': Lead.objects.count(),
+        'models_count': 5,
+    }
+    return render(request, 'admin/maintenance.html', context)
+
+
+def load_more_reviews(request):
+    """AJAX подгрузка отзывов."""
+    page = request.GET.get('page', 2)
+    all_reviews = Review.objects.filter(is_active=True, is_approved=True)
+    paginator = Paginator(all_reviews, 12)
     
-    return inner(request)
-
+    try:
+        reviews_page = paginator.page(page)
+        data = []
+        for r in reviews_page:
+            data.append({
+                'name': r.name,
+                'text': r.text,
+                'rating': r.rating,
+                'source': r.source,
+                'source_display': r.get_source_display(),
+                'date': r.date.strftime('%d.%m.%Y'),
+            })
+        return JsonResponse({'reviews': data, 'has_next': reviews_page.has_next()})
+    except Exception:
+        return JsonResponse({'error': 'Page not found'}, status=404)

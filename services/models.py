@@ -62,13 +62,6 @@ class Service(models.Model):
         default=0,
         help_text="Обычная чистка"
     )
-    premium_price = models.DecimalField(
-        "Премиум цена (₸)",
-        max_digits=10,
-        decimal_places=0,
-        default=0,
-        help_text="Включает экстрактор Santoemma, химию Chemspec USA, удаление запаха"
-    )
     unit = models.CharField(
         "Единица измерения",
         max_length=30,

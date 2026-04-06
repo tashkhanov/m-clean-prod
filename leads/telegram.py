@@ -17,11 +17,28 @@ def send_telegram_notification(lead):
         print(f"DEBUG: Telegram notifications NOT sent. Bot Token or Chat ID is missing in Admin.")
         return False
 
+    # Маппинг путей на красивые названия
+    SOURCE_MAP = {
+        '/': '🏠 Главная страница',
+        '/about/': 'ℹ️ О компании',
+        '/services/': '🛠️ Услуги',
+        '/prices/': '💰 Прайс-лист',
+        '/portfolio/': '🖼️ Портфолио',
+        '/blog/': '📝 Блог',
+        '/contacts/': '📞 Контакты',
+        '/technology/': '🧪 Технологии',
+        '/reviews/': '⭐ Отзывы',
+        '/discounts/': '🎁 Акции и скидки',
+    }
+
+    pretty_source = SOURCE_MAP.get(lead.source_page, lead.source_page or 'Неизвестно')
+
     text = (
         f"🔥 *Новая заявка!*\n"
         f"\n"
         f"👤 Имя: {lead.name}\n"
         f"📞 Телефон: {lead.phone}\n"
+        f"📍 Источник: {pretty_source}\n"
     )
 
     if lead.service_name:

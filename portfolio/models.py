@@ -3,6 +3,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class WorkCase(models.Model):
+    category = models.ForeignKey(
+        'services.Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Категория",
+        related_name="work_cases"
+    )
     title = models.CharField("Заголовок", max_length=200)
     description = models.TextField("Описание", blank=True)
     image_before = models.ImageField("Фото ДО", upload_to="portfolio/before/")

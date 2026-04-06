@@ -4,86 +4,38 @@
 {% block content %}
 
 <!-- HERO -->
-<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+<section class="hero" style="min-height: auto; padding: var(--space-4xl) 0 0 0;">
     <div class="container">
-        <div class="hero__content">
+        <div class="hero__content" style="text-align: left; margin: 0;">
             <h1 class="hero__title">
                 Наши <span class="hero__title-accent">работы</span>
             </h1>
-            <p class="hero__description">
-                Посмотрите результаты профессиональной химчистки. 
-                Перетаскивайте ползунок чтобы увидеть разницу.
+            <p class="hero__description" style="max-width: 600px;">
+                Выберите интересующую категорию, чтобы посмотреть результаты профессиональной химчистки «До и После».
             </p>
         </div>
     </div>
 </section>
 
-<!-- FILTER TABS -->
-<section class="section section--green">
+<!-- CATEGORY SELECTION -->
+<section class="section" id="portfolio-categories" style="padding-top: var(--space-2xl);">
     <div class="container">
-        <div class="filter-tabs fade-in" id="portfolio-filter">
-            <button class="filter-tab active" data-filter="all">Все</button>
-            <button class="filter-tab" data-filter="sofa">Диваны</button>
-            <button class="filter-tab" data-filter="carpet">Ковры</button>
-            <button class="filter-tab" data-filter="mattress">Матрасы</button>
-            <button class="filter-tab" data-filter="chair">Кресла</button>
-        </div>
-        
-        <!-- PORTFOLIO GRID -->
-        <div class="portfolio-grid-large" id="portfolio-grid">
-            {% for work in works %}
-            <div class="portfolio-card fade-in" data-category="{{ work.category|default:'all' }}">
-                <div class="portfolio-card__title">{{ work.title }}</div>
-                <div class="portfolio-slider">
-                    {% if work.image_after %}
-                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="600">
+        <div class="category-grid">
+            {% for cat in categories %}
+            <a href="{% url 'core:portfolio_category' cat.slug %}" class="category-card fade-in stagger-{{ forloop.counter }}">
+                <div class="category-card__image-wrap">
+                    {% if cat.cover_image %}
+                    <img src="{{ cat.cover_image.url }}" alt="{{ cat.name }}" class="category-card__image" width="600" height="400" loading="lazy">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="600">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&h=400&fit=crop" alt="{{ cat.name }}" class="category-card__image" width="600" height="400" loading="lazy">
                     {% endif %}
-                    {% if work.image_before %}
-                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="600">
-                    {% else %}
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="600" style="filter: brightness(0.7) contrast(0.8);">
-                    {% endif %}
-                    <div class="portfolio-slider__line"></div>
-                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
-                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
+                    <div class="category-card__overlay"></div>
                 </div>
-                {% if work.description %}
-                <p class="portfolio-card__desc">{{ work.description }}</p>
-                {% endif %}
-            </div>
-            {% empty %}
-            <div class="portfolio-card">
-                <div class="portfolio-card__title">Химчистка углового дивана</div>
-                <div class="portfolio-slider">
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="600">
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=600&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="600" style="filter: brightness(0.7) contrast(0.8);">
-                    <div class="portfolio-slider__line"></div>
-                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
-                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
+                <div class="category-card__content glass-card">
+                    <h3 class="category-card__title">{{ cat.name }}</h3>
+                    <span class="category-card__link">Смотреть работы →</span>
                 </div>
-            </div>
-            <div class="portfolio-card">
-                <div class="portfolio-card__title">Чистка матраса</div>
-                <div class="portfolio-slider">
-                    <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="600">
-                    <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="600" style="filter: brightness(0.7) contrast(0.8);">
-                    <div class="portfolio-slider__line"></div>
-                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
-                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
-                </div>
-            </div>
-            <div class="portfolio-card">
-                <div class="portfolio-card__title">Химчистка ковра</div>
-                <div class="portfolio-slider">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="600">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="600" style="filter: brightness(0.7) contrast(0.8);">
-                    <div class="portfolio-slider__line"></div>
-                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
-                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
-                </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
     </div>
@@ -94,87 +46,115 @@
     <div class="container">
         <div class="cta-banner fade-in">
             <h2 class="cta-banner__title">Хотите такой же результат?</h2>
-            <p class="cta-banner__text">Оставьте заявку и мы приедем к вам в течение 30 минут</p>
+            <p class="cta-banner__text">Оставьте заявку и мы приедем к вам в ближайшее время</p>
             <button class="btn btn--large" data-modal="modal-lead">Вызвать мастера</button>
         </div>
     </div>
 </section>
 
-{% endblock %}
+<style>
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--space-xl);
+}
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Filter functionality
-    var filterBtns = document.querySelectorAll('#portfolio-filter .filter-tab');
-    var cards = document.querySelectorAll('#portfolio-grid .portfolio-card');
+.category-card {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--space-lg);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.category-card:hover {
+    transform: translateY(-8px);
+}
+
+.category-card__image-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.category-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.category-card:hover .category-card__image {
+    transform: scale(1.05);
+}
+
+.category-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.4) 100%);
+    transition: opacity 0.3s ease;
+}
+
+.category-card__content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: var(--space-md) var(--space-lg) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-card__title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+}
+
+.category-card__link {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-brand);
+}
+
+@media (max-width: 1024px) {
+    .category-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+    }
+}
+
+@media (max-width: 640px) {
+    .category-grid {
+        grid-template-columns: 1fr 1fr; /* User requested 2 columns on mobile */
+        gap: 12px;
+    }
     
-    filterBtns.forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var filter = this.dataset.filter;
-            
-            // Update active state
-            filterBtns.forEach(function(b) { b.classList.remove('active'); });
-            this.classList.add('active');
-            
-            // Filter cards
-            cards.forEach(function(card) {
-                var category = card.dataset.category || 'all';
-                if (filter === 'all' || category === filter || category === 'all') {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    });
+    .category-card {
+        padding: 8px;
+        border-radius: var(--radius-lg);
+    }
     
-    // Initialize sliders
-    document.querySelectorAll('.portfolio-slider').forEach(function(slider) {
-        var before = slider.querySelector('.portfolio-slider__before');
-        var line = slider.querySelector('.portfolio-slider__line');
-        
-        if (!before || !line) return;
-        
-        var isDragging = false;
-        
-        function updatePosition(x) {
-            var rect = slider.getBoundingClientRect();
-            var percentage = ((x - rect.left) / rect.width) * 100;
-            percentage = Math.max(0, Math.min(100, percentage));
-            
-            before.style.clipPath = 'inset(0 ' + (100 - percentage) + '% 0 0)';
-            line.style.left = percentage + '%';
-        }
-        
-        slider.addEventListener('mousedown', function(e) {
-            isDragging = true;
-            updatePosition(e.clientX);
-        });
-        
-        document.addEventListener('mouseup', function() {
-            isDragging = false;
-        });
-        
-        document.addEventListener('mousemove', function(e) {
-            if (!isDragging) return;
-            updatePosition(e.clientX);
-        });
-        
-        slider.addEventListener('touchstart', function(e) {
-            isDragging = true;
-            updatePosition(e.touches[0].clientX);
-        }, { passive: true });
-        
-        document.addEventListener('touchend', function() {
-            isDragging = false;
-        });
-        
-        document.addEventListener('touchmove', function(e) {
-            if (!isDragging) return;
-            updatePosition(e.touches[0].clientX);
-        });
-    });
-});
-</script>
+    .category-card__content {
+        padding: 8px 12px !important;
+    }
+    
+    .category-card__title {
+        font-size: 1rem;
+    }
+    
+    .category-card__link {
+        display: none; /* Hide link text to save space */
+    }
+}
+</style>
+
 {% endblock %}

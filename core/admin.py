@@ -183,12 +183,8 @@ class SiteSettingsAdmin(ModelAdmin):
             'fields': ('telegram_bot_token', 'telegram_chat_id'),
             'description': "Для получения уведомлений о новых заявках"
         }),
-        ("Видео", {
-            'fields': ('video',),
-            'description': "Вставьте полную ссылку на YouTube видео"
-        }),
-        ("SEO главной", {
-            'fields': ('seo_title', 'seo_description'),
+        ("SEO и ресурсы", {
+            'fields': ('seo_title', 'seo_description', 'video', 'watermark'),
             'classes': ('collapse',),
         }),
     )

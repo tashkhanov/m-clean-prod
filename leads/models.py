@@ -27,6 +27,13 @@ class Lead(models.Model):
         blank=True,
         help_text="Выбранные дополнительные опции"
     )
+    source_page = models.CharField(
+        "Источник",
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text="Страница, с которой отправлена форма"
+    )
     message = models.TextField("Сообщение", blank=True)
     status = models.CharField(
         "Статус",

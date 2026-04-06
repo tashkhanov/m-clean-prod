@@ -231,6 +231,16 @@
             width: 100%;
         }
 
+        /* Essential for Task 2: Logo Sizing */
+        .header__logo-img {
+            display: block;
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+            margin: 0;
+            padding: 0;
+        }
+
         .header__actions {
             display: flex;
             align-items: center;
@@ -568,7 +578,7 @@
             <div class="header__inner">
                 <a href="/" class="header__logo">
                     {% if settings.logo %}
-                    <img src="{{ settings.logo.url }}" alt="M-Clean" class="header__logo-img" height="40">
+                    <img src="{{ settings.logo.url }}" alt="M-Clean" class="header__logo-img" style="height: var(--header-height);">
                     {% else %}
                     M<span class="header__logo-accent">-Clean</span>
                     {% endif %}
@@ -716,8 +726,8 @@
                     
                     <a href="{% url 'core:portfolio' %}" class="header__nav-link">Наши работы</a>
                     <a href="{% url 'blog:blog_list' %}" class="header__nav-link">Блог</a>
-                    <a href="/#faq" class="header__nav-link">FAQ</a>
-                    <a href="/#contacts" class="header__nav-link">Контакты</a>
+                    <a href="{% url 'core:prices' %}" class="header__nav-link">Прайс-лист</a>
+                    <a href="{% url 'core:contacts' %}" class="header__nav-link">Контакты</a>
                 </nav>
                 
                 <div class="header__actions">
@@ -805,6 +815,7 @@
                         <a href="{% url 'core:reviews' %}" class="footer__link">Отзывы</a>
                         <a href="{% url 'core:portfolio' %}" class="footer__link">Портфолио</a>
                         <a href="{% url 'blog:blog_list' %}" class="footer__link">Блог</a>
+                        <a href="{% url 'core:contacts' %}" class="footer__link">Контакты</a>
                     </nav>
                 </div>
                 
@@ -871,6 +882,7 @@
                     <input type="hidden" name="service_name" id="lead-service-name" value="">
                     <input type="hidden" name="total_price" id="lead-total-price" value="">
                     <input type="hidden" name="options" id="lead-options" value="">
+                    <input type="hidden" name="source_page" id="lead-source-page" value="{{ request.path }}">
                     
                     <div class="form-group">
                         <label class="form-label" for="lead-name">Ваше имя</label>

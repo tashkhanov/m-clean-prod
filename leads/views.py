@@ -28,6 +28,7 @@ def submit_lead(request):
             total_price=data.get('total_price', ''),
             options=data.get('options', ''),
             message=data.get('message', ''),
+            source_page=data.get('source_page', ''),
         )
 
         send_telegram_notification(lead)
