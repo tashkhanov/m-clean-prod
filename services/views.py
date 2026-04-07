@@ -36,6 +36,8 @@ def services_page(request):
             'name': svc.name,
             'slug': svc.slug,
             'calc_type': svc.calc_type,
+            'default_client_type': svc.default_client_type,
+            'default_material': svc.default_material,
             'base_price': float(svc.base_price),
             'unit': svc.unit,
             'icon': svc.icon,
@@ -151,9 +153,34 @@ def service_detail(request, slug):
         'id': service.id,
         'name': service.name,
         'calc_type': service.calc_type,
+        'default_client_type': service.default_client_type,
+        'default_material': service.default_material,
         'base_price': float(service.base_price),
         'price_rules': price_rules,
     }
+
+    # Collect Furniture data if needed (same logic as services_page)
+    furniture_services = Service.objects.filter(is_active=True, calc_type='furniture')
+    furniture_data = []
+    for s in furniture_services:
+        s_options = s.options.filter(is_active=True)
+        furniture_data.append({
+            'id': s.id,
+            'name': s.name,
+            'slug': s.slug,
+            'price_home': float(s.base_price),
+            'price_biz': float(s.base_price),
+            'category': s.category.id if s.category else None,
+            'options': [
+                {
+                    'id': opt.id,
+                    'name': opt.name,
+                    'price': float(opt.price),
+                    'calc_unit': opt.calc_unit,
+                }
+                for opt in s_options
+            ]
+        })
 
     # Additional context for enhanced detail page
     faqs = Faq.objects.filter(is_active=True)
@@ -177,6 +204,7 @@ def service_detail(request, slug):
         'curtain_coeffs': curtain_coeffs_data,
         'min_order': min_order,
         'service_for_json': service_for_json,
+        'furniture_data': furniture_data,
     }
 
     return render(request, 'services/service_detail.html', context)

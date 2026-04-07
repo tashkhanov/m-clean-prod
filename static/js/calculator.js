@@ -170,30 +170,71 @@ document.addEventListener('DOMContentLoaded', function() {
         var svcId = parseInt(isSingleService.dataset.serviceId) || 0;
         var svc = servicesMap[svcId];
         if (svc) {
+            BASE_PRICE = svc.base_price || svc.price || 0;
+            
+            // 1. Client Type (Home/Business)
+            if (isSingleService.dataset.defaultClient) {
+                state.uphTarget = isSingleService.dataset.defaultClient;
+            } else if (svc.default_client_type) {
+                state.uphTarget = svc.default_client_type;
+            }
+            
+            // 2. Material (Fabric/Leather)
+            var defMat = isSingleService.dataset.defaultMaterial || svc.default_material || 'fabric';
+            state.uphMult = (defMat === 'leather') ? 1.5 : 1;
+
+            // 3. activeCalcType - CRITICAL: separating furniture from default
             if (svc.calc_type === 'carpet') state.activeCalcType = 'carpet';
             else if (svc.calc_type === 'curtains') state.activeCalcType = 'curtains';
             else if (svc.calc_type === 'furniture') state.activeCalcType = 'furniture';
             else state.activeCalcType = 'default';
+
+            // Sync UI Tabs (Home/Business)
+            document.querySelectorAll('.tab-btn').forEach(function(b) {
+                b.classList.toggle('active', b.dataset.tab === state.uphTarget);
+            });
+            var fh = document.getElementById('furn-home');
+            var fb = document.getElementById('furn-business');
+            if (fh && fb) {
+                fh.style.display = (state.uphTarget === 'home') ? '' : 'none';
+                fb.style.display = (state.uphTarget === 'business') ? '' : 'none';
+            }
+
+            // Sync Material Buttons
+            document.querySelectorAll('.uph-btn').forEach(function(b) {
+                var btnVal = b.dataset.upholstery || b.dataset.uph;
+                b.classList.toggle('active', btnVal === defMat);
+            });
+
+            // Sync Leather Note
+            var leatherNote = document.getElementById('leather-note');
+            if (leatherNote) leatherNote.style.display = (state.uphMult > 1) ? 'block' : 'none';
+
+            // Hide main tabs on detail page
+            var tabsEl = document.getElementById('calc-main-tabs');
+            if (tabsEl) tabsEl.style.display = 'none';
+
+            // Handle main containers display
+            var fw_wrap = document.getElementById('calc-furniture-wrapper');
+            var cw_wrap = document.getElementById('calc-carpet-wrapper');
+            var cuw_wrap = document.getElementById('calc-curtains-wrapper');
+            if (fw_wrap) fw_wrap.style.display = (state.activeCalcType === 'furniture' || state.activeCalcType === 'default') ? '' : 'none';
+            if (cw_wrap) cw_wrap.style.display = (state.activeCalcType === 'carpet') ? '' : 'none';
+            if (cuw_wrap) cuw_wrap.style.display = (state.activeCalcType === 'curtains') ? '' : 'none';
+
+            // Selective visibility within furniture/default wrapper
+            if (fw_wrap) {
+                var mseg = fw_wrap.querySelector('.master-seg');
+                var dopt = fw_wrap.querySelector('.dirt-opts');
+                var furn = fw_wrap.querySelector('.furniture-wrapper');
+                
+                if (mseg) mseg.style.display = (state.activeCalcType === 'furniture') ? '' : 'none';
+                if (furn) furn.style.display = (state.activeCalcType === 'furniture') ? '' : 'none';
+                // dirt-opts stays for both (if present)
+            }
+            
+            recalc();
         }
-        // Hide main tabs if they exist
-        var tabsEl = document.getElementById('calc-main-tabs');
-        if (tabsEl) tabsEl.style.display = 'none';
-
-        // Handle services.html containers
-        var fw = document.getElementById('calc-furniture-wrapper');
-        var cw = document.getElementById('calc-carpet-wrapper');
-        var cuw = document.getElementById('calc-curtains-wrapper');
-        if (fw) fw.style.display = state.activeCalcType === 'furniture' ? '' : 'none';
-        if (cw) cw.style.display = state.activeCalcType === 'carpet' ? '' : 'none';
-        if (cuw) cuw.style.display = state.activeCalcType === 'curtains' ? '' : 'none';
-
-        // Handle service_detail.html sections
-        var dp = document.getElementById('carpet-params');
-        var cp = document.getElementById('curtain-params');
-        var dopt = document.getElementById('default-options');
-        if (dp) dp.style.display = state.activeCalcType === 'carpet' ? '' : 'none';
-        if (cp) cp.style.display = state.activeCalcType === 'curtains' ? '' : 'none';
-        if (dopt) dopt.style.display = state.activeCalcType === 'furniture' ? '' : 'none';
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -378,24 +419,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // 0. Quantity Adjusters for Hair/Boxes (+/-) — MUST be first!
         var qaBtn = e.target.closest('.qa-btn');
         if (qaBtn) {
-            var key = qaBtn.dataset.qaKey;
-            var d = parseInt(qaBtn.dataset.qaDelta);
-            if (key === 'hairM') {
-                state.hairM = Math.max(1, state.hairM + d);
-                var el1 = document.getElementById('hair-m');
-                var el2 = document.getElementById('carpet-hair-m');
-                if (el1) el1.textContent = state.hairM;
-                if (el2) el2.textContent = state.hairM;
-                recalc();
+            e.preventDefault();
+            e.stopPropagation();
+            var action = qaBtn.dataset.action;
+            var param = qaBtn.dataset.param;
+            if (param === 'hair') {
+                if (action === 'plus') state.hairM++;
+                else if (action === 'minus' && state.hairM > 1) state.hairM--;
+                var hairSelectors = '#hair-val, #carpet-hair-val, #curtain-hair-val';
+                document.querySelectorAll(hairSelectors).forEach(function(el) { el.textContent = state.hairM; });
+            } else if (param === 'box') {
+                if (action === 'plus') state.boxQ++;
+                else if (action === 'minus' && state.boxQ > 0) state.boxQ--;
+                var boxSelectors = '#box-val, #carpet-box-val, #curtain-box-val';
+                document.querySelectorAll(boxSelectors).forEach(function(el) { el.textContent = state.boxQ; });
+            } else if (param === 'roman') {
+                if (action === 'plus') state.romanQty++;
+                else if (action === 'minus' && state.romanQty > 1) state.romanQty--;
+                var romanSelectors = '#roman-qty-val, #curtain-roman-val';
+                document.querySelectorAll(romanSelectors).forEach(function(el) { el.textContent = state.romanQty; });
             }
-            if (key === 'boxQ') {
-                state.boxQ = Math.max(1, state.boxQ + d);
-                var el1 = document.getElementById('box-q');
-                var el2 = document.getElementById('carpet-box-q');
-                if (el1) el1.textContent = state.boxQ;
-                if (el2) el2.textContent = state.boxQ;
-                recalc();
-            }
+            recalc();
             return;
         }
 
@@ -403,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var btn = e.target.closest('.cbtn');
         if (btn) {
             var action = btn.dataset.action;
-            var itemId = btn.dataset.itemId || btn.dataset.matId;
+            var itemId = parseInt(btn.dataset.itemId || btn.dataset.matId, 10);
             if (!itemId) return;
 
             if (btn.dataset.matId) {
@@ -469,10 +513,32 @@ document.addEventListener('DOMContentLoaded', function() {
         // 5. Dirt level
         var dirtBtn = e.target.closest('.dirt-btn');
         if (dirtBtn) {
-            state.dirtMult = parseFloat(dirtBtn.dataset.dirt) + 1;
+            var val = dirtBtn.dataset.coeff; // "0", "0.2", "0.5"
+            state.dirtMult = parseFloat(val) + 1;
             document.querySelectorAll('.dirt-btn').forEach(function(b) {
-                b.classList.toggle('active', b.dataset.dirt === dirtBtn.dataset.dirt);
+                b.classList.toggle('active', b.dataset.coeff === val);
             });
+            recalc();
+            return;
+        }
+
+        // 5a. General Counter Buttons (+ / -)
+        var qaBtn = e.target.closest('.qa-btn');
+        if (qaBtn) {
+            var action = qaBtn.dataset.action;
+            var param = qaBtn.dataset.param; // 'hair' or 'box'
+            
+            if (param === 'hair') {
+                if (action === 'plus') state.hairM++;
+                else if (action === 'minus' && state.hairM > 1) state.hairM--;
+                var valEl = document.getElementById('hair-val');
+                if (valEl) valEl.textContent = state.hairM;
+            } else if (param === 'box') {
+                if (action === 'plus') state.boxQ++;
+                else if (action === 'minus' && state.boxQ > 0) state.boxQ--;
+                var valEl = document.getElementById('box-val');
+                if (valEl) valEl.textContent = state.boxQ;
+            }
             recalc();
             return;
         }
@@ -555,36 +621,87 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    document.querySelectorAll('input[name="carpet-mode"]').forEach(function(r) {
-        r.addEventListener('change', function() {
-            state.carpetMode = this.value;
-            document.querySelectorAll('.carpet-mode-btn').forEach(function(btn) {
-                btn.classList.toggle('active', btn.dataset.mode === state.carpetMode);
-            });
-            var desc = document.getElementById('carpet-mode-desc');
-            if (desc) {
-                desc.innerHTML = state.carpetMode === 'general' ?
-                    '<b style="color:#28C460;">Американская технология (IICRC S100)</b> Капитальная чистка.' :
-                    '<b style="color:#d9534f;">Эконом (Экспресс)</b> Быстрая поверхностная обработка.';
+    document.querySelectorAll('.carpet-mode-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var mode = this.dataset.mode;
+            var radio = document.getElementById('mode-' + mode);
+            if (radio) {
+                radio.checked = true;
+                state.carpetMode = mode;
+                document.querySelectorAll('.carpet-mode-btn').forEach(function(b) {
+                    b.classList.toggle('active', b.dataset.mode === mode);
+                });
+                var desc = document.getElementById('carpet-mode-desc');
+                if (desc) {
+                    desc.innerHTML = mode === 'general' ?
+                        '<b style="color:#28C460;">Генеральная (IICRC S100)</b> — капитальная чистка с полным циклом удаления грязи.' :
+                        '<b style="color:#64748b;">Эконом (Экспресс)</b> — поверхностная чистка. Подходит для регулярного ухода.';
+                }
+                recalc();
             }
-            recalc();
         });
     });
 
-    document.querySelectorAll('input[name="carpet-material"]').forEach(function(r) {
-        r.addEventListener('change', function() {
-            state.carpetMaterial = this.value;
-            document.querySelectorAll('.carpet-material-btn').forEach(function(btn) {
-                btn.classList.toggle('active', btn.dataset.material === state.carpetMaterial);
-            });
-            var desc = document.getElementById('carpet-material-desc');
-            if (desc) {
-                desc.textContent = state.carpetMaterial === 'synthetic' ?
-                    'Стандартные офисные и домашние покрытия.' :
-                    'Деликатные покрытия (шерсть, шёлк). +50% к стоимости.';
+    document.querySelectorAll('.carpet-material-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var mat = this.dataset.material;
+            var radio = document.getElementById('mat-' + mat);
+            if (radio) {
+                radio.checked = true;
+                state.carpetMaterial = mat;
+                document.querySelectorAll('.carpet-material-btn').forEach(function(b) {
+                    b.classList.toggle('active', b.dataset.material === mat);
+                });
+                var desc = document.getElementById('carpet-material-desc');
+                if (desc) {
+                    desc.textContent = mat === 'synthetic' ?
+                        'Стандартные синтетические покрытия (полиамид, акрил, полиэстер).' :
+                        'Деликатные покрытия (шерсть, шёлк, вискоза). Требуют щадящих составов. +50% к цене.';
+                }
+                recalc();
             }
-            recalc();
         });
+    });
+
+    document.addEventListener('click', function(e) {
+        var optCard = e.target.closest('.opt-card');
+        if (optCard && e.target.tagName !== 'INPUT') {
+            var cb = optCard.querySelector('input[type="checkbox"]');
+            if (cb) {
+                cb.checked = !cb.checked;
+                cb.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+    });
+
+    document.querySelectorAll('.carpet-addon').forEach(function(cb) {
+        cb.addEventListener('change', recalc);
+    });
+
+    // --- GENERAL PARAMETER CHECKBOXES: toggle counter panels ---
+    var genParamIds = [
+        {cbId: 'furn-hair', panelId: 'hair-adj'},
+        {cbId: 'furn-box', panelId: 'box-adj'},
+        {cbId: 'carpet-hair', panelId: 'carpet-hair-adj'},
+        {cbId: 'carpet-box', panelId: 'carpet-box-adj'},
+        {cbId: 'curtain-hair', panelId: 'curtain-hair-adj'},
+        {cbId: 'curtain-box', panelId: 'curtain-box-adj'},
+        {cbId: 'curtain-roman-mount', panelId: 'curtain-roman-adj'}
+    ];
+    genParamIds.forEach(function(item) {
+        var cb = document.getElementById(item.cbId);
+        if (cb) {
+            cb.addEventListener('change', function() {
+                var panel = document.getElementById(item.panelId);
+                if (panel) panel.style.display = this.checked ? 'flex' : 'none';
+                recalc();
+            });
+        }
+    });
+    // Night and faraway — just recalc
+    ['furn-night', 'furn-faraway', 'carpet-night', 'carpet-faraway', 'curtain-night', 'curtain-faraway'].forEach(function(id) {
+        var cb = document.getElementById(id);
+        if (cb) cb.addEventListener('change', recalc);
     });
 
     // ═══════════════════════════════════════════════════════════════
@@ -757,7 +874,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // ═══════════════════════════════════════════════════════════════
     // CALCULATION ENGINE
     // ═══════════════════════════════════════════════════════════════
-
     function getCarpetPricePerM2(area) {
         var carpetSvc = null;
         for (var id in servicesMap) {
@@ -778,6 +894,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 tiersArray = rules.tiers;
             } else if (Array.isArray(rules)) {
                 tiersArray = rules;
+            }
+            if (!tiersArray || tiersArray.length === 0) {
+                tiersArray = [
+                    { max_area: 25, price: 2000 },
+                    { max_area: 50, price: 1750 },
+                    { max_area: 100, price: 1500 },
+                    { max_area: null, price: 1250 }
+                ];
             }
 
             if (tiersArray && tiersArray.length > 0) {
@@ -864,18 +988,24 @@ document.addEventListener('DOMContentLoaded', function() {
         var totalQty = 0;
         var allFlat = [].concat(CAT.sofas, CAT.chairs, CAT.beds, CAT.misc);
 
-        // If on single service page with default service, use its base price
-        if (isSingleService && SERVICES.length === 1) {
+        // Robust Qty sum for Furniture (Home + Business + Mattresses)
+        var totalQty = 0;
+        
+        // Final Price Calculation logic
+        // If on single service page, check if any items are selected in catalog
+        var hasCatalogItems = false;
+        for (var id in state.cart) { if (state.cart[id] && state.cart[id].q > 0) hasCatalogItems = true; }
+
+        if (isSingleService && SERVICES.length === 1 && !hasCatalogItems) {
+            // Case 1: Simple service page, nothing from catalog selected yet
             var svc = SERVICES[0];
-            grandBase = parseFloat(svc.base_price) || 0;
+            var base = parseFloat(svc.base_price) || 0;
+            grandBase = base * state.uphMult * state.dirtMult;
             det.push({n: svc.name, v: Math.round(grandBase), cls: 'pos'});
-            // For single service, check its cart quantity if exists, else 1
-            var c = state.cart[svc.id];
-            totalQty = (c && c.q) ? c.q : 1;
+            totalQty = 1;
         } else {
-            // Full furniture catalog mode — фильтруем по uphTarget
+            // Case 2: Either main services page OR catalog items are selected on detail page
             if (state.uphTarget === 'business') {
-                // Только бизнес-позиции
                 var bizFlat = [].concat(CAT.bizChairs, CAT.bizSofas, CAT.bizConf, CAT.bizLounge, CAT.bizPanels);
                 bizFlat.forEach(function(item) {
                     var c = state.cart[item.id];
@@ -884,9 +1014,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     grandBase += lineBase;
                     var qty = c.q > 1 ? ' ×' + c.q : '';
                     det.push({n: c.n + qty, v: Math.round(lineBase), cls: 'pos'});
+                    totalQty += c.q;
                 });
             } else {
-                // Домашние позиции (home)
                 allFlat.forEach(function(item) {
                     var c = state.cart[item.id];
                     if (!c || !c.q) return;
@@ -894,6 +1024,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     grandBase += lineBase;
                     var qty = c.q > 1 ? ' ×' + c.q : '';
                     det.push({n: c.n + qty, v: Math.round(lineBase), cls: 'pos'});
+                    totalQty += c.q;
                 });
 
                 CAT.mattress.forEach(function(m) {
@@ -906,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     var qty = c.q > 1 ? ' ×' + c.q : '';
                     var sidesLabel = sides === 2 ? ' (2 ст.)' : ' (1 ст.)';
                     det.push({n: c.n + sidesLabel + qty, v: Math.round(lineBase), cls: 'pos'});
+                    totalQty += c.q;
                 });
             }
         }
@@ -918,10 +1050,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
 
-        if (state.uphMult > 1) det.push({n: 'Кожа/экокожа (+50%)', v: 0, cls: 'add'});
+        if (state.uphMult > 1) det.push({n: 'Материал: Кожа/экокожа (+50%)', v: 0, cls: 'add'});
         if (state.dirtMult > 1) {
-            var lbl = state.dirtMult === 1.2 ? 'Сильные загрязнения (+20%)' : 'После ремонта (+50%)';
-            det.push({n: lbl, v: 0, cls: 'add'});
+            var dirtSurcharge = grandBase - (grandBase / state.dirtMult);
+            var lbl = state.dirtMult <= 1.25 ? 'Сильные загрязнения (+20%)' : 'Сложные загрязнения (+50%)';
+            det.push({n: lbl, v: Math.round(dirtSurcharge), cls: 'add'});
         }
 
         var extras = 0;
@@ -955,13 +1088,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
         var hairCb = document.getElementById('furn-hair');
-        if (hairCb && hairCb.checked) { var cost = 5000 * state.hairM; extras += cost; det.push({n: 'Шерсть (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'}); }
+        if (hairCb && hairCb.checked) {
+            var cost = 5000 * state.hairM;
+            extras += cost;
+            det.push({n: 'Шерсть животных (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'});
+        }
         var boxCb = document.getElementById('furn-box');
-        if (boxCb && boxCb.checked) { var cost = 1000 * state.boxQ; extras += cost; det.push({n: 'Ящики (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'}); }
+        if (boxCb && boxCb.checked) {
+            var cost = 1000 * state.boxQ;
+            extras += cost;
+            det.push({n: 'Чистка ящиков (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'});
+        }
         var nightCb = document.getElementById('furn-night');
-        if (nightCb && nightCb.checked) { extras += 5000; det.push({n: 'После 21:00', v: 5000, cls: 'add'}); }
+        if (nightCb && nightCb.checked) {
+            extras += 5000;
+            det.push({n: 'Работа после 21:00', v: 5000, cls: 'add'});
+        }
         var farCb = document.getElementById('furn-faraway');
-        if (farCb && farCb.checked) { det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'}); }
+        if (farCb && farCb.checked) {
+            det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'});
+        }
 
         // Robust Qty sum for Furniture (Home + Business + Mattresses)
         var totalQty = 0;
@@ -1024,33 +1170,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 cls: 'add'
             });
         }
+
+        if (state.dirtMult > 1) {
+            var dc = total * (state.dirtMult - 1);
+            total += dc;
+            var lbl = state.dirtMult <= 1.25 ? 'Сильные загрязнения (+20%)' : 'Сложные загрязнения (+50%)';
+            det.push({n: lbl, v: Math.round(dc), cls: 'add'});
+        }
         
         if (state.carpetMode === 'eco') {
             det.push({n: 'Режим Эконом (−40%)', v: 0, cls: 'add'});
         }
 
-        // --- GLOBAL OPTIONS FOR CARPET ---
+        // --- CARPET SPECIFIC ADDONS (use data-price from HTML) ---
+        var carpetAddons = document.querySelectorAll('.carpet-addon:checked');
+        carpetAddons.forEach(function(cb) {
+            var cost = parseFloat(cb.dataset.price) || 0;
+            var name = cb.closest('.calc-option').querySelector('.calc-option__name').textContent;
+            if (cost > 0) {
+                total += cost;
+                det.push({n: name, v: Math.round(cost), cls: 'add'});
+            }
+        });
+
+        // --- GENERAL PARAMETERS ---
         var extras = 0;
-        var hairCb = document.getElementById('carpet-hair');
-        if (hairCb && hairCb.checked) { 
-            var cost = 5000 * state.hairM; 
-            extras += cost; 
-            det.push({n: 'Шерсть (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'}); 
+        var pfx = (typeof isSingleService !== 'undefined' && isSingleService) ? 'furn-' : 'carpet-';
+        var hairCb = document.getElementById(pfx + 'hair');
+        if (hairCb && hairCb.checked) {
+            var cost = 5000 * state.hairM;
+            extras += cost;
+            det.push({n: 'Шерсть животных (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'});
         }
-        var boxCb = document.getElementById('carpet-box');
-        if (boxCb && boxCb.checked) { 
-            var cost = 1000 * state.boxQ; 
-            extras += cost; 
-            det.push({n: 'Ящики (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'}); 
+        var boxCb = document.getElementById(pfx + 'box');
+        if (boxCb && boxCb.checked) {
+            var cost = 1000 * state.boxQ;
+            extras += cost;
+            det.push({n: 'Чистка ящиков (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'});
         }
-        var nightCb = document.getElementById('carpet-night');
-        if (nightCb && nightCb.checked) { 
-            extras += 5000; 
-            det.push({n: 'Работа после 21:00', v: 5000, cls: 'add'}); 
+        var nightCb = document.getElementById(pfx + 'night');
+        if (nightCb && nightCb.checked) {
+            extras += 5000;
+            det.push({n: 'Работа после 21:00', v: 5000, cls: 'add'});
         }
-        var farCb = document.getElementById('carpet-faraway');
-        if (farCb && farCb.checked) { 
-            det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'}); 
+        var farCb = document.getElementById(pfx + 'faraway');
+        if (farCb && farCb.checked) {
+            det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'});
         }
         total += extras;
 
@@ -1067,20 +1232,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calcCurtains() {
-        var wgt = 0, area = 0;
+        var wgt = 0, area = 0, romanCount = 0;
 
         if (state.curtainMode === 'weight') {
             wgt = state.curtainWeight;
-            area = wgt * 1.5;
+            area = wgt * 1.5; // Roughly estimate for area-based addons if weight-only
         } else {
             state.curtainWindows.forEach(function(item) {
-                wgt += item.weight;
-                area += item.w * item.h;
+                var itemArea = item.w * item.h;
+                wgt += itemArea * (item.coeff || 0.6);
+                area += itemArea;
+                if (item.fabric && item.fabric.toLowerCase().indexOf('римская') !== -1) {
+                    romanCount++;
+                }
             });
         }
 
-        if (wgt <= 0 && state.curtainWindows.length === 0 && !state.curtainRoman) {
-            renderSummary([{n: 'Введите вес или добавьте окна...', v: 0, cls: 'empty'}], 0);
+        if (wgt <= 0 && state.curtainWindows.length === 0) {
+            renderSummary([{n: 'Введите параметры...', v: 0, cls: 'empty'}], 0);
             return;
         }
 
@@ -1094,27 +1263,57 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var total = wgt * pricePerKg;
         if (wgt > 0) {
-            det.push({n: 'Химчистка (' + wgt.toFixed(1) + ' кг × ' + pricePerKg.toLocaleString('ru-RU') + ' ₸/кг)', v: Math.round(total), cls: 'pos'});
+            var label = state.curtainMode === 'weight' ? 'Химчистка штор (' + wgt.toFixed(1) + ' кг)' : 'Химчистка штор (' + state.curtainWindows.length + ' окн., ~' + wgt.toFixed(1) + ' кг)';
+            det.push({n: label, v: Math.round(total), cls: 'pos'});
         }
 
-        if (state.curtainRoman) { var c = state.romanQty * 3000; total += c; det.push({n: 'Монтаж римских (' + state.romanQty + ' шт)', v: Math.round(c), cls: 'add'}); }
-
-        // Custom Curtains Addons
+        // Addons logic (Match Photo Prices)
         if (state.curtainRemoval) {
-            var c = wgt * 400;
+            var c = wgt * 400; // +400 ₸/кг
             total += c;
-            det.push({n: 'Снятие штор (+' + Math.round(c).toLocaleString('ru-RU') + ' ₸)', v: Math.round(c), cls: 'add'});
+            det.push({n: 'Снятие штор', v: Math.round(c), cls: 'add'});
         }
         if (state.curtainHanging) {
-            var c = wgt * 600;
+            var c = wgt * 600; // +600 ₸/кг
             total += c;
-            det.push({n: 'Навеска и стяжка (+' + Math.round(c).toLocaleString('ru-RU') + ' ₸)', v: Math.round(c), cls: 'add'});
+            det.push({n: 'Навеска и стяжка', v: Math.round(c), cls: 'add'});
         }
         if (state.curtainIroning) {
-            var c = area * 500;
-            // Does NOT affect price per user request
-            det.push({n: 'Глажка / Отпаривание (+' + Math.round(c).toLocaleString('ru-RU') + ' ₸)', v: 0, cls: 'warn'});
+            var c = area * 500; // +500 ₸/м²
+            total += c;
+            det.push({n: 'Глажка / Отпаривание', v: Math.round(c), cls: 'add'});
         }
+        if (state.curtainRomanMount) {
+            var c = state.romanQty * 3000; // 3000 ₸/шт
+            total += c;
+            det.push({n: 'Монтаж Римских (' + state.romanQty + ' шт)', v: Math.round(c), cls: 'add'});
+        }
+
+        // --- GENERAL PARAMETERS ---
+        var extras = 0;
+        var pfx = (typeof isSingleService !== 'undefined' && isSingleService) ? 'furn-' : 'curtain-';
+        var hairCb = document.getElementById(pfx + 'hair');
+        if (hairCb && hairCb.checked) {
+            var cost = 5000 * state.hairM;
+            extras += cost;
+            det.push({n: 'Шерсть животных (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'});
+        }
+        var boxCb = document.getElementById(pfx + 'box');
+        if (boxCb && boxCb.checked) {
+            var cost = 1000 * state.boxQ;
+            extras += cost;
+            det.push({n: 'Чистка ящиков (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'});
+        }
+        var nightCb = document.getElementById(pfx + 'night');
+        if (nightCb && nightCb.checked) {
+            extras += 5000;
+            det.push({n: 'Работа после 21:00', v: 5000, cls: 'add'});
+        }
+        var farCb = document.getElementById(pfx + 'faraway');
+        if (farCb && farCb.checked) {
+            det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'});
+        }
+        total += extras;
 
         total = applyOptionsAndDiscounts(total, det, area, wgt, state.curtainWindows.length);
         renderSummary(det, total);
@@ -1190,11 +1389,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 orderBtn.classList.add('btn--disabled');
             }
             orderBtn.dataset.totalPrice = fmt(fin);
-            var svcName = '';
-            if (state.activeCalcType === 'furniture') svcName = 'Химчистка мебели';
-            else if (state.activeCalcType === 'carpet') svcName = 'Химчистка ковролина';
-            else if (state.activeCalcType === 'curtains') svcName = 'Химчистка штор';
-            else svcName = service_id ? 'Заказ услуги' : 'Химчистка';
+            var svcId = (typeof isSingleService !== 'undefined' && isSingleService) ? parseInt(isSingleService.dataset.serviceId) : null;
+            svcName = svcId ? 'Заказ услуги' : 'Химчистка';
             orderBtn.dataset.serviceName = svcName;
             orderBtn.dataset.options = det.filter(function(d) { return d.cls !== 'sep' && d.cls !== 'empty'; }).map(function(d) { 
                 return d.n + (d.v !== 0 ? ': ' + fmt(d.v) : ''); 
@@ -1237,6 +1433,36 @@ document.addEventListener('DOMContentLoaded', function() {
         var total = BASE_PRICE;
         det.push({n: 'Базовая стоимость', v: Math.round(total), cls: 'pos'});
         
+        if (state.dirtMult > 1) {
+            var dc = total * (state.dirtMult - 1);
+            total += dc;
+            det.push({n: 'Степень загрязнения (+' + Math.round((state.dirtMult - 1) * 100) + '%)', v: Math.round(dc), cls: 'add'});
+        }
+
+        var extras = 0;
+        var hairCb = document.getElementById('furn-hair');
+        if (hairCb && hairCb.checked) {
+            var cost = 5000 * state.hairM;
+            extras += cost;
+            det.push({n: 'Шерсть животных (' + state.hairM + ' пог.м)', v: Math.round(cost), cls: 'add'});
+        }
+        var boxCb = document.getElementById('furn-box');
+        if (boxCb && boxCb.checked) {
+            var cost = 1000 * state.boxQ;
+            extras += cost;
+            det.push({n: 'Чистка ящиков (' + state.boxQ + ' шт)', v: Math.round(cost), cls: 'add'});
+        }
+        var nightCb = document.getElementById('furn-night');
+        if (nightCb && nightCb.checked) {
+            extras += 5000;
+            det.push({n: 'Работа после 21:00', v: 5000, cls: 'add'});
+        }
+        var farCb = document.getElementById('furn-faraway');
+        if (farCb && farCb.checked) {
+            det.push({n: 'Выезд за 10 км', v: 0, cls: 'warn'});
+        }
+        total += extras;
+
         total = applyOptionsAndDiscounts(total, det, 0, 0, 1);
         renderSummary(det, total);
     }
@@ -1279,6 +1505,114 @@ document.addEventListener('DOMContentLoaded', function() {
     // ═══════════════════════════════════════════════════════════════
     // INIT
     // ═══════════════════════════════════════════════════════════════
+    // --- Curtains dynamic setup ---
+    var cWeightInp = document.getElementById('curtain-weight');
+    if (cWeightInp) {
+        cWeightInp.addEventListener('input', function() {
+            state.curtainWeight = parseF(this.value, 0);
+            recalc();
+        });
+    }
+
+    var cModeBtns = document.querySelectorAll('.curtain-mode-btn');
+    if (cModeBtns.length > 0) {
+        cModeBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                cModeBtns.forEach(function(b) { b.classList.remove('active'); });
+                this.classList.add('active');
+                state.curtainMode = this.dataset.mode;
+                
+                var wm = document.getElementById('curtain-weight-mode');
+                var winm = document.getElementById('curtain-windows-mode');
+                if (wm) wm.style.display = state.curtainMode === 'weight' ? '' : 'none';
+                if (winm) winm.style.display = state.curtainMode === 'windows' ? '' : 'none';
+                
+                recalc();
+            });
+        });
+    }
+
+    var cFabricSelect = document.getElementById('curtain-fabric-select');
+    if (cFabricSelect && COEFFS) {
+        COEFFS.forEach(function(c, idx) {
+            var opt = document.createElement('option');
+            opt.value = idx;
+            opt.textContent = c.name + ' (' + c.coefficient + ' кг/м²)';
+            cFabricSelect.appendChild(opt);
+        });
+    }
+
+    var addWinBtn = document.getElementById('add-window-btn');
+    if (addWinBtn) {
+        addWinBtn.addEventListener('click', function() {
+            var wInp = document.getElementById('curtain-w');
+            var hInp = document.getElementById('curtain-h');
+            var fSel = document.getElementById('curtain-fabric-select');
+            
+            var w = parseFloat(wInp.value) || 0;
+            var h = parseFloat(hInp.value) || 0;
+            var fIdx = fSel.value;
+            
+            if (w > 0 && h > 0 && fIdx !== "") {
+                var fabric = COEFFS[fIdx];
+                state.curtainWindows.push({
+                    id: Date.now(),
+                    w: w,
+                    h: h,
+                    fabric: fabric.name,
+                    coeff: fabric.coefficient
+                });
+                wInp.value = '';
+                hInp.value = '';
+                fSel.selectedIndex = 0;
+                renderWindows();
+                recalc();
+            }
+        });
+    }
+
+    function renderWindows() {
+        var list = document.getElementById('window-list');
+        if (!list) return;
+        if (state.curtainWindows.length === 0) { list.innerHTML = ''; return; }
+        
+        list.innerHTML = state.curtainWindows.map(function(win) {
+            return '<div class="window-item" style="display:flex; justify-content:space-between; align-items:center; background:var(--color-bg-alt); padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:12px; font-weight:600;">' +
+                   '<div style="display:flex; flex-direction:column; gap:2px;">' +
+                   '<span>Окно ' + win.w + '×' + win.h + ' м</span>' +
+                   '<span style="font-size:10px; color:#64748b; font-weight:500;">' + win.fabric + '</span>' +
+                   '</div>' +
+                   '<button type="button" class="del-win" data-id="' + win.id + '" style="background:none; border:none; color:#d9534f; cursor:pointer; padding:4px;">' +
+                   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                   '</button>' +
+                   '</div>';
+        }).join('');
+        
+        list.querySelectorAll('.del-win').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var id = parseInt(this.dataset.id);
+                state.curtainWindows = state.curtainWindows.filter(function(w) { return w.id !== id; });
+                renderWindows();
+                recalc();
+            });
+        });
+    }
+
+    function bindCurtainAddons() {
+        var ids = ['curtain-removal', 'curtain-hanging', 'curtain-ironing', 'curtain-roman-mount'];
+        ids.forEach(function(id) {
+            var cb = document.getElementById(id);
+            if (cb) {
+                cb.addEventListener('change', function() {
+                    var key = id.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+                    state[key] = this.checked;
+                    recalc();
+                });
+            }
+        });
+    }
+    bindCurtainAddons();
+
     renderFurniture();
     initAccordion();
     bindOptionCheckboxes();

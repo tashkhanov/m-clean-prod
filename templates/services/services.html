@@ -161,15 +161,15 @@
                         <!-- Dirt Level -->
                         <div class="dirt-opts">
                             <div class="dirt-title">Состояние загрязнения</div>
-                            <div class="radio-opt dirt-btn active" data-dirt="0">
+                            <div class="radio-opt dirt-btn active" data-coeff="0">
                                 <input type="radio" name="dirt" value="0" checked> Обычное загрязнение
                                 <span class="rbadge">базовая цена</span>
                             </div>
-                            <div class="radio-opt dirt-btn" data-dirt="0.2">
+                            <div class="radio-opt dirt-btn" data-coeff="0.2">
                                 <input type="radio" name="dirt" value="0.2"> Сильные загрязнения
                                 <span class="rbadge">+20%</span>
                             </div>
-                            <div class="radio-opt dirt-btn" data-dirt="0.5">
+                            <div class="radio-opt dirt-btn" data-coeff="0.5">
                                 <input type="radio" name="dirt" value="0.5"> После ремонта
                                 <span class="rbadge">+50%</span>
                             </div>
@@ -310,17 +310,17 @@
                             <div class="qty-adjuster" id="hair-adj">
                                 <span class="qa-label">Кол-во погонных метров:</span>
                                 <div class="counter">
-                                    <button class="cbtn qa-btn" data-qa-key="hairM" data-qa-delta="-1">−</button>
-                                    <span class="cqty" id="hair-m">1</span>
-                                    <button class="cbtn p qa-btn" data-qa-key="hairM" data-qa-delta="1">+</button>
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="hair">−</button>
+                                    <span class="cqty" id="hair-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="hair">+</button>
                                 </div>
                             </div>
                             <div class="qty-adjuster" id="box-adj">
                                 <span class="qa-label">Количество ящиков:</span>
                                 <div class="counter">
-                                    <button class="cbtn qa-btn" data-qa-key="boxQ" data-qa-delta="-1">−</button>
-                                    <span class="cqty" id="box-q">1</span>
-                                    <button class="cbtn p qa-btn" data-qa-key="boxQ" data-qa-delta="1">+</button>
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="box">−</button>
+                                    <span class="cqty" id="box-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="box">+</button>
                                 </div>
                             </div>
                             
@@ -360,11 +360,11 @@
                         <label class="form-field__label" style="margin-top:16px;display:block;">Вариант чистки:</label>
                         <div class="carpet-mode-toggle">
                             <label class="carpet-mode-btn active" data-mode="general">
-                                <input type="radio" name="carpet-mode" value="general" checked>
+                                <input type="radio" name="carpet-mode" id="mode-general" value="general" checked>
                                 <span>Генеральная</span>
                             </label>
                             <label class="carpet-mode-btn" data-mode="eco">
-                                <input type="radio" name="carpet-mode" value="eco">
+                                <input type="radio" name="carpet-mode" id="mode-eco" value="eco">
                                 <span>Эконом</span>
                             </label>
                         </div>
@@ -376,11 +376,11 @@
                         <label class="form-field__label" style="margin-top:16px;display:block;">Тип покрытия:</label>
                         <div class="carpet-material-toggle">
                             <label class="carpet-material-btn active" data-material="synthetic">
-                                <input type="radio" name="carpet-material" value="synthetic" checked>
+                                <input type="radio" name="carpet-material" id="mat-synthetic" value="synthetic" checked>
                                 <span>Синтетика</span>
                             </label>
                             <label class="carpet-material-btn" data-material="natural">
-                                <input type="radio" name="carpet-material" value="natural">
+                                <input type="radio" name="carpet-material" id="mat-natural" value="natural">
                                 <span>Шерсть / Шёлк</span>
                             </label>
                         </div>
@@ -440,17 +440,17 @@
                             <div class="qty-adjuster" id="carpet-hair-adj">
                                 <span class="qa-label">Кол-во погонных метров:</span>
                                 <div class="counter">
-                                    <button class="cbtn qa-btn" data-qa-key="hairM" data-qa-delta="-1">−</button>
-                                    <span class="cqty" id="carpet-hair-m">1</span>
-                                    <button class="cbtn p qa-btn" data-qa-key="hairM" data-qa-delta="1">+</button>
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="hair">−</button>
+                                    <span class="cqty" id="carpet-hair-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="hair">+</button>
                                 </div>
                             </div>
                             <div class="qty-adjuster" id="carpet-box-adj">
                                 <span class="qa-label">Количество ящиков:</span>
                                 <div class="counter">
-                                    <button class="cbtn qa-btn" data-qa-key="boxQ" data-qa-delta="-1">−</button>
-                                    <span class="cqty" id="carpet-box-q">1</span>
-                                    <button class="cbtn p qa-btn" data-qa-key="boxQ" data-qa-delta="1">+</button>
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="box">−</button>
+                                    <span class="cqty" id="carpet-box-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="box">+</button>
                                 </div>
                             </div>
                         </div>
@@ -574,6 +574,68 @@
                             <div class="info-badge info-badge--success">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
                                 <span>Крючки: Бесплатная замена сломанных креплений</span>
+                            </div>
+                        </div>
+
+                        <!-- Global Options for Curtains -->
+                        <div class="opts-section" style="margin-top:32px;">
+                            <div class="opts-title">Общие параметры</div>
+                            <div class="opts-grid">
+                                <div class="opt-card" data-opt-id="hair">
+                                    <input type="checkbox" id="curtain-hair">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg></span>
+                                    <span class="opt-text">Шерсть животных<span class="opt-sub">погонный метр</span></span>
+                                    <span class="opt-price">5 000/м</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="box">
+                                    <input type="checkbox" id="curtain-box">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+                                    <span class="opt-text">Чистка ящиков<span class="opt-sub">шт</span></span>
+                                    <span class="opt-price">1 000/шт</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="night">
+                                    <input type="checkbox" id="curtain-night">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+                                    <span class="opt-text">Работа после 21:00</span>
+                                    <span class="opt-price ora">+5 000</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="roman">
+                                    <input type="checkbox" id="curtain-roman-mount">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>
+                                    <span class="opt-text">Монтаж Римских<span class="opt-sub">шт</span></span>
+                                    <span class="opt-price">3 000/шт</span>
+                                </div>
+                                <div class="opt-card" data-opt-id="faraway">
+                                    <input type="checkbox" id="curtain-faraway">
+                                    <span class="opt-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></span>
+                                    <span class="opt-text">Выезд за 10 км<span class="opt-sub">50 тг/км от 11-го</span></span>
+                                    <span class="opt-price" style="color:var(--ora);background:#fdebd0">уточним</span>
+                                </div>
+                            </div>
+
+                            <div class="qty-adjuster" id="curtain-hair-adj">
+                                <span class="qa-label">Кол-во погонных метров:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="hair">−</button>
+                                    <span class="cqty" id="curtain-hair-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="hair">+</button>
+                                </div>
+                            </div>
+                            <div class="qty-adjuster" id="curtain-box-adj">
+                                <span class="qa-label">Количество ящиков:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="box">−</button>
+                                    <span class="cqty" id="curtain-box-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="box">+</button>
+                                </div>
+                            </div>
+                            <div class="qty-adjuster" id="curtain-roman-adj">
+                                <span class="qa-label">Кол-во римских штор:</span>
+                                <div class="counter">
+                                    <button class="cbtn qa-btn" data-action="minus" data-param="roman">−</button>
+                                    <span class="cqty" id="curtain-roman-val">1</span>
+                                    <button class="cbtn p qa-btn" data-action="plus" data-param="roman">+</button>
+                                </div>
                             </div>
                         </div>
 

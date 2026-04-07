@@ -29,8 +29,19 @@ class Service(models.Model):
     
     CALC_TYPE_CHOICES = [
         ('default', 'Стандартный (поштучно)'),
+        ('furniture', 'Мебель (диваны/кресла)'),
         ('carpet', 'Ковролин (по м²)'),
         ('curtains', 'Шторы (по весу/окнам)'),
+    ]
+
+    CLIENT_TYPE_CHOICES = [
+        ('home', 'Физлица (Дом)'),
+        ('business', 'Бизнес (Офис)'),
+    ]
+    
+    MATERIAL_CHOICES = [
+        ('fabric', 'Ткань'),
+        ('leather', 'Кожа'),
     ]
 
     category = models.ForeignKey(
@@ -51,6 +62,20 @@ class Service(models.Model):
         choices=CALC_TYPE_CHOICES,
         default='default',
         help_text="Выберите тип расчёта для этой услуги"
+    )
+    default_client_type = models.CharField(
+        "Тип клиента по умолчанию",
+        max_length=10,
+        choices=CLIENT_TYPE_CHOICES,
+        default='home',
+        help_text="Для калькулятора мебели"
+    )
+    default_material = models.CharField(
+        "Материал по умолчанию",
+        max_length=10,
+        choices=MATERIAL_CHOICES,
+        default='fabric',
+        help_text="Для калькулятора мебели"
     )
     name = models.CharField("Название", max_length=200)
     slug = models.SlugField("URL-адрес", max_length=200, unique=True)
