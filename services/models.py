@@ -83,12 +83,11 @@ class Service(models.Model):
     short_description = models.TextField(
         "Краткое описание", 
         blank=True, 
-        help_text="Для превью и карточек (1-2 предложения)"
+        help_text="Для карточек и превью (1-2 предложения)"
     )
     description = CKEditor5Field("Описание", config_name='extends', blank=True)
-    process_description = CKEditor5Field("Процесс работы (HTML)", config_name='extends', blank=True, help_text="Блок 'Как мы работаем' (Можно с фото и видео)")
     base_price = models.DecimalField(
-        "Стандарт цена (₸)",
+        "Базовая цена (от)",
         max_digits=10,
         decimal_places=0,
         default=0,

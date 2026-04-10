@@ -38,8 +38,8 @@ class ServiceAdmin(ModelAdmin):
     actions = [compress_service_images]
     inlines = []
     fieldsets = (
-        ('Калькулятор и Тип услуги', {
-            'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'short_description', 'description', 'process_description', 'image', 'image_alt'),
+        ('Об услуге', {
+            'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'short_description', 'description', 'image', 'image_alt'),
         }),
         ("Цены", {
             'fields': ('base_price', 'unit'),
