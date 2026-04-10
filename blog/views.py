@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
 from django.db.models import F
 
 from core.models import SiteSettings
@@ -10,15 +11,20 @@ def blog_list(request):
     category_slug = request.GET.get('category')
 
     categories = BlogCategory.objects.all()
-    posts = Post.objects.filter(is_published=True)
+    posts_list = Post.objects.filter(is_published=True)
 
     if category_slug:
-        posts = posts.filter(category__slug=category_slug)
+        posts_list = posts_list.filter(category__slug=category_slug)
+    
+    paginator = Paginator(posts_list, 10) # 10 статей на страницу
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'settings': settings,
         'categories': categories,
-        'posts': posts,
+        'page_obj': page_obj,
+        'posts': page_obj, # Совместимость с текущим шаблоном
         'active_category': category_slug,
     }
 
@@ -28,14 +34,19 @@ def blog_list(request):
 def tag_posts(request, slug):
     settings = SiteSettings.objects.first()
     tag = get_object_or_404(Tag, slug=slug)
-    posts = Post.objects.filter(is_published=True, tags=tag)
+    posts_list = Post.objects.filter(is_published=True, tags=tag)
     
     categories = BlogCategory.objects.all()
+    
+    paginator = Paginator(posts_list, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'settings': settings,
         'tag': tag,
-        'posts': posts,
+        'page_obj': page_obj,
+        'posts': page_obj,
         'categories': categories,
     }
 

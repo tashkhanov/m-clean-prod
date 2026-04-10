@@ -11,10 +11,20 @@ class WorkCase(models.Model):
         verbose_name="Категория",
         related_name="work_cases"
     )
+    partner = models.ForeignKey(
+        'core.Partner',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Партнёр / Клиент",
+        related_name="work_cases"
+    )
     title = models.CharField("Заголовок", max_length=200)
     description = models.TextField("Описание", blank=True)
     image_before = models.ImageField("Фото ДО", upload_to="portfolio/before/")
+    image_before_alt = models.CharField("Alt-текст фото ДО", max_length=255, blank=True)
     image_after = models.ImageField("Фото ПОСЛЕ", upload_to="portfolio/after/")
+    image_after_alt = models.CharField("Alt-текст фото ПОСЛЕ", max_length=255, blank=True)
     order = models.PositiveIntegerField("Порядок", default=0)
     is_active = models.BooleanField("Отображать?", default=True)
 

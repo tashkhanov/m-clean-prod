@@ -134,9 +134,13 @@
                 {{ service.name }}
             </h1>
             
-            {% if service.description %}
+            {% if service.short_description %}
             <p class="hero__description">
-                {{ service.description|truncatewords:25 }}
+                {{ service.short_description }}
+            </p>
+            {% elif service.description %}
+            <p class="hero__description">
+                {{ service.description|striptags|truncatewords:25 }}
             </p>
             {% endif %}
             
@@ -826,6 +830,30 @@
 {% endvideo %}
 {% endif %}
 
+{% if service.description %}
+<!-- SERVICE FULL DESCRIPTION -->
+<section class="section">
+    <div class="container">
+        <div class="prose-content fade-in" style="max-width: 860px; margin: 0 auto;">
+            {{ service.description|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if service.process_description %}
+<!-- PROCESS DESCRIPTION -->
+<section class="section section--light">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Как мы работаем</h2>
+        </div>
+        <div class="prose-content fade-in" style="max-width: 860px; margin: 0 auto;">
+            {{ service.process_description|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
 
 
 <!-- RELATED PORTFOLIO -->
@@ -983,6 +1011,33 @@
 </section>
 {% endif %}
 
+{% if partners %}
+<!-- PARTNERS SECTION -->
+<section class="section" id="partners">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши клиенты и партнёры</h2>
+            <p class="section__subtitle">Организации и компании, которые нам доверяют</p>
+        </div>
+        
+        <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
+            <div class="swiper-wrapper">
+                {% for partner in partners %}
+                <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; cursor: pointer;" onclick="openPartnerModal({{ partner.id }})">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" height="60" style="max-height: 70px; width: auto; max-width: 100%; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:partners' %}" class="btn btn--secondary btn--large">Смотреть всех партнеров</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% include 'includes/partner_modal.html' %}
 {% endblock %}
 
 {% block extra_js %}
@@ -994,4 +1049,27 @@
 {{ service_for_json|json_script:"services-data" }}
 {% endif %}
 <script src="{% static 'js/calculator.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Swiper !== 'undefined') {
+        new Swiper('.partners-swiper', {
+            slidesPerView: 2,
+            spaceBetween: 20,
+            loop: true,
+            freeMode: { enabled: true, sticky: false },
+            autoplay: {
+                delay: 1,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            },
+            speed: 3500,
+            breakpoints: {
+                480: { slidesPerView: 3, spaceBetween: 30 },
+                768: { slidesPerView: 4, spaceBetween: 40 },
+                1024: { slidesPerView: 5, spaceBetween: 50 },
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

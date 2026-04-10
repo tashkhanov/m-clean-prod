@@ -39,7 +39,7 @@ class ServiceAdmin(ModelAdmin):
     inlines = []
     fieldsets = (
         ('Калькулятор и Тип услуги', {
-            'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'description', 'image'),
+            'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'short_description', 'description', 'process_description', 'image', 'image_alt'),
         }),
         ("Цены", {
             'fields': ('base_price', 'unit'),
@@ -73,8 +73,8 @@ class ServiceTierPriceInline(TabularInline):
 
 @admin.register(AdditionalOption)
 class AdditionalOptionAdmin(ModelAdmin):
-    list_display = ('name', 'price', 'calc_unit', 'show_in_furniture', 'show_in_carpet', 'show_in_curtains', 'order', 'is_active')
-    list_editable = ('order', 'is_active', 'price', 'show_in_furniture', 'show_in_carpet', 'show_in_curtains')
+    list_display = ('name', 'price', 'calc_unit', 'order', 'is_active')
+    list_editable = ('order', 'is_active', 'price', )
     filter_horizontal = ('services',)
     search_fields = ('name',)
     list_filter = ('calc_unit',)
@@ -99,13 +99,13 @@ class AdditionalOptionAdmin(ModelAdmin):
 
 @admin.register(CurtainCoefficient)
 class CurtainCoefficientAdmin(ModelAdmin):
-    list_display = ('name', 'coefficient', 'order', 'is_active')
-    list_editable = ('order', 'is_active', 'coefficient')
+    list_display = ('name', 'coefficient', 'price_per_kg', 'order', 'is_active')
+    list_editable = ('order', 'is_active', 'coefficient', 'price_per_kg')
     search_fields = ('name',)
     fieldsets = (
         ("Основное", {
-            'fields': ('name', 'coefficient'),
-            'description': "Коэффициент веса в кг/м². Например: Обычные шторы = 0.6, Блэкаут = 1.1, Тюль = 0.2"
+            'fields': ('name', 'coefficient', 'price_per_kg'),
+            'description': "Коэффициент веса в кг/м². Например: Обычные шторы = 0.6, Блэкаут = 1.1, Тюль = 0.2. Цена за кг — переопределение базовой цены (необязательно)."
         }),
         ("Отображение", {
             'fields': ('order', 'is_active'),

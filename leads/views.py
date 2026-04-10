@@ -27,6 +27,7 @@ def submit_lead(request):
             service_name=data.get('service_name', ''),
             total_price=data.get('total_price', ''),
             options=data.get('options', ''),
+            discount_info=data.get('discount_info', ''),
             message=data.get('message', ''),
             source_page=data.get('source_page', ''),
         )

@@ -2,10 +2,108 @@
 {% load static %}
 
 {% block content %}
+<style>
+    .reviews-filter {
+        display: flex; 
+        justify-content: center; 
+        gap: var(--space-sm); 
+        margin-bottom: var(--space-xl); 
+        flex-wrap: wrap;
+    }
+    .filter-tab {
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+        padding: 10px 20px; 
+        background: white; 
+        border-radius: 30px; 
+        text-decoration: none; 
+        color: var(--color-text-main); 
+        font-weight: 500; 
+        transition: all 0.3s; 
+        border: 1px solid var(--color-border);
+    }
+    .filter-tab:hover {
+        border-color: var(--color-brand);
+        color: var(--color-brand);
+    }
+    .filter-tab.active {
+        background: var(--color-brand); 
+        color: white; 
+        border-color: var(--color-brand);
+    }
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--space-md);
+        align-items: flex-start; /* FIX: Prevent cards from stretching to match the tallest one */
+    }
+    .review-card-link {
+        text-decoration: none; 
+        color: inherit; 
+        display: block;
+    }
+    .review-card {
+        background: white;
+        padding: var(--space-lg);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+    .review-card-link:hover .review-card {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+    .review-card__text {
+        margin: var(--space-md) 0;
+        line-height: 1.6;
+        color: var(--color-text-main);
+        display: -webkit-box;
+        -webkit-line-clamp: 5; /* FIX: Limit visible lines */
+        line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .review-card.expanded .review-card__text {
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+        max-height: none;
+    }
+    .review-card__more {
+        background: none;
+        border: none;
+        color: var(--color-brand);
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 4px 0;
+        display: block;
+        transition: opacity 0.2s;
+        position: relative;
+        z-index: 2; /* Ensure it's above the link card */
+    }
+    .review-card__more:hover {
+        text-decoration: underline;
+    }
+    .review-card__source-icon {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+    }
+</style>
 
 <!-- HERO -->
 <section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
     <div class="container">
+        <nav class="breadcrumb" aria-label="Хлебные крошки" style="margin-bottom: var(--space-md);">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <span>Отзывы</span>
+        </nav>
         <div class="hero__content">
             <h1 class="hero__title">
                 Отзывы <span class="hero__title-accent">клиентов</span>
@@ -29,7 +127,7 @@
             <!-- Yandex -->
             <div class="rating-card">
                 <div class="rating-card__icon rating-card__icon--yandex">
-                    <svg width="48" height="48" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 22a58.897 58.897 0 0 0-32.772 9.985 59.174 59.174 0 0 0-21.728 26.56 59.386 59.386 0 0 0-3.368 34.191 59.269 59.269 0 0 0 16.125 30.312c10.688 10.722 35.841 26.232 37.33 42.525.223 2.434 1.987 4.427 4.413 4.427s4.196-1.993 4.413-4.427c1.488-16.293 26.622-31.777 37.304-42.492a59.274 59.274 0 0 0 16.151-30.313 59.383 59.383 0 0 0-3.354-34.205 59.176 59.176 0 0 0-21.73-26.574A58.897 58.897 0 0 0 95.997 22v0Z"/><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 101.6a20.806 20.806 0 0 1-14.708-6.092 20.8 20.8 0 1 1 14.708 6.092v0Z"/></svg>
+                    <svg width="48" height="48" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 22a58.897 58.897 0 0 0-32.772 9.985 59.174 59.174 0 0 0-21.728 26.56 59.386 59.386 0 0 0-3.368 34.191 59.269 59.269 0 0 0 16.125 30.312c10.688 10.722 35.841 26.232 37.33 42.525.223 2.434 1.987 4.427 4.413 4.413s4.196-1.993 4.413-4.427c1.488-16.293 26.622-31.777 37.304-42.492a59.274 59.274 0 0 0 16.151-30.313 59.383 59.383 0 0 0-3.354-34.205 59.176 59.176 0 0 0-21.73-26.574A58.897 58.897 0 0 0 95.997 22v0Z"/><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 101.6a20.806 20.806 0 0 1-14.708-6.092 20.8 20.8 0 1 1 14.708 6.092v0Z"/></svg>
                 </div>
                 <div class="rating-card__source">Яндекс</div>
                 <div class="rating-card__stars">
@@ -78,28 +176,61 @@
 <!-- REVIEWS GRID -->
 <section class="section" id="reviews-list">
     <div class="container">
+        <!-- FILTER BAR: Always visible for main sources -->
+        <div class="reviews-filter fade-in">
+            <a href="?source=all" class="filter-tab {% if current_source == 'all' %}active{% endif %}">
+                Все отзывы
+            </a>
+            <a href="?source=google" class="filter-tab {% if current_source == 'google' %}active{% endif %}">
+                <svg width="18" height="18" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="{% if current_source == 'google' %}white{% else %}#4285F4{% endif %}" d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-7.6-23-12-47.6-12-72.9s4.4-49.9 12-72.9c30.3-90.6 114.8-158.1 214.7-158.1 56.3 0 106.8 19.4 146.6 57.4l110-110.1c-66.5-62-153.2-100-256.6-100-149.9 0-279.6 86-342.7 211.4-26 51.8-40.8 110.4-40.8 172.4S151 632.8 177 684.6C240.1 810 369.8 896 519.7 896c103.6 0 190.4-34.4 253.8-93 72.5-66.8 114.4-165.2 114.4-282.1 0-27.2-2.4-53.3-6.9-78.5z"/></svg>
+                Google
+            </a>
+            <a href="?source=2gis" class="filter-tab {% if current_source == '2gis' %}active{% endif %}">
+                <svg width="18" height="18" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="{% if current_source == '2gis' %}white{% else %}#5FBF00{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M40.5,5.5H7.5a2,2,0,0,0-2,2v33a2,2,0,0,0,2,2h33a2,2,0,0,0,2-2V7.5A2,2,0,0,0,40.5,5.5Z"/><path fill="none" stroke="{% if current_source == '2gis' %}white{% else %}#5FBF00{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M25.5785,36.1424c-.041-4.7889,1.0624-8.7464,7.0814-8.4979C41.246,5.7628,6.2359,6.5969,15.5681,27.5138c2.83-.1756,7.5212,1.5092,6.72,9.1465"/><path fill="none" stroke="{% if current_source == '2gis' %}white{% else %}#5FBF00{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M42.5,33.479l-37,5.8236"/><path fill="none" stroke="{% if current_source == '2gis' %}white{% else %}#5FBF00{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5.5,11.04l12.3448,2.29"/><path fill="none" stroke="{% if current_source == '2gis' %}white{% else %}#5FBF00{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M32.3554,15.53,42.5,17.0114"/></svg>
+                2ГИС
+            </a>
+            {% if yandex_count > 0 %}
+            <a href="?source=yandex" class="filter-tab {% if current_source == 'yandex' %}active{% endif %}">
+                <svg width="18" height="18" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="{% if current_source == 'yandex' %}white{% else %}#FF0000{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 22a58.897 58.897 0 0 0-32.772 9.985 59.174 59.174 0 0 0-21.728 26.56 59.386 59.386 0 0 0-3.368 34.191 59.269 59.269 0 0 0 16.125 30.312c10.688 10.722 35.841 26.232 37.33 42.525.223 2.434 1.987 4.427 4.413 4.427s4.196-1.993 4.413-4.427c1.488-16.293 26.622-31.777 37.304-42.492a59.274 59.274 0 0 0 16.151-30.313 59.383 59.383 0 0 0-3.354-34.205 59.176 59.176 0 0 0-21.73-26.574A58.897 58.897 0 0 0 95.997 22v0Z"/><path stroke="{% if current_source == 'yandex' %}white{% else %}#FF0000{% endif %}" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 101.6a20.806 20.806 0 0 1-14.708-6.092 20.8 20.8 0 1 1 14.708 6.092v0Z"/></svg>
+                Яндекс
+            </a>
+            {% endif %}
+        </div>
+
         <div class="reviews-grid" id="reviews-container">
             {% for review in reviews %}
-            <div class="review-card fade-in">
-                <div class="review-card__header">
-                    <div class="review-card__author">
-                        <div class="review-card__avatar">{{ review.name|first|upper }}</div>
-                        <div class="review-card__info">
-                            <span class="review-card__name">{{ review.name }}</span>
-                            <span class="review-card__source">{{ review.get_source_display }}</span>
+            <a href="{{ review.source_url|default:'#' }}" target="_blank" class="review-card-link">
+                <div class="review-card fade-in">
+                    <div class="review-card__header">
+                        <div class="review-card__author">
+                            <div class="review-card__avatar">{{ review.name|first|upper }}</div>
+                            <div class="review-card__info">
+                                <span class="review-card__name">{{ review.name }}</span>
+                                <span class="review-card__source-icon">
+                                    {% if review.source == 'google' %}
+                                        <svg width="14" height="14" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-7.6-23-12-47.6-12-72.9s4.4-49.9 12-72.9c30.3-90.6 114.8-158.1 214.7-158.1 56.3 0 106.8 19.4 146.6 57.4l110-110.1c-66.5-62-153.2-100-256.6-100-149.9 0-279.6 86-342.7 211.4-26 51.8-40.8 110.4-40.8 172.4S151 632.8 177 684.6C240.1 810 369.8 896 519.7 896c103.6 0 190.4-34.4 253.8-93 72.5-66.8 114.4-165.2 114.4-282.1 0-27.2-2.4-53.3-6.9-78.5z"/></svg>
+                                    {% elif review.source == '2gis' %}
+                                        <svg width="14" height="14" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="#5FBF00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M40.5,5.5H7.5a2,2,0,0,0-2,2v33a2,2,0,0,0,2,2h33a2,2,0,0,0,2-2V7.5A2,2,0,0,0,40.5,5.5Z"/><path fill="none" stroke="#5FBF00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M25.5785,36.1424c-.041-4.7889,1.0624-8.7464,7.0814-8.4979C41.246,5.7628,6.2359,6.5969,15.5681,27.5138c2.83-.1756,7.5212,1.5092,6.72,9.1465"/><path fill="none" stroke="#5FBF00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M42.5,33.479l-37,5.8236"/><path fill="none" stroke="#5FBF00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5.5,11.04l12.3448,2.29"/><path fill="none" stroke="#5FBF00" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M32.3554,15.53,42.5,17.0114"/></svg>
+                                    {% elif review.source == 'yandex' %}
+                                        <svg width="14" height="14" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 22a58.897 58.897 0 0 0-32.772 9.985 59.174 59.174 0 0 0-21.728 26.56 59.386 59.386 0 0 0-3.368 34.191 59.269 59.269 0 0 0 16.125 30.312c10.688 10.722 35.841 26.232 37.33 42.525.223 2.434 1.987 4.427 4.413 4.427s4.196-1.993 4.413-4.427c1.488-16.293 26.622-31.777 37.304-42.492a59.274 59.274 0 0 0 16.151-30.313 59.383 59.383 0 0 0-3.354-34.205 59.176 59.176 0 0 0-21.73-26.574A58.897 58.897 0 0 0 95.997 22v0Z"/><path stroke="#FF0000" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 101.6a20.806 20.806 0 0 1-14.708-6.092 20.8 20.8 0 1 1 14.708 6.092v0Z"/></svg>
+                                    {% endif %}
+                                    {{ review.get_source_display }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="review-card__stars">
+                            {% for i in range_5 %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if forloop.counter <= review.rating %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            {% endfor %}
                         </div>
                     </div>
-                    <div class="review-card__stars">
-                        {% for i in range_5 %}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if forloop.counter <= review.rating %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        {% endfor %}
+                    <p class="review-card__text">{{ review.text }}</p>
+                    <button class="review-card__more" style="display: none;">Читать далее</button>
+                    <div class="review-card__footer" style="margin-top: var(--space-sm); font-size: 0.85rem; color: var(--color-text-muted);">
+                        <span class="review-card__date">{{ review.date|date:"d.m.Y" }}</span>
                     </div>
                 </div>
-                <p class="review-card__text">{{ review.text }}</p>
-                <div class="review-card__footer">
-                    <span class="review-card__date">{{ review.date|date:"d.m.Y" }}</span>
-                </div>
-            </div>
+            </a>
             {% empty %}
             <div class="no-items fade-in" style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
                 <p>Отзывов пока нет. Будьте первым!</p>
@@ -107,13 +238,7 @@
             {% endfor %}
         </div>
         
-        {% if reviews.has_next %}
-        <div class="load-more-wrap fade-in" style="text-align: center; margin-top: var(--space-2xl);">
-            <button class="btn btn--secondary" id="load-more-reviews" data-page="{{ reviews.number }}">
-                Загрузить ещё
-            </button>
-        </div>
-        {% endif %}
+        {% include 'includes/pagination.html' %}
     </div>
 </section>
 
@@ -134,7 +259,7 @@
                     <div style="font-weight: 600;">Яндекс.Карты</div>
                     <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
                 </div>
-                <div style="font-weight: bold; color: var(--color-primary);">→</div>
+                <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
             
             <a href="#" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
@@ -145,9 +270,9 @@
                     <div style="font-weight: 600;">2ГИС</div>
                     <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
                 </div>
-                <div style="font-weight: bold; color: var(--color-primary);">→</div>
+                <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
-
+ 
             <a href="#" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
                 <div class="platform-card__icon">
                     <svg fill="currentColor" width="32" height="32" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon"><path d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-7.6-23-12-47.6-12-72.9s4.4-49.9 12-72.9c30.3-90.6 114.8-158.1 214.7-158.1 56.3 0 106.8 19.4 146.6 57.4l110-110.1c-66.5-62-153.2-100-256.6-100-149.9 0-279.6 86-342.7 211.4-26 51.8-40.8 110.4-40.8 172.4S151 632.8 177 684.6C240.1 810 369.8 896 519.7 896c103.6 0 190.4-34.4 253.8-93 72.5-66.8 114.4-165.2 114.4-282.1 0-27.2-2.4-53.3-6.9-78.5z"/></svg>
@@ -156,69 +281,37 @@
                     <div style="font-weight: 600;">Google Maps</div>
                     <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
                 </div>
-                <div style="font-weight: bold; color: var(--color-primary);">→</div>
+                <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
         </div>
     </div>
 </section>
 
-{% endblock %}
-
-{% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const loadMoreBtn = document.getElementById('load-more-reviews');
-    const container = document.getElementById('reviews-container');
-    
-    if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', async function() {
-            const page = parseInt(this.dataset.page) + 1;
-            this.textContent = 'Загрузка...';
-            this.disabled = true;
+    document.addEventListener('DOMContentLoaded', function() {
+        const reviewCards = document.querySelectorAll('.review-card');
+        
+        reviewCards.forEach(card => {
+            const text = card.querySelector('.review-card__text');
+            const moreBtn = card.querySelector('.review-card__more');
             
-            try {
-                const response = await fetch(`/api/reviews/?page=${page}`);
-                const data = await response.json();
-                
-                data.reviews.forEach(review => {
-                    const stars = Array(5).fill().map((_, i) => 
-                        `<svg width="16" height="16" viewBox="0 0 24 24" fill="${i < review.rating ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
-                    ).join('');
-                    
-                    const card = document.createElement('div');
-                    card.className = 'review-card fade-in visible';
-                    card.innerHTML = `
-                        <div class="review-card__header">
-                            <div class="review-card__author">
-                                <div class="review-card__avatar">${review.name[0].toUpperCase()}</div>
-                                <div class="review-card__info">
-                                    <span class="review-card__name">${review.name}</span>
-                                    <span class="review-card__source">${review.source_display}</span>
-                                </div>
-                            </div>
-                            <div class="review-card__stars">${stars}</div>
-                        </div>
-                        <p class="review-card__text">${review.text}</p>
-                        <div class="review-card__footer">
-                            <span class="review-card__date">${review.date}</span>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-                
-                if (data.has_next) {
-                    this.dataset.page = page;
-                    this.textContent = 'Загрузить ещё';
-                    this.disabled = false;
-                } else {
-                    this.parentElement.remove();
-                }
-            } catch (error) {
-                console.error('Error loading reviews:', error);
-                this.textContent = 'Ошибка загрузки';
+            // Check if text is clamped (overflowing)
+            if (text.scrollHeight > text.clientHeight) {
+                moreBtn.style.display = 'block';
             }
+            
+            moreBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // Stop card link navigation
+                e.stopPropagation();
+                
+                card.classList.toggle('expanded');
+                if (card.classList.contains('expanded')) {
+                    this.textContent = 'Свернуть';
+                } else {
+                    this.textContent = 'Читать далее';
+                }
+            });
         });
-    }
-});
+    });
 </script>
 {% endblock %}

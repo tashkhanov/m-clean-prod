@@ -1028,7 +1028,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 CAT.mattress.forEach(function(m) {
-                    var c = state.cart[m.id];
+                     var c = state.cart[m.id];
                     if (!c || !c.q) return;
                     var st = state.matState[m.id] || {sides: 1};
                     var sides = st.sides || 1;
@@ -1127,18 +1127,12 @@ document.addEventListener('DOMContentLoaded', function() {
         det.push({n: 'sep', v: 0, cls: 'sep'});
 
         total = applyOptionsAndDiscounts(total, det, 0, 0, totalQty);
+        
+        var discountInfo = [];
+        if (state.isNewClient) discountInfo.push('Скидка 5% (первый заказ)');
+        if (state.isCombo) discountInfo.push('Доп. заказ (скидка 15% на мебель)');
 
-        if (state.isNewClient) {
-            var disc = total * 0.05;
-            total -= disc;
-            det.push({n: '🎁 Скидка 5% (первый заказ)', v: -Math.round(disc), cls: 'disc'});
-        }
-
-        if (state.isCombo) {
-            det.push({n: '🔄 Доп. заказ (скидка 15% на мебель)', v: 0, cls: 'warn'});
-        }
-
-        renderSummary(det, total);
+        renderSummary(det, total, discountInfo.join(', '));
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1220,7 +1214,12 @@ document.addEventListener('DOMContentLoaded', function() {
         total += extras;
 
         total = applyOptionsAndDiscounts(total, det, area, 0, 1);
-        renderSummary(det, total);
+
+        var discountInfo = [];
+        if (state.isNewClient) discountInfo.push('Скидка 5% (первый заказ)');
+        if (state.isCombo) discountInfo.push('Доп. заказ (скидка 15% на мебель)');
+
+        renderSummary(det, total, discountInfo.join(', '));
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1253,6 +1252,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Calculate price: in windows mode use per-window price_per_kg if available
         var det = [];
         var pricePerKg = 3600;
         var curtainSvc = null;
@@ -1261,10 +1261,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (curtainSvc) pricePerKg = parseFloat(curtainSvc.base_price) || 0;
 
-        var total = wgt * pricePerKg;
-        if (wgt > 0) {
-            var label = state.curtainMode === 'weight' ? 'Химчистка штор (' + wgt.toFixed(1) + ' кг)' : 'Химчистка штор (' + state.curtainWindows.length + ' окн., ~' + wgt.toFixed(1) + ' кг)';
-            det.push({n: label, v: Math.round(total), cls: 'pos'});
+        var total = 0;
+        if (state.curtainMode === 'weight') {
+            total = wgt * pricePerKg;
+            if (wgt > 0) {
+                det.push({n: 'Химчистка штор (' + wgt.toFixed(1) + ' кг × ' + Math.round(pricePerKg).toLocaleString('ru-RU') + ' ₸/кг)', v: Math.round(total), cls: 'pos'});
+            }
+        } else {
+            // Windows mode: calculate per-window with possible price_per_kg override
+            state.curtainWindows.forEach(function(win) {
+                var winArea = win.w * win.h;
+                var winWeight = winArea * (win.coeff || 0.6);
+                var winPrice = (win.price_per_kg != null) ? win.price_per_kg : pricePerKg;
+                var winCost = winWeight * winPrice;
+                total += winCost;
+                var priceNote = (win.price_per_kg != null) ? Math.round(win.price_per_kg).toLocaleString('ru-RU') + ' ₸/кг' : Math.round(pricePerKg).toLocaleString('ru-RU') + ' ₸/кг';
+                det.push({n: win.fabric + ' ' + win.w + '×' + win.h + 'м (~' + winWeight.toFixed(1) + ' кг, ' + priceNote + ')', v: Math.round(winCost), cls: 'pos'});
+            });
         }
 
         // Addons logic (Match Photo Prices)
@@ -1316,13 +1329,18 @@ document.addEventListener('DOMContentLoaded', function() {
         total += extras;
 
         total = applyOptionsAndDiscounts(total, det, area, wgt, state.curtainWindows.length);
-        renderSummary(det, total);
+        
+        var discountInfo = [];
+        if (state.isNewClient) discountInfo.push('Скидка 5% (первый заказ)');
+        if (state.isCombo) discountInfo.push('Доп. заказ (скидка 15% на мебель)');
+
+        renderSummary(det, total, discountInfo.join(', '));
     }
 
     // ═══════════════════════════════════════════════════════════════
     // RENDER SUMMARY
     // ═══════════════════════════════════════════════════════════════
-    function renderSummary(det, total) {
+    function renderSummary(det, total, discountInfo) {
         var orderLines = document.getElementById('order-lines');
         var totalVal = document.getElementById('total-val');
         var minNote = document.getElementById('min-note');
@@ -1395,6 +1413,7 @@ document.addEventListener('DOMContentLoaded', function() {
             orderBtn.dataset.options = det.filter(function(d) { return d.cls !== 'sep' && d.cls !== 'empty'; }).map(function(d) { 
                 return d.n + (d.v !== 0 ? ': ' + fmt(d.v) : ''); 
             }).join('\n');
+            orderBtn.dataset.discountInfo = discountInfo || '';
         }
 
         var waBtn = document.getElementById('calc-whatsapp-btn');
@@ -1464,7 +1483,12 @@ document.addEventListener('DOMContentLoaded', function() {
         total += extras;
 
         total = applyOptionsAndDiscounts(total, det, 0, 0, 1);
-        renderSummary(det, total);
+
+        var discountInfo = [];
+        if (state.isNewClient) discountInfo.push('Скидка 5% (первый заказ)');
+        if (state.isCombo) discountInfo.push('Доп. заказ (скидка 15% на мебель)');
+
+        renderSummary(det, total, discountInfo.join(', '));
     }
 
     function recalc() {
@@ -1537,7 +1561,8 @@ document.addEventListener('DOMContentLoaded', function() {
         COEFFS.forEach(function(c, idx) {
             var opt = document.createElement('option');
             opt.value = idx;
-            opt.textContent = c.name + ' (' + c.coefficient + ' кг/м²)';
+            var priceStr = c.price_per_kg ? ' — ' + Math.round(c.price_per_kg).toLocaleString('ru-RU') + ' ₸/кг' : '';
+            opt.textContent = c.name + ' (' + c.coefficient + ' кг/м²' + priceStr + ')';
             cFabricSelect.appendChild(opt);
         });
     }
@@ -1560,7 +1585,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     w: w,
                     h: h,
                     fabric: fabric.name,
-                    coeff: fabric.coefficient
+                    coeff: fabric.coefficient,
+                    price_per_kg: fabric.price_per_kg || null
                 });
                 wInp.value = '';
                 hInp.value = '';

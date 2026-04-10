@@ -47,6 +47,9 @@ def send_telegram_notification(lead):
     if lead.options:
         text += f"➕ Доп. опции: {lead.options}\n"
 
+    if lead.discount_info:
+        text += f"🎁 Скидки: {lead.discount_info}\n"
+
     if lead.total_price:
         text += f"💰 Сумма: {lead.total_price} ₸\n"
 

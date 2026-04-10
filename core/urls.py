@@ -12,7 +12,8 @@ urlpatterns = [
     path('reviews/', views.reviews, name='reviews'),
     path('portfolio/', views.portfolio, name='portfolio'),
     path('portfolio/<slug:slug>/', views.portfolio_category, name='portfolio_category'),
-    path('partners/', views.partners, name='partners'),
+    path('partners/', views.partners_list, name='partners'),
     path('contacts/', views.contacts, name='contacts'),
     path('api/reviews/', views.load_more_reviews, name='load_more_reviews'),
+    path('api/partners/<int:partner_id>/works/', views.get_partner_works, name='api_partner_works'),
 ]

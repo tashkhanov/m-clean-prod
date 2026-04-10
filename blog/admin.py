@@ -39,7 +39,7 @@ class PostAdmin(ModelAdmin):
     
     fieldsets = (
         ("Основное", {
-            'fields': ('category', 'author', 'tags', 'title', 'slug', 'image', 'excerpt', 'content'),
+            'fields': ('category', 'author', 'tags', 'title', 'slug', 'image', 'image_alt', 'excerpt', 'content'),
         }),
         ("FAQ", {
             'fields': ('faqs',),

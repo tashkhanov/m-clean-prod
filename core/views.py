@@ -27,9 +27,9 @@ def index(request):
         'settings': settings,
         'faqs': Faq.objects.filter(is_active=True),
         'partners': Partner.objects.filter(is_active=True),
-        'works': WorkCase.objects.filter(is_active=True),
+        'works': WorkCase.objects.filter(is_active=True)[:6],
         'reviews': Review.objects.filter(is_active=True, is_approved=True),
-        'services': Service.objects.filter(is_active=True),
+        'services': Service.objects.filter(is_active=True)[:6],
         'equipment': Equipment.objects.filter(is_active=True)[:4],
         'chemicals': Chemical.objects.filter(is_active=True)[:4],
         'team': TeamMember.objects.filter(is_active=True)[:6],
@@ -105,16 +105,26 @@ def discounts(request):
 def reviews(request):
     """Страница отзывов."""
     settings = SiteSettings.objects.first()
-    all_reviews = Review.objects.filter(is_active=True, is_approved=True)
     
-    paginator = Paginator(all_reviews, 12)
+    source_filter = request.GET.get('source', 'all')
+    reviews_queryset = Review.objects.filter(is_active=True, is_approved=True)
+    
+    if source_filter != 'all':
+        reviews_queryset = reviews_queryset.filter(source=source_filter)
+    
+    paginator = Paginator(reviews_queryset, 12)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
         'settings': settings,
+        'page_obj': page_obj,
         'reviews': page_obj,
-        'total_count': all_reviews.count(),
+        'total_count': Review.objects.filter(is_active=True, is_approved=True).count(),
+        'google_count': Review.objects.filter(is_active=True, is_approved=True, source='google').count(),
+        'twogis_count': Review.objects.filter(is_active=True, is_approved=True, source='2gis').count(),
+        'yandex_count': Review.objects.filter(is_active=True, is_approved=True, source='yandex').count(),
+        'current_source': source_filter,
         'range_5': range(5),
     }
 
@@ -145,16 +155,22 @@ def portfolio(request):
 
 
 def portfolio_category(request, slug):
-    """Страница работ конкретной категории."""
+    """Страница работ конкретной категории с пагинацией."""
     from services.models import Category
     settings = SiteSettings.objects.first()
     category = get_object_or_404(Category, slug=slug, is_active=True)
-    works = category.work_cases.filter(is_active=True).order_by('order', '-id')
+    
+    works_list = category.work_cases.filter(is_active=True).order_by('order', '-id')
+    
+    paginator = Paginator(works_list, 12) # 12 работ на страницу
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'settings': settings,
         'category': category,
-        'works': works,
+        'page_obj': page_obj,
+        'works': page_obj, # Для совместимости с текущим циклом в шаблоне
     }
 
     return render(request, 'core/portfolio_category.html', context)
@@ -212,6 +228,11 @@ def maintenance(request):
     
     if request.method == 'POST':
         if action == 'get_stats':
+            from portfolio.models import WorkCase
+            from services.models import Service
+            from blog.models import Post
+            from core.models import Certificate, TeamMember, Partner
+
             # Статистика моделей для обработки
             stats = [
                 {'id': 'workcase', 'name': 'Портфолио (До/После)', 'count': WorkCase.objects.count()},
@@ -219,10 +240,16 @@ def maintenance(request):
                 {'id': 'post', 'name': 'Блог', 'count': Post.objects.count()},
                 {'id': 'certificate', 'name': 'Сертификаты', 'count': Certificate.objects.count()},
                 {'id': 'teammember', 'name': 'Команда', 'count': TeamMember.objects.count()},
+                {'id': 'partner', 'name': 'Партнеры', 'count': Partner.objects.count()},
             ]
             return JsonResponse({'stats': stats})
 
         elif action == 'optimize_model':
+            from portfolio.models import WorkCase
+            from services.models import Service
+            from blog.models import Post
+            from core.models import Certificate, TeamMember, Partner
+
             model_id = request.POST.get('model_id')
             optimized_count = 0
             
@@ -233,6 +260,7 @@ def maintenance(request):
                 'post': (Post, ['image']),
                 'certificate': (Certificate, ['image']),
                 'teammember': (TeamMember, ['photo']),
+                'partner': (Partner, ['logo']),
             }
             
             if model_id in process_map:
@@ -293,3 +321,36 @@ def load_more_reviews(request):
         return JsonResponse({'reviews': data, 'has_next': reviews_page.has_next()})
     except Exception:
         return JsonResponse({'error': 'Page not found'}, status=404)
+
+def partners_list(request):
+    """Страница Наши партнеры."""
+    settings = SiteSettings.objects.first()
+
+    context = {
+        'settings': settings,
+        'partners': Partner.objects.filter(is_active=True),
+    }
+
+    return render(request, 'core/partners_list.html', context)
+
+
+def get_partner_works(request, partner_id):
+    """AJAX подгрузка работ партнера для модалки."""
+    partner = get_object_or_404(Partner, id=partner_id, is_active=True)
+    works = WorkCase.objects.filter(partner=partner, is_active=True)
+
+    data = []
+    for w in works:
+        data.append({
+            'title': w.title,
+            'image_before': w.image_before.url if w.image_before else None,
+            'image_after': w.image_after.url if w.image_after else None,
+        })
+
+    return JsonResponse({
+        'partner_name': partner.name,
+        'partner_logo': partner.logo.url if partner.logo else None,
+        'partner_description': partner.description if hasattr(partner, 'description') else '',
+        'works': data
+    })
+

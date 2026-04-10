@@ -6,6 +6,11 @@
 <!-- HERO -->
 <section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
     <div class="container">
+        <nav class="breadcrumb" aria-label="Хлебные крошки" style="margin-bottom: var(--space-md);">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <span>О компании</span>
+        </nav>
         <div class="hero__content">
             <h1 class="hero__title">
                 О <span class="hero__title-accent">компании</span>
@@ -23,7 +28,7 @@
     <div class="container">
         <div class="about-grid">
             <div class="about__image fade-in">
-                <img src="https://images.unsplash.com/photo-1581578731548-c64695b69535?w=600&h=800&fit=crop" alt="Команда M-Clean" width="600" height="800" loading="lazy">
+                <img src="{% static 'images/about.webp' %}" alt="Команда M-Clean" width="600" height="800" loading="lazy">
             </div>
             
             <div class="about__content slide-left">
@@ -138,7 +143,7 @@
         
         <div class="cert-grid" id="cert-grid">
             {% for cert in certificates %}
-            <div class="cert-card fade-in" data-lightbox="{% if cert.image %}{{ cert.image.url }}{% endif %}" 
+            <div class="cert-card fade-in" data-fancybox="gallery" data-src="{% if cert.image %}{{ cert.image.url }}{% endif %}" style="cursor: pointer;"
                  data-type="{% if 'письмо' in cert.title|lower or 'благодар' in cert.title|lower %}letter{% else %}certificate{% endif %}">
                 <div class="cert-card__img">
                     {% if cert.image %}
@@ -169,64 +174,30 @@
             <p class="section__subtitle">Наши постоянные клиенты и партнёры</p>
         </div>
         
-        <div class="partners-row fade-in">
-            <div class="partners-track">
+        <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
+            <div class="swiper-wrapper">
                 {% for partner in partners %}
-                <div class="partner-item">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" width="150" height="60" loading="lazy">
+                <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; cursor: pointer;" onclick="openPartnerModal({{ partner.id }})">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" height="60" style="max-height: 70px; width: auto; max-width: 100%; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
                 </div>
                 {% empty %}
                 <p class="text-center text-muted" style="width: 100%;">Партнёры скоро появятся</p>
                 {% endfor %}
             </div>
         </div>
+
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:partners' %}" class="btn btn--secondary btn--large">Смотреть всех партнеров</a>
+        </div>
     </div>
 </section>
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-    <button class="lightbox__close" aria-label="Закрыть">&times;</button>
-    <img class="lightbox__img" src="" alt="">
-</div>
-
+{% include 'includes/partner_modal.html' %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Lightbox
-    var lightbox = document.getElementById('lightbox');
-    if (lightbox) {
-        var lightboxImg = lightbox.querySelector('.lightbox__img');
-        var lightboxClose = lightbox.querySelector('.lightbox__close');
-        
-        document.querySelectorAll('[data-lightbox]').forEach(function(card) {
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', function() {
-                var src = this.dataset.lightbox;
-                if (src) {
-                    lightboxImg.src = src;
-                    lightbox.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-            });
-        });
-        
-        function closeLB() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-            lightboxImg.src = '';
-        }
-        
-        lightboxClose.addEventListener('click', closeLB);
-        lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) closeLB();
-        });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLB();
-        });
-    }
-    
     // Certificate filter
     var certFilter = document.getElementById('cert-filter');
     var certGrid = document.getElementById('cert-grid');
@@ -301,6 +272,27 @@ document.addEventListener('DOMContentLoaded', function() {
             observer.observe(factsSection);
         }
     }
+
+    if (typeof Swiper !== 'undefined') {
+        new Swiper('.partners-swiper', {
+            slidesPerView: 2,
+            spaceBetween: 20,
+            loop: true,
+            freeMode: { enabled: true, sticky: false },
+            autoplay: {
+                delay: 1,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            },
+            speed: 3500,
+            breakpoints: {
+                480: { slidesPerView: 3, spaceBetween: 30 },
+                768: { slidesPerView: 4, spaceBetween: 40 },
+                1024: { slidesPerView: 5, spaceBetween: 50 },
+            }
+        });
+    }
+
 });
 </script>
 {% endblock %}

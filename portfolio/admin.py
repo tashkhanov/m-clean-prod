@@ -19,6 +19,17 @@ class WorkCaseAdmin(ModelAdmin):
     list_filter = ('category', 'is_active')
     search_fields = ('title',)
     actions = [compress_workcase_images]
+    fieldsets = (
+        ("Основное", {
+            'fields': ('category', 'partner', 'title', 'description'),
+        }),
+        ("Изображения", {
+            'fields': ('image_before', 'image_before_alt', 'image_after', 'image_after_alt'),
+        }),
+        ("Отображение", {
+            'fields': ('order', 'is_active'),
+        }),
+    )
 
 
 @admin.register(Review)

@@ -64,9 +64,10 @@
             <div class="text-center" style="padding: var(--space-4xl) 0; grid-column: 1 / -1; text-align: center;">
                 <p style="font-size: 1.2rem; color: var(--color-text-muted);">В этой категории пока нет опубликованных работ.</p>
                 <a href="{% url 'core:portfolio' %}" class="btn">Вернуться ко всем работам</a>
-            </div>
             {% endfor %}
         </div>
+        
+        {% include 'includes/pagination.html' %}
     </div>
 </section>
 

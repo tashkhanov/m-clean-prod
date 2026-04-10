@@ -194,6 +194,7 @@ class Partner(models.Model):
         help_text="Для alt-тегов (SEO)"
     )
     logo = models.ImageField("Логотип", upload_to="partners/")
+    logo_alt = models.CharField("Alt-текст логотипа", max_length=255, blank=True)
     url = models.URLField(
         "Сайт партнёра",
         blank=True,
@@ -332,6 +333,7 @@ class TeamMember(models.Model):
         blank=True,
         help_text="Портретное фото"
     )
+    photo_alt = models.CharField("Alt-текст фото", max_length=255, blank=True)
     bio = models.TextField(
         "О сотруднике",
         blank=True,
@@ -372,6 +374,7 @@ class Certificate(models.Model):
         "Изображение",
         upload_to="certificates/"
     )
+    image_alt = models.CharField("Alt-текст изображения", max_length=255, blank=True)
     issued_by = models.CharField(
         "Кем выдан",
         max_length=200,
@@ -446,6 +449,7 @@ class Equipment(models.Model):
     name = models.CharField("Название", max_length=200)
     brand = models.CharField("Бренд", max_length=100, blank=True)
     photo = models.ImageField("Фото", upload_to="equipment/", blank=True)
+    photo_alt = models.CharField("Alt-текст фото", max_length=255, blank=True)
     description = models.TextField("Описание", blank=True)
     features = models.TextField(
         "Характеристики",
@@ -476,6 +480,7 @@ class Chemical(models.Model):
     name = models.CharField("Название", max_length=200)
     brand = models.CharField("Бренд", max_length=100, blank=True)
     photo = models.ImageField("Фото", upload_to="chemicals/", blank=True)
+    photo_alt = models.CharField("Alt-текст фото", max_length=255, blank=True)
     description = models.TextField("Описание", blank=True)
     eco_status = models.CharField(
         "Эко-статус",
@@ -512,6 +517,7 @@ class Discount(models.Model):
         blank=True
     )
     image = models.ImageField("Изображение", upload_to="discounts/", blank=True)
+    image_alt = models.CharField("Alt-текст изображения", max_length=255, blank=True)
     valid_until = models.DateField("Действует до", null=True, blank=True)
     is_active = models.BooleanField("Отображать?", default=True)
     order = models.PositiveIntegerField("Порядок", default=0)

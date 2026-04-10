@@ -35,6 +35,11 @@ class Lead(models.Model):
         help_text="Страница, с которой отправлена форма"
     )
     message = models.TextField("Сообщение", blank=True)
+    discount_info = models.TextField(
+        "Примененные скидки",
+        blank=True,
+        help_text="Информация о примененных скидках из калькулятора"
+    )
     status = models.CharField(
         "Статус",
         max_length=20,

@@ -2,7 +2,7 @@ import json
 
 from django.shortcuts import render, get_object_or_404
 
-from core.models import SiteSettings
+from core.models import SiteSettings, Faq, Partner
 from blog.models import Post
 from .models import Category, Service, AdditionalOption, CurtainCoefficient
 
@@ -65,7 +65,11 @@ def services_page(request):
     ]
 
     curtain_coeffs_data = [
-        {'name': cc.name, 'coefficient': float(cc.coefficient)}
+        {
+            'name': cc.name,
+            'coefficient': float(cc.coefficient),
+            'price_per_kg': float(cc.price_per_kg) if cc.price_per_kg else None,
+        }
         for cc in curtain_coeffs
     ]
 
@@ -139,7 +143,11 @@ def service_detail(request, slug):
     ]
 
     curtain_coeffs_data = [
-        {'name': cc.name, 'coefficient': float(cc.coefficient)}
+        {
+            'name': cc.name,
+            'coefficient': float(cc.coefficient),
+            'price_per_kg': float(cc.price_per_kg) if cc.price_per_kg else None,
+        }
         for cc in curtain_coeffs
     ]
 
@@ -186,6 +194,7 @@ def service_detail(request, slug):
     faqs = Faq.objects.filter(is_active=True)
     related_works = WorkCase.objects.filter(category=service.category, is_active=True)[:4]
     recommended_services = Service.objects.filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
+    partners = Partner.objects.filter(is_active=True)
 
     context = {
         'settings': settings,
@@ -205,6 +214,7 @@ def service_detail(request, slug):
         'min_order': min_order,
         'service_for_json': service_for_json,
         'furniture_data': furniture_data,
+        'partners': partners,
     }
 
     return render(request, 'services/service_detail.html', context)

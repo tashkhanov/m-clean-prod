@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Наши партнеры | {{ settings.company_name }}{% endblock %}
+{% block seo_description %}Организации и компании Алматы, которые доверяют M-Clean. Работаем с лучшими ресторанами, офисами, торговыми центрами и отелями города.{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" style="min-height: auto; padding: var(--space-3xl) 0;">
+    <div class="container">
+        <nav class="breadcrumb" aria-label="Хлебные крошки" style="margin-bottom: var(--space-md);">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <span>Наши партнеры</span>
+        </nav>
+        <div class="hero__content">
+            <h1 class="hero__title">
+                Нам <span class="hero__title-accent">доверяют</span>
+            </h1>
+            <p class="hero__description">
+                Мы работаем с лучшими ресторанами, отелями, офисами и торговыми центрами Алматы.
+                Нажмите на логотип, чтобы увидеть примеры наших работ.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERS GRID -->
+<section class="section">
+    <div class="container">
+        <div class="partners-grid">
+            {% for partner in partners %}
+            <div class="partner-card" role="button" tabindex="0" onclick="openPartnerModal({{ partner.id }})" onkeydown="if(event.key==='Enter') openPartnerModal({{ partner.id }})">
+                <div class="partner-card__logo-wrap">
+                    {% if partner.logo %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" loading="lazy" class="partner-card__logo">
+                    {% else %}
+                    <span class="partner-card__name">{{ partner.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="partner-card__overlay">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span>Смотреть работы</span>
+                </div>
+            </div>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--color-text-muted);">
+                <p>Список партнёров скоро пополнится.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% include 'includes/partner_modal.html' %}
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ── PARTNERS GRID ────────────────────────────────────────── */
+.partners-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+}
+
+.partner-card {
+    position: relative;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+}
+
+.partner-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-brand);
+}
+
+.partner-card__logo-wrap {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.partner-card:hover .partner-card__logo-wrap {
+    transform: scale(0.9);
+}
+
+.partner-card__logo {
+    max-width: 85%; max-height: 80%;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.65);
+    transition: filter 0.3s ease;
+}
+
+.partner-card:hover .partner-card__logo {
+    filter: grayscale(0%) opacity(1);
+}
+
+.partner-card__name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.partner-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(21, 128, 61, 0.88);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    border-radius: var(--radius-md);
+}
+
+.partner-card:hover .partner-card__overlay {
+    opacity: 1;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 1200px) {
+    .partners-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 900px) {
+    .partners-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+}
+@media (max-width: 600px) {
+    .partners-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+@media (max-width: 380px) {
+    .partners-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+}
+</style>
+{% endblock %}

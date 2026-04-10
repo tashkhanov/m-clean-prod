@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <style>
+        /* Fix for CKEditor5 overflow horizontally in Django Admin */
+        .ck-editor__main,
+        .ck-editor__editable,
+        .ck.ck-editor,
+        .django-ckeditor-5-widget {
+            max-width: 75% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            width: 75% !important;
+        }
+        .ck-content {
+            word-break: break-word !important;
+            white-space: pre-wrap !important;
+        }
+    </style>
+{% endblock %}

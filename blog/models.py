@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class BlogCategory(models.Model):
@@ -60,14 +61,16 @@ class Post(models.Model):
     title = models.CharField("Заголовок", max_length=300)
     slug = models.SlugField("URL-адрес", max_length=300, unique=True)
     image = models.ImageField("Изображение", upload_to="blog/")
+    image_alt = models.CharField("Alt-текст изображения", max_length=255, blank=True, help_text="Для SEO. Например: Чистка дивана в Алматы")
     excerpt = models.TextField(
         "Краткое описание",
         max_length=500,
         help_text="Для превью в списке статей"
     )
-    content = models.TextField(
-        "Текст статьи (HTML)",
-        help_text="Основной контент. Поддерживается HTML."
+    content = CKEditor5Field(
+        "Текст статьи",
+        config_name='extends',
+        help_text="Основной контент. Поддерживается HTML и медиа."
     )
     published_at = models.DateTimeField("Дата публикации", auto_now_add=True)
     is_published = models.BooleanField("Опубликована?", default=True)

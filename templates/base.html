@@ -36,6 +36,9 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     
+    <!-- Fancybox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
+    
     <!-- Critical CSS -->
     <style>
         /* ════════════════════════════════════════════════════════════════
@@ -544,8 +547,7 @@
      </style>
     
     <!-- Styles -->
-    <link rel="preload" href="{% static 'css/style.css' %}" as="style" onload="this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="{% static 'css/style.css' %}"></noscript>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
     <!-- JSON-LD Schema.org -->
     {% block schema %}{% if settings %}
@@ -594,66 +596,30 @@
                             </button>
                         </div>
                         <ul class="mobile-dropdown-menu">
-                            {% for cat in service_categories %}
-                                {% for svc in cat.services.all %}
-                                    {% if svc.is_active %}
-                                    <li><a href="{% url 'services:service_detail' svc.slug %}">{{ svc.name }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                            {% empty %}
-                                <li><a href="{% url 'services:services' %}">Химчистка диванов</a></li>
-                                <li><a href="{% url 'services:services' %}?tab=carpet">Химчистка ковров</a></li>
-                                <li><a href="{% url 'services:services' %}?tab=curtains">Чистка штор</a></li>
+                            {% for svc in all_services %}
+                                <li><a href="{% url 'services:service_detail' svc.slug %}">{{ svc.name }}</a></li>
                             {% endfor %}
                             <li><a href="{% url 'services:services' %}" style="font-weight: bold; color: var(--color-brand);">Все услуги (Калькулятор)</a></li>
                         </ul>
 
                         <div class="mega-menu">
                             <div class="mega-menu__inner">
-                                <div class="mega-menu__cols">
-                                    {% for cat in service_categories %}
-                                    <div class="mega-menu__col">
-                                        <h4 class="mega-menu__heading">{{ cat.name }}</h4>
-                                        <ul class="mega-menu__list">
-                                            {% for svc in cat.services.all %}
-                                            {% if svc.is_active %}
+                                <div class="mega-menu__cols" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                    
+                                    <div class="mega-menu__col" style="grid-column: span 2;">
+                                        <h4 class="mega-menu__heading">Все услуги</h4>
+                                        <ul class="mega-menu__list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                            {% for svc in all_services %}
                                             <li>
                                                 <a href="{% url 'services:service_detail' svc.slug %}" class="mega-menu__link">
                                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                                                     {{ svc.name }}
                                                 </a>
                                             </li>
-                                            {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>
-                                    {% empty %}
-                                    <div class="mega-menu__col">
-                                        <h4 class="mega-menu__heading">Мягкая мебель</h4>
-                                        <ul class="mega-menu__list">
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Химчистка диванов</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка кресел</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка стульев</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка пуфов</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="mega-menu__col">
-                                        <h4 class="mega-menu__heading">Матрасы</h4>
-                                        <ul class="mega-menu__list">
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка матрасов</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Антибактериальная обработка</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Удаление запахов</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="mega-menu__col">
-                                        <h4 class="mega-menu__heading">Ковры и текстиль</h4>
-                                        <ul class="mega-menu__list">
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Химчистка ковров</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка штор</a></li>
-                                            <li><a href="{% url 'services:services' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>Чистка гардин</a></li>
-                                        </ul>
-                                    </div>
-                                    {% endfor %}
+
                                     <div class="mega-menu__col mega-menu__col--cta">
                                         <div class="mega-menu__cta-box">
                                             <p class="mega-menu__cta-text">Не нашли нужную услугу?</p>
@@ -676,7 +642,7 @@
                         <ul class="mobile-dropdown-menu">
                             <li><a href="{% url 'core:about' %}#team">Команда</a></li>
                             <li><a href="{% url 'core:about' %}#certificates">Сертификаты</a></li>
-                            <li><a href="{% url 'core:about' %}#certificates">Благодарственные письма</a></li>
+                            <li><a href="{% url 'core:partners' %}">Наши партнеры</a></li>
                             <li><a href="{% url 'core:about' %}#clients">Клиенты</a></li>
                             <li><a href="{% url 'core:about' %}">О нас</a></li>
                             <li><a href="{% url 'core:prices' %}">Прайс-лист</a></li>
@@ -694,7 +660,7 @@
                                         <ul class="mega-menu__list">
                                             <li><a href="{% url 'core:about' %}#team" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Команда</a></li>
                                             <li><a href="{% url 'core:about' %}#certificates" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>Сертификаты</a></li>
-                                            <li><a href="{% url 'core:about' %}#certificates" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Благодарственные письма</a></li>
+                                            <li><a href="{% url 'core:partners' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Наши партнеры</a></li>
                                             <li><a href="{% url 'core:about' %}#clients" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>Клиенты</a></li>
                                             <li><a href="{% url 'core:about' %}" class="mega-menu__link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>О нас</a></li>
                                         </ul>
@@ -874,6 +840,7 @@
                         <span id="calc-summary-service"></span>
                         <span id="calc-summary-price"></span>
                     </div>
+                    <div id="calc-summary-discounts" class="calc-summary-discounts" style="display: none; color: #059669; font-weight: 600; margin-top: 4px; font-size: 0.9rem;"></div>
                     <div id="calc-summary-options" class="calc-summary-options" style="display: none;"></div>
                 </div>
                 
@@ -882,6 +849,7 @@
                     <input type="hidden" name="service_name" id="lead-service-name" value="">
                     <input type="hidden" name="total_price" id="lead-total-price" value="">
                     <input type="hidden" name="options" id="lead-options" value="">
+                    <input type="hidden" name="discount_info" id="lead-discount-info" value="">
                     <input type="hidden" name="source_page" id="lead-source-page" value="{{ request.path }}">
                     
                     <div class="form-group">
@@ -908,10 +876,17 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
     <script src="{% static 'js/main.js' %}" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Fancybox !== 'undefined') {
+                Fancybox.bind("[data-fancybox]", {
+                    // Custom options
+                });
+            }
+            
             // Mobile chevron buttons — toggle dropdown without navigating
             var chevronBtns = document.querySelectorAll('.mobile-chevron-btn');
             chevronBtns.forEach(function(btn) {
@@ -936,6 +911,56 @@
 
     {% block extra_js %}{% endblock %}
 
+    <!-- Back to Top FAB -->
+    <style>
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 56px;
+            height: 56px;
+            background-color: var(--color-bg-main);
+            color: var(--color-brand);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all var(--transition-base);
+            text-decoration: none;
+            border: 1px solid var(--color-border);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-top:hover {
+            background-color: var(--color-brand);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        @media (max-width: 768px) {
+            .back-to-top {
+                bottom: 20px;
+                left: 20px;
+                width: 48px;
+                height: 48px;
+            }
+        }
+    </style>
+    <a href="#" class="back-to-top" id="backToTop" aria-label="Наверх">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+    </a>
+
     <!-- WhatsApp FAB -->
     {% if settings.whatsapp_phone %}
     <a href="https://wa.me/{{ settings.whatsapp_phone }}" class="wa-fab" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
@@ -943,5 +968,23 @@
         <span class="wa-fab__pulse"></span>
     </a>
     {% endif %}
+
+    <script>
+        // Back to Top Logic
+        const backToTopBtn = document.getElementById('backToTop');
+        if (backToTopBtn) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+            backToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    </script>
 </body>
 </html>

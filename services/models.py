@@ -1,5 +1,6 @@
 from django.db import models
 from embed_video.fields import EmbedVideoField
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Category(models.Model):
@@ -79,7 +80,13 @@ class Service(models.Model):
     )
     name = models.CharField("Название", max_length=200)
     slug = models.SlugField("URL-адрес", max_length=200, unique=True)
-    description = models.TextField("Описание", blank=True)
+    short_description = models.TextField(
+        "Краткое описание", 
+        blank=True, 
+        help_text="Для превью и карточек (1-2 предложения)"
+    )
+    description = CKEditor5Field("Описание", config_name='extends', blank=True)
+    process_description = CKEditor5Field("Процесс работы (HTML)", config_name='extends', blank=True, help_text="Блок 'Как мы работаем' (Можно с фото и видео)")
     base_price = models.DecimalField(
         "Стандарт цена (₸)",
         max_digits=10,
@@ -98,6 +105,7 @@ class Service(models.Model):
         upload_to="services/",
         blank=True
     )
+    image_alt = models.CharField("Alt-текст фото", max_length=255, blank=True, help_text="Для SEO")
     video = EmbedVideoField(
         verbose_name="Видео (YouTube)",
         blank=True,
@@ -207,6 +215,14 @@ class CurtainCoefficient(models.Model):
         default=0.6,
         help_text="Сколько кг весит 1 м² ткани"
     )
+    price_per_kg = models.DecimalField(
+        "Цена за кг (₸)",
+        max_digits=10,
+        decimal_places=0,
+        null=True,
+        blank=True,
+        help_text="Оставьте пустым чтобы использовать базовую цену услуги. Заполните для переопределения цены для данного типа ткани."
+    )
     order = models.PositiveIntegerField("Порядок", default=0)
     is_active = models.BooleanField("Отображать?", default=True)
 
@@ -216,4 +232,6 @@ class CurtainCoefficient(models.Model):
         ordering = ['order', '-id']
 
     def __str__(self):
-        return f"{self.name} ({self.coefficient} кг/м²)"
+        price_str = f" — {self.price_per_kg} ₸/кг" if self.price_per_kg else ""
+        return f"{self.name} ({self.coefficient} кг/м²{price_str})"
+

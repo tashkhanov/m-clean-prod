@@ -261,7 +261,7 @@ class EquipmentAdmin(ModelAdmin):
     actions = [compress_images_action]
     fieldsets = (
         ("Основное", {
-            'fields': ('name', 'brand', 'photo', 'description'),
+            'fields': ('name', 'brand', 'photo', 'photo_alt', 'description'),
         }),
         ("Характеристики", {
             'fields': ('features',),
@@ -290,7 +290,7 @@ class DiscountAdmin(ModelAdmin):
     actions = [compress_images_action]
     fieldsets = (
         ("Основное", {
-            'fields': ('title', 'description', 'image'),
+            'fields': ('title', 'description', 'image', 'image_alt'),
         }),
         ("Скидка", {
             'fields': ('discount_percent', 'discount_amount', 'valid_until'),
@@ -312,7 +312,7 @@ class TeamMemberAdmin(ModelAdmin):
     actions = [compress_images_action]
     fieldsets = (
         ("Основное", {
-            'fields': ('name', 'position', 'experience_years', 'photo'),
+            'fields': ('name', 'position', 'experience_years', 'photo', 'photo_alt'),
         }),
         ("Дополнительно", {
             'fields': ('bio',),
@@ -333,7 +333,7 @@ class CertificateAdmin(ModelAdmin):
     actions = [compress_images_action]
     fieldsets = (
         ("Основное", {
-            'fields': ('title', 'image', 'issued_by', 'issued_date'),
+            'fields': ('title', 'image', 'image_alt', 'issued_by', 'issued_date'),
         }),
         ("Отображение", {
             'fields': ('order', 'is_active'),

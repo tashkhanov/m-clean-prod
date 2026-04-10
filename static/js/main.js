@@ -107,19 +107,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const svcName = btn.dataset.serviceName || '';
             const totalPrice = btn.dataset.totalPrice || '';
             const optionsText = btn.dataset.options || '';
+            const discountInfo = btn.dataset.discountInfo || '';
             if (svcName || totalPrice) {
                 const snInput = document.getElementById('lead-service-name');
                 const tpInput = document.getElementById('lead-total-price');
                 const opInput = document.getElementById('lead-options');
+                const diInput = document.getElementById('lead-discount-info');
                 if (snInput) snInput.value = svcName;
                 if (tpInput) tpInput.value = totalPrice;
                 if (opInput) opInput.value = optionsText;
+                if (diInput) diInput.value = discountInfo;
                 
                 // Show summary box
                 if (calcSummary) {
                     const summarySvc = document.getElementById('calc-summary-service');
                     const summaryPrice = document.getElementById('calc-summary-price');
                     const summaryOpts = document.getElementById('calc-summary-options');
+                    const summaryDiscounts = document.getElementById('calc-summary-discounts');
                     if (summarySvc) summarySvc.textContent = svcName;
                     // Don't add ₸ if it's already in the price
                     if (summaryPrice) {
@@ -128,6 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (summaryOpts) {
                         summaryOpts.textContent = optionsText;
                         summaryOpts.style.display = optionsText ? '' : 'none';
+                    }
+                    if (summaryDiscounts) {
+                        summaryDiscounts.textContent = discountInfo;
+                        summaryDiscounts.style.display = discountInfo ? '' : 'none';
                     }
                     calcSummary.style.display = 'block';
                 }
@@ -171,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 service_name: document.getElementById('lead-service-name')?.value || '',
                 total_price: document.getElementById('lead-total-price')?.value || '',
                 options: document.getElementById('lead-options')?.value || '',
+                discount_info: document.getElementById('lead-discount-info')?.value || '',
                 source_page: document.getElementById('lead-source-page')?.value || '',
             };
 
