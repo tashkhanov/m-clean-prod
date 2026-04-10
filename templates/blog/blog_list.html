@@ -52,7 +52,7 @@
             <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
                 {% if post.image %}
                 <div class="blog-card__image">
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="800" height="450" loading="lazy">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="800" height="450" loading="lazy" decoding="async">
                 </div>
                 {% endif %}
                 <div class="blog-card__body">

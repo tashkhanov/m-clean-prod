@@ -34,12 +34,17 @@ class ServiceAdmin(ModelAdmin):
     list_editable = ('order', 'is_active')
     list_filter = ('category', 'is_active', 'icon', 'calc_type')
     prepopulated_fields = {'slug': ('name',)}
-    search_fields = ('name',)
+    search_fields = ('name', 'short_description', 'description')
     actions = [compress_service_images]
     inlines = []
     fieldsets = (
         ('Об услуге', {
             'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'short_description', 'description', 'image', 'image_alt'),
+        }),
+        ("SEO-настройки", {
+            'fields': ('seo_title', 'seo_description'),
+            'classes': ('collapse',),
+            'description': "Мета-теги для поисковой оптимизации (meta title и meta description)."
         }),
         ("Цены", {
             'fields': ('base_price', 'unit'),

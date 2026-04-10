@@ -49,6 +49,6 @@ class PostAdmin(ModelAdmin):
             'classes': ('collapse',),
         }),
         ("Публикация и Аналитика", {
-            'fields': ('is_published', 'order', 'views'),
+            'fields': ('is_published', 'published_at', 'order', 'views'),
         }),
     )

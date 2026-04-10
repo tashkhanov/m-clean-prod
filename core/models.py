@@ -554,3 +554,51 @@ class CompanyFact(models.Model):
 
     def __str__(self):
         return f"{self.value}{self.suffix} {self.label}"
+
+
+class Advantage(models.Model):
+    ICON_CHOICES = [
+        ('shield', 'Щит (Гарантия)'),
+        ('clock', 'Часы (Время)'),
+        ('truck', 'Машина (Выезд)'),
+        ('credit-card', 'Карта (Оплата)'),
+        ('star', 'Звезда (Качество)'),
+        ('check-circle', 'Галочка'),
+    ]
+    title = models.CharField("Заголовок", max_length=150)
+    description = models.CharField("Описание", max_length=255)
+    icon = models.CharField("Иконка", max_length=20, choices=ICON_CHOICES, default='check-circle')
+    order = models.PositiveIntegerField("Сортировка", default=0)
+    is_active = models.BooleanField("Активировано", default=True)
+
+    class Meta:
+        verbose_name = "Преимущество"
+        verbose_name_plural = "Почему выбирают нас (Преимущества)"
+        ordering = ['order', '-id']
+
+    def __str__(self):
+        return self.title
+
+
+class WorkStep(models.Model):
+    ICON_CHOICES = [
+        ('phone', 'Телефон (Заявка)'),
+        ('calculator', 'Калькулятор (Расчет)'),
+        ('calendar', 'Календарь (Время)'),
+        ('truck', 'Машина (Выезд)'),
+        ('sparkles', 'Звезды (Работа)'),
+        ('check-circle', 'Галочка (Сдача)'),
+    ]
+    title = models.CharField("Заголовок", max_length=150)
+    description = models.CharField("Описание", max_length=255)
+    icon = models.CharField("Иконка", max_length=20, choices=ICON_CHOICES, default='check-circle')
+    order = models.PositiveIntegerField("Сортировка", default=0)
+    is_active = models.BooleanField("Активировано", default=True)
+
+    class Meta:
+        verbose_name = "Шаг работы"
+        verbose_name_plural = "Как мы работаем (Шаги)"
+        ordering = ['order', '-id']
+
+    def __str__(self):
+        return self.title

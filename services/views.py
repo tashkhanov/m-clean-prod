@@ -10,8 +10,8 @@ from .models import Category, Service, AdditionalOption, CurtainCoefficient
 def services_page(request):
     settings = SiteSettings.objects.first()
     categories = Category.objects.filter(is_active=True)
-    services = Service.objects.filter(is_active=True)
-    options = AdditionalOption.objects.filter(is_active=True)
+    services = Service.objects.select_related('category').prefetch_related('options', 'tiers').filter(is_active=True)
+    options = AdditionalOption.objects.prefetch_related('services').filter(is_active=True)
     curtain_coeffs = CurtainCoefficient.objects.filter(is_active=True)
 
     # Собираем данные для калькулятора
@@ -102,16 +102,16 @@ def service_detail(request, slug):
     from django.db.models import Avg, Count
     
     settings = SiteSettings.objects.first()
-    service = get_object_or_404(Service, slug=slug, is_active=True)
+    service = get_object_or_404(Service.objects.select_related('category'), slug=slug, is_active=True)
     options = AdditionalOption.objects.filter(is_active=True, services=service)
-    all_options = AdditionalOption.objects.filter(is_active=True)
+    all_options = AdditionalOption.objects.prefetch_related('services').filter(is_active=True)
     curtain_coeffs = CurtainCoefficient.objects.filter(is_active=True)
 
     # Related blog posts (3 last)
-    blog_posts = Post.objects.filter(is_published=True)[:3]
+    blog_posts = Post.objects.select_related('category', 'author').filter(is_published=True)[:3]
 
-    # Review statistics
-    reviews_qs = Review.objects.filter(is_active=True)
+    # Review statistics — only approved & active reviews
+    reviews_qs = Review.objects.filter(is_active=True, is_approved=True)
     review_stats = reviews_qs.aggregate(
         avg_rating=Avg('rating'),
         total_count=Count('id')
@@ -120,15 +120,7 @@ def service_detail(request, slug):
     review_count = review_stats['total_count'] or 0
     avg_rating_rounded = round(avg_rating, 1)
 
-    # Steps for process timeline
-    steps = [
-        {'icon': 'phone', 'title': 'Заявка', 'description': 'Оставьте заявку на сайте или позвоните нам'},
-        {'icon': 'calculator', 'title': 'Консультация и расчёт', 'description': 'Менеджер рассчитает стоимость и ответит на вопросы'},
-        {'icon': 'calendar', 'title': 'Согласование времени', 'description': 'Выберите удобное время для выезда мастера'},
-        {'icon': 'truck', 'title': 'Выезд мастера', 'description': 'Мастер приедет вовремя со всем необходимым оборудованием'},
-        {'icon': 'sparkles', 'title': 'Проведение работ', 'description': 'Профессиональная чистка с гарантией результата'},
-        {'icon': 'check-circle', 'title': 'Сдача и оплата', 'description': 'Вы проверяете результат и оплачиваете работу'},
-    ]
+
 
     # JSON data for calculator
     all_options_data = [
@@ -168,7 +160,7 @@ def service_detail(request, slug):
     }
 
     # Collect Furniture data if needed (same logic as services_page)
-    furniture_services = Service.objects.filter(is_active=True, calc_type='furniture')
+    furniture_services = Service.objects.select_related('category').prefetch_related('options').filter(is_active=True, calc_type='furniture')
     furniture_data = []
     for s in furniture_services:
         s_options = s.options.filter(is_active=True)
@@ -192,8 +184,8 @@ def service_detail(request, slug):
 
     # Additional context for enhanced detail page
     faqs = Faq.objects.filter(is_active=True)
-    related_works = WorkCase.objects.filter(category=service.category, is_active=True)[:4]
-    recommended_services = Service.objects.filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
+    related_works = WorkCase.objects.select_related('partner').filter(category=service.category, is_active=True)[:4]
+    recommended_services = Service.objects.select_related('category').filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
     partners = Partner.objects.filter(is_active=True)
 
     context = {
@@ -202,7 +194,6 @@ def service_detail(request, slug):
         'options': options,
         'all_options': all_options,
         'blog_posts': blog_posts,
-        'steps': steps,
         'avg_rating': avg_rating_rounded,
         'review_count': review_count,
         'faqs': faqs,

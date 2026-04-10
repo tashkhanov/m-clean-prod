@@ -215,16 +215,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     setTimeout(closeModal, 4000);
                 } else {
-                    alert(result.error || 'Ошибка отправки');
+                    showFormError(leadForm, result.error || 'Ошибка отправки данных. Попробуйте еще раз.');
                 }
             } catch (error) {
                 console.error('Form submit error:', error);
-                alert('Ошибка соединения');
+                showFormError(leadForm, 'Ошибка соединения с сервером. Попробуйте позже.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Отправить заявку';
             }
         });
+    }
+
+    // Helper to show inline errors instead of native alert()
+    function showFormError(form, message) {
+        // Remove existing error if any
+        const existingAlert = form.querySelector('.form-alert-error');
+        if (existingAlert) existingAlert.remove();
+        
+        const alertEl = document.createElement('div');
+        alertEl.className = 'form-alert-error fade-in';
+        alertEl.style.cssText = 'padding: 12px 16px; margin-bottom: 20px; border-radius: 8px; background: #fee2e2; color: #b91c1c; border: 1px solid #f87171; font-size: 14px; text-align: center;';
+        alertEl.textContent = message;
+        
+        form.insertBefore(alertEl, form.firstChild);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (alertEl.parentElement) alertEl.remove();
+        }, 5000);
     }
 
     function getCSRFToken() {

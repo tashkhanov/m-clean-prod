@@ -1,4 +1,4 @@
-from .models import SiteSettings, Partner, CompanyFact
+from .models import SiteSettings, Partner, CompanyFact, Advantage, WorkStep
 from services.models import Category
 
 
@@ -27,6 +27,8 @@ def site_context(request):
         'all_services': Service.objects.filter(is_active=True),
         'nav_partners': Partner.objects.filter(is_active=True)[:5],
         'company_facts': facts,
+        'global_advantages': Advantage.objects.filter(is_active=True),
+        'global_work_steps': WorkStep.objects.filter(is_active=True),
         'clients_count': clients_count or '10 000+',
         'experience_count': experience_count or '8+',
     }

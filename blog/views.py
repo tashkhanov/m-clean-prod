@@ -11,7 +11,7 @@ def blog_list(request):
     category_slug = request.GET.get('category')
 
     categories = BlogCategory.objects.all()
-    posts_list = Post.objects.filter(is_published=True)
+    posts_list = Post.objects.select_related('category', 'author').filter(is_published=True)
 
     if category_slug:
         posts_list = posts_list.filter(category__slug=category_slug)
@@ -34,7 +34,7 @@ def blog_list(request):
 def tag_posts(request, slug):
     settings = SiteSettings.objects.first()
     tag = get_object_or_404(Tag, slug=slug)
-    posts_list = Post.objects.filter(is_published=True, tags=tag)
+    posts_list = Post.objects.select_related('category', 'author').filter(is_published=True, tags=tag)
     
     categories = BlogCategory.objects.all()
     
@@ -62,14 +62,14 @@ def post_detail(request, slug):
     post.refresh_from_db()
 
     # Related posts (from same category)
-    related = Post.objects.filter(
+    related = Post.objects.select_related('category', 'author').filter(
         is_published=True,
         category=post.category
     ).exclude(pk=post.pk)[:3]
     
     # If not enough related in current category, get from others
     if related.count() < 3:
-        more_related = Post.objects.filter(
+        more_related = Post.objects.select_related('category', 'author').filter(
             is_published=True
         ).exclude(pk__in=[post.pk] + [p.pk for p in related]).order_by('?')[:3 - related.count()]
         related = list(related) + list(more_related)

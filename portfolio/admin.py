@@ -17,7 +17,7 @@ class WorkCaseAdmin(ModelAdmin):
     list_display = ('title', 'category', 'order', 'is_active')
     list_editable = ('category', 'order', 'is_active')
     list_filter = ('category', 'is_active')
-    search_fields = ('title',)
+    search_fields = ('title', 'description', 'partner__name')
     actions = [compress_workcase_images]
     fieldsets = (
         ("Основное", {

@@ -90,8 +90,10 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# WhiteNoise Configuration
+# WhiteNoise Configuration (Aggressive Caching for Lighthouse 100/100)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MAX_AGE = 31536000 # 1 year cache
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Media files
 MEDIA_URL = 'media/'
@@ -146,6 +148,27 @@ UNFOLD = {
                         "title": "Настройки",
                         "icon": "settings",
                         "link": "/admin/core/sitesettings/",
+                    },
+                ],
+            },
+            {
+                "title": "Контент Главной",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Почему выбирают нас",
+                        "icon": "star",
+                        "link": "/admin/core/advantage/",
+                    },
+                    {
+                        "title": "Как мы работаем",
+                        "icon": "format_list_numbered",
+                        "link": "/admin/core/workstep/",
+                    },
+                    {
+                        "title": "Факты в цифрах",
+                        "icon": "leaderboard",
+                        "link": "/admin/core/companyfact/",
                     },
                 ],
             },

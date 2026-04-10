@@ -251,38 +251,44 @@
         </div>
         
         <div class="platform-links fade-in" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-md); margin-bottom: var(--space-xl);">
-            <a href="#" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
+        {% if settings.url_reviews_yandex %}
+            <a href="{{ settings.url_reviews_yandex }}" target="_blank" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
                 <div class="platform-card__icon">
                     <svg width="32" height="32" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 22a58.897 58.897 0 0 0-32.772 9.985 59.174 59.174 0 0 0-21.728 26.56 59.386 59.386 0 0 0-3.368 34.191 59.269 59.269 0 0 0 16.125 30.312c10.688 10.722 35.841 26.232 37.33 42.525.223 2.434 1.987 4.427 4.413 4.427s4.196-1.993 4.413-4.427c1.488-16.293 26.622-31.777 37.304-42.492a59.274 59.274 0 0 0 16.151-30.313 59.383 59.383 0 0 0-3.354-34.205 59.176 59.176 0 0 0-21.73-26.574A58.897 58.897 0 0 0 95.997 22v0Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12" d="M95.997 101.6a20.806 20.806 0 0 1-14.708-6.092 20.8 20.8 0 1 1 14.708 6.092v0Z"/></svg>
                 </div>
                 <div class="platform-card__info" style="flex: 1;">
                     <div style="font-weight: 600;">Яндекс.Карты</div>
-                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
+                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг {{ settings.rating_yandex|default:"5.0" }}</div>
                 </div>
                 <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
+        {% endif %}
             
-            <a href="#" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
+        {% if settings.url_reviews_2gis %}
+            <a href="{{ settings.url_reviews_2gis }}" target="_blank" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
                 <div class="platform-card__icon">
                     <svg width="32" height="32" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><style>.a{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;}</style></defs><path class="a" d="M40.5,5.5H7.5a2,2,0,0,0-2,2v33a2,2,0,0,0,2,2h33a2,2,0,0,0,2-2V7.5A2,2,0,0,0,40.5,5.5Z"/><path class="a" d="M25.5785,36.1424c-.041-4.7889,1.0624-8.7464,7.0814-8.4979C41.246,5.7628,6.2359,6.5969,15.5681,27.5138c2.83-.1756,7.5212,1.5092,6.72,9.1465"/><path class="a" d="M42.5,33.479l-37,5.8236"/><path class="a" d="M5.5,11.04l12.3448,2.29"/><path class="a" d="M32.3554,15.53,42.5,17.0114"/></svg>
                 </div>
                 <div class="platform-card__info" style="flex: 1;">
                     <div style="font-weight: 600;">2ГИС</div>
-                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
+                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг {{ settings.rating_2gis|default:"5.0" }}</div>
                 </div>
                 <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
+        {% endif %}
  
-            <a href="#" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
+        {% if settings.url_reviews_google %}
+            <a href="{{ settings.url_reviews_google }}" target="_blank" class="platform-card" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); background: white; border-radius: var(--radius-md); text-decoration: none; color: inherit; transition: transform 0.2s;">
                 <div class="platform-card__icon">
                     <svg fill="currentColor" width="32" height="32" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon"><path d="M881 442.4H519.7v148.5h206.4c-8.9 48-35.9 88.6-76.6 115.8-34.4 23-78.3 36.6-129.9 36.6-99.9 0-184.4-67.5-214.6-158.2-7.6-23-12-47.6-12-72.9s4.4-49.9 12-72.9c30.3-90.6 114.8-158.1 214.7-158.1 56.3 0 106.8 19.4 146.6 57.4l110-110.1c-66.5-62-153.2-100-256.6-100-149.9 0-279.6 86-342.7 211.4-26 51.8-40.8 110.4-40.8 172.4S151 632.8 177 684.6C240.1 810 369.8 896 519.7 896c103.6 0 190.4-34.4 253.8-93 72.5-66.8 114.4-165.2 114.4-282.1 0-27.2-2.4-53.3-6.9-78.5z"/></svg>
                 </div>
                 <div class="platform-card__info" style="flex: 1;">
                     <div style="font-weight: 600;">Google Maps</div>
-                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг 5.0</div>
+                    <div style="font-size: 0.9rem; color: var(--color-text-muted);">Рейтинг {{ settings.rating_google|default:"5.0" }}</div>
                 </div>
                 <div style="font-weight: bold; color: var(--color-brand);">→</div>
             </a>
+        {% endif %}
         </div>
     </div>
 </section>

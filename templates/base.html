@@ -237,7 +237,8 @@
         /* Essential for Task 2: Logo Sizing */
         .header__logo-img {
             display: block;
-            max-height: 100%;
+            height: 100%;
+            max-height: var(--header-height, 80px);
             width: auto;
             object-fit: contain;
             margin: 0;
@@ -580,7 +581,7 @@
             <div class="header__inner">
                 <a href="/" class="header__logo">
                     {% if settings.logo %}
-                    <img src="{{ settings.logo.url }}" alt="M-Clean" class="header__logo-img" style="height: var(--header-height);">
+                    <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'M-Clean' }}" class="header__logo-img" width="160" height="40" fetchpriority="high" decoding="async">
                     {% else %}
                     M<span class="header__logo-accent">-Clean</span>
                     {% endif %}
@@ -728,11 +729,15 @@
                 <div class="footer__brand">
                     <div class="footer__logo">
                         {% if settings.logo_footer %}
-                        <img src="{{ settings.logo_footer.url }}" alt="M-Clean" class="footer__logo-img" height="40">
+                        <img src="{{ settings.logo_footer.url }}" alt="{{ settings.company_name|default:'M-Clean' }}" class="footer__logo-img" width="160" height="40" loading="lazy" decoding="async">
                         {% elif settings.logo %}
-                        <img src="{{ settings.logo.url }}" alt="M-Clean" class="footer__logo-img" height="40">
+                        <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'M-Clean' }}" class="footer__logo-img" width="160" height="40" loading="lazy" decoding="async">
                         {% else %}
-                        M<span class="footer__logo-accent">-Clean</span>
+                        <span class="footer__logo-text">{{ settings.company_name|default:'M-Clean' }}</span>
+                        {% endif %}
+                        
+                        {% if settings.tagline %}
+                        <p class="footer__tagline" style="margin-top: 12px; font-weight: 500; font-size: 14px; color: var(--color-text-secondary);">{{ settings.tagline }}</p>
                         {% endif %}
                     </div>
                     <p class="footer__about">
@@ -752,6 +757,11 @@
                         {% if settings.instagram %}
                         <a href="{{ settings.instagram }}" class="footer__social" aria-label="Instagram">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        {% endif %}
+                        {% if settings.vk %}
+                        <a href="{{ settings.vk }}" class="footer__social" aria-label="VK" target="_blank" rel="noopener">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.071 2.9h-6.142c-5.187 0-7.029 1.843-7.029 7.029v4.142c0 5.186 1.842 7.029 7.029 7.029h6.142c5.186 0 7.029-1.843 7.029-7.029V9.929C22.1 4.743 20.257 2.9 15.071 2.9zm3.504 12.012l-1.071.18c-1.32.18-1.745-.615-2.616-1.747-.506-.632-.916-1.127-1.332-1.084-.461.047-.648.56-.648 1.48v.534c0 .647-.2.831-.877.831-2.029 0-4.301-1.258-5.83-3.41-2.288-3.051-2.906-5.46-2.906-5.875 0-.214.113-.332.342-.332h1.564c.23 0 .428.106.561.42 1.341 3.535 2.682 4.9 3.255 4.9.208 0 .332-.09.332-.556V7.47c0-.528-.31-.577-.31-.832 0-.15.112-.303.364-.303h2.385c.189 0 .341.144.341.442v3.082c0 .416.326.545.45.545.247 0 .524-.131 1.096-.75 0 0 .97-1.2 1.637-3.093.08-.225.26-.353.473-.353h1.611c.325 0 .408.172.332.406-1.205 3.037-1.488 3.32-1.488 3.32-.461.536-.615.65.112 1.353 1.05 1.01 1.764 1.83 1.95 2.378.139.387.039.6-.575.6z"/></svg>
                         </a>
                         {% endif %}
                     </div>
@@ -819,8 +829,8 @@
             <div class="footer__bottom">
                 <p>&copy; 2026 M-Clean. Все права защищены.</p>
                 <div class="footer__docs">
-                    <a href="#">Политика конфиденциальности</a>
-                    <a href="#">Договор оферты</a>
+                    <a href="#" onclick="alert('Документ находится на стадии публикации'); return false;">Политика конфиденциальности</a>
+                    <a href="#" onclick="alert('Документ находится на стадии разработки'); return false;">Договор оферты</a>
                 </div>
             </div>
         </div>

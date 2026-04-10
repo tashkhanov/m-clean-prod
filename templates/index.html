@@ -137,7 +137,7 @@
     <div class="container">
         <div class="about-grid">
             <div class="about__image fade-in">
-                <img src="{% static 'images/1774892147a537.webp' %}" alt="Профессиональная химчистка" width="600" height="800" loading="lazy">
+                <img src="{% static 'images/1774892147a537.webp' %}" alt="Профессиональная химчистка" width="600" height="800" loading="lazy" decoding="async">
             </div>
             
             <div class="about__content slide-left">
@@ -153,22 +153,24 @@
                 </p>
                 
                 <div class="about__features">
+                    {% for item in global_advantages %}
                     <div class="about__feature">
+                        {% if item.icon == 'shield' %}
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        {% elif item.icon == 'clock' %}
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {% elif item.icon == 'truck' %}
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        {% elif item.icon == 'credit-card' %}
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        {% elif item.icon == 'star' %}
+                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        {% else %}
                         <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-                        <span class="about__feature-text">Оплата после результата — вы платите только если довольны</span>
+                        {% endif %}
+                        <span class="about__feature-text">{% if item.description %}<b>{{ item.title }}</b> — {{ item.description }}{% else %}{{ item.title }}{% endif %}</span>
                     </div>
-                    <div class="about__feature">
-                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-                        <span class="about__feature-text">Выезд мастера в день обращения</span>
-                    </div>
-                    <div class="about__feature">
-                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-                        <span class="about__feature-text">Гарантия на все работы до 12 месяцев</span>
-                    </div>
-                    <div class="about__feature">
-                        <svg class="about__feature-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-                        <span class="about__feature-text">Работаем без выходных</span>
-                    </div>
+                    {% endfor %}
                 </div>
                 
                 <button class="btn btn--primary" data-modal="modal-lead">Получить консультацию</button>
@@ -191,9 +193,9 @@
             <div class="team-card fade-in">
                 <div class="team-card__photo">
                     {% if member.photo %}
-                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" width="280" height="280" loading="lazy">
+                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" width="280" height="280" loading="lazy" decoding="async">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=280&h=280&fit=crop" alt="{{ member.name }}" width="280" height="280" loading="lazy">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=280&h=280&fit=crop" alt="{{ member.name }}" width="280" height="280" loading="lazy" decoding="async">
                     {% endif %}
                 </div>
                 <div class="team-card__info">
@@ -227,88 +229,35 @@
         </div>
         
         <div class="timeline">
-            <div class="timeline__item fade-in stagger-1">
+            {% for step in global_work_steps %}
+            <div class="timeline__item fade-in stagger-{{ forloop.counter }}">
                 <div class="timeline__marker">
-                    <div class="timeline__number">1</div>
+                    <div class="timeline__number">{{ forloop.counter }}</div>
+                    {% if not forloop.last %}
                     <div class="timeline__line"></div>
+                    {% endif %}
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
+                        {% if step.icon == 'phone' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-                    </div>
-                    <h3 class="timeline__title">Заявка</h3>
-                    <p class="timeline__description">Оставьте заявку на сайте или позвоните нам</p>
-                </div>
-            </div>
-            
-            <div class="timeline__item fade-in stagger-2">
-                <div class="timeline__marker">
-                    <div class="timeline__number">2</div>
-                    <div class="timeline__line"></div>
-                </div>
-                <div class="timeline__content">
-                    <div class="timeline__icon">
+                        {% elif step.icon == 'calculator' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
-                    </div>
-                    <h3 class="timeline__title">Консультация и расчёт</h3>
-                    <p class="timeline__description">Менеджер рассчитает стоимость и ответит на вопросы</p>
-                </div>
-            </div>
-            
-            <div class="timeline__item fade-in stagger-3">
-                <div class="timeline__marker">
-                    <div class="timeline__number">3</div>
-                    <div class="timeline__line"></div>
-                </div>
-                <div class="timeline__content">
-                    <div class="timeline__icon">
+                        {% elif step.icon == 'calendar' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    </div>
-                    <h3 class="timeline__title">Согласование времени</h3>
-                    <p class="timeline__description">Выберите удобное время для выезда мастера</p>
-                </div>
-            </div>
-            
-            <div class="timeline__item fade-in stagger-4">
-                <div class="timeline__marker">
-                    <div class="timeline__number">4</div>
-                    <div class="timeline__line"></div>
-                </div>
-                <div class="timeline__content">
-                    <div class="timeline__icon">
+                        {% elif step.icon == 'truck' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                    </div>
-                    <h3 class="timeline__title">Выезд мастера</h3>
-                    <p class="timeline__description">Мастер приедет вовремя со всем необходимым оборудованием</p>
-                </div>
-            </div>
-            
-            <div class="timeline__item fade-in stagger-5">
-                <div class="timeline__marker">
-                    <div class="timeline__number">5</div>
-                    <div class="timeline__line"></div>
-                </div>
-                <div class="timeline__content">
-                    <div class="timeline__icon">
+                        {% elif step.icon == 'sparkles' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    </div>
-                    <h3 class="timeline__title">Проведение работ</h3>
-                    <p class="timeline__description">Профессиональная чистка с гарантией результата</p>
-                </div>
-            </div>
-            
-            <div class="timeline__item fade-in stagger-6">
-                <div class="timeline__marker">
-                    <div class="timeline__number">6</div>
-                </div>
-                <div class="timeline__content">
-                    <div class="timeline__icon">
+                        {% elif step.icon == 'check-circle' %}
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        {% endif %}
                     </div>
-                    <h3 class="timeline__title">Сдача и оплата</h3>
-                    <p class="timeline__description">Вы проверяете результат и оплачиваете работу</p>
+                    <h3 class="timeline__title">{{ step.title }}</h3>
+                    <p class="timeline__description">{{ step.description }}</p>
                 </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -327,14 +276,14 @@
                 <div class="portfolio-item__title">{{ work.title }}</div>
                 <div class="portfolio-slider">
                     {% if work.image_after %}
-                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500">
+                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500" loading="lazy" decoding="async">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="500">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop" alt="После" class="portfolio-slider__after" width="800" height="500" loading="lazy" decoding="async">
                     {% endif %}
                     {% if work.image_before %}
-                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500">
+                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500" loading="lazy" decoding="async">
                     {% else %}
-                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="500" style="filter: brightness(0.7) contrast(0.8);">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=500&fit=crop&sat=-100" alt="До" class="portfolio-slider__before" width="800" height="500" loading="lazy" decoding="async" style="filter: brightness(0.7) contrast(0.8);">
                     {% endif %}
                     <div class="portfolio-slider__line"></div>
                     <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
@@ -405,7 +354,7 @@
                 {% for partner in partners %}
                 <div class="swiper-slide">
                     <div class="partner-card">
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-card__logo" width="150" height="60" loading="lazy">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-card__logo" width="150" height="60" loading="lazy" decoding="async">
                     </div>
                 </div>
                 {% endfor %}
@@ -435,7 +384,8 @@
                  class="video-block__thumb"
                  width="1280" 
                  height="720"
-                 loading="lazy">
+                 loading="lazy"
+                 decoding="async">
             <button class="video-block__play" aria-label="Воспроизвести видео">
                 <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
@@ -501,7 +451,7 @@
             <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
                 {% if post.image %}
                 <div class="blog-card__image">
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy" decoding="async">
                 </div>
                 {% endif %}
                 <div class="blog-card__body">

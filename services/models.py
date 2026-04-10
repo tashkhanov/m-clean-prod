@@ -109,8 +109,11 @@ class Service(models.Model):
         verbose_name="Видео (YouTube)",
         blank=True,
         null=True,
-        help_text="Вставьте полную ссылку на YouTube видео"
+        help_text="Вставьте полную ссылкy на YouTube видео"
     )
+    seo_title = models.CharField("SEO Заголовок (Meta Title)", max_length=255, blank=True, help_text="Если пусто, используется название услуги")
+    seo_description = models.TextField("SEO Описание (Meta Description)", blank=True, help_text="Если пусто, используется краткое описание")
+    
     order = models.PositiveIntegerField("Порядок", default=0)
     is_active = models.BooleanField("Отображать?", default=True)
 

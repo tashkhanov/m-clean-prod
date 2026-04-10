@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load embed_video_tags %}{% block extra_head %}
+{% load embed_video_tags %}
+
+{% block meta_title %}{% if service.seo_title %}{{ service.seo_title }}{% else %}{{ service.name }} - Химчистка в Алматы | M-Clean{% endif %}{% endblock %}
+{% block meta_description %}{% if service.seo_description %}{{ service.seo_description }}{% elif service.short_description %}{{ service.short_description|striptags|truncatewords:25 }}{% else %}{{ service.description|striptags|truncatewords:25 }}{% endif %}{% endblock %}
+
+{% block extra_head %}
 <style>
     /* Premium Calculator Grid Fix */
     @media (min-width: 1024px) {
@@ -119,7 +124,7 @@
 {% block content %}
 
 <!-- HERO -->
-<section class="hero hero--service" {% if service.image %}style="background-image: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(249,250,251,0.88) 100%), url('{{ service.image.url }}');"{% endif %}>
+<section class="hero hero--service" {% if service.image_alt %}aria-label="{{ service.image_alt }}"{% endif %} {% if service.image %}style="background-image: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(249,250,251,0.88) 100%), url('{{ service.image.url }}');"{% endif %}>
     <div class="container">
         <div class="hero__content hero__content--service">
             <nav class="breadcrumb" aria-label="Хлебные крошки">
@@ -652,7 +657,7 @@
         </div>
         
         <div class="timeline">
-            {% for step in steps %}
+            {% for step in global_work_steps %}
             <div class="timeline__item fade-in stagger-{{ forloop.counter }}">
                 <div class="timeline__marker">
                     <div class="timeline__number">{{ forloop.counter }}</div>
@@ -816,11 +821,12 @@
         
         <div class="video-block fade-in" onclick="let url='{{ my_video.url }}'; let embedUrl = url.includes('?') ? url + '&autoplay=1&mute=1&rel=0' : url + '?autoplay=1&mute=1&rel=0'; this.innerHTML='<iframe src=\'' + embedUrl + '\' style=\'position:absolute;top:0;left:0;width:100%;height:100%;border:none;\' allow=\'autoplay; encrypted-media; picture-in-picture\' allowfullscreen></iframe>'">
             <img src="{{ my_video.thumbnail }}" 
-                 alt="Видео {{ service.name }}" 
+                 alt="Видео-просмотр процесса услуги {{ service.name }}" 
                  class="video-block__thumb"
                  width="1280" 
                  height="720"
-                 loading="lazy">
+                 loading="lazy"
+                 decoding="async">
             <button class="video-block__play" aria-label="Воспроизвести видео">
                 <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
@@ -859,10 +865,10 @@
                 <div class="portfolio-item__title">{{ work.title }}</div>
                 <div class="portfolio-slider">
                     {% if work.image_after %}
-                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500">
+                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500" loading="lazy" decoding="async">
                     {% endif %}
                     {% if work.image_before %}
-                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500">
+                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500" loading="lazy" decoding="async">
                     {% endif %}
                     <div class="portfolio-slider__line"></div>
                     <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
@@ -977,7 +983,7 @@
             <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
                 {% if post.image %}
                 <div class="blog-card__image">
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy" decoding="async">
                 </div>
                 {% endif %}
                 <div class="blog-card__body">
@@ -1012,7 +1018,7 @@
             <div class="swiper-wrapper">
                 {% for partner in partners %}
                 <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; cursor: pointer;" onclick="openPartnerModal({{ partner.id }})">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" height="60" style="max-height: 70px; width: auto; max-width: 100%; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" width="150" height="60" loading="lazy" decoding="async" style="max-height: 70px; width: auto; max-width: 100%; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
                 </div>
                 {% endfor %}
             </div>

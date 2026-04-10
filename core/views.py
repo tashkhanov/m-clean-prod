@@ -27,13 +27,13 @@ def index(request):
         'settings': settings,
         'faqs': Faq.objects.filter(is_active=True),
         'partners': Partner.objects.filter(is_active=True),
-        'works': WorkCase.objects.filter(is_active=True)[:6],
+        'works': WorkCase.objects.select_related('category', 'partner').filter(is_active=True)[:6],
         'reviews': Review.objects.filter(is_active=True, is_approved=True),
         'services': Service.objects.filter(is_active=True)[:6],
         'equipment': Equipment.objects.filter(is_active=True)[:4],
         'chemicals': Chemical.objects.filter(is_active=True)[:4],
         'team': TeamMember.objects.filter(is_active=True)[:6],
-        'blog_posts': Post.objects.filter(is_published=True)[:3],
+        'blog_posts': Post.objects.select_related('category', 'author').filter(is_published=True)[:3],
     }
 
     return render(request, 'index.html', context)
@@ -134,17 +134,20 @@ def reviews(request):
 def portfolio(request):
     """Страница выбора категории портфолио."""
     from services.models import Category
+    from django.db.models import Prefetch
     settings = SiteSettings.objects.first()
     
     # Берем только категории, в которых есть хотя бы одна активная работа
+    works_prefetch = Prefetch('work_cases', queryset=WorkCase.objects.filter(is_active=True).order_by('-id'))
     categories = Category.objects.filter(is_active=True).annotate(
         works_count=Count('work_cases', filter=Q(work_cases__is_active=True))
-    ).filter(works_count__gt=0)
+    ).filter(works_count__gt=0).prefetch_related(works_prefetch)
 
     # Для каждой категории найдем обложку (из последней работы)
     for cat in categories:
-        latest_work = cat.work_cases.filter(is_active=True).order_by('-id').first()
-        cat.cover_image = latest_work.image_after if latest_work else None
+        # Используем предзагруженные данные, чтобы избежать N+1 запросов
+        prefetched_works = cat.work_cases.all()
+        cat.cover_image = prefetched_works[0].image_after if prefetched_works else None
 
     context = {
         'settings': settings,
@@ -160,7 +163,7 @@ def portfolio_category(request, slug):
     settings = SiteSettings.objects.first()
     category = get_object_or_404(Category, slug=slug, is_active=True)
     
-    works_list = category.work_cases.filter(is_active=True).order_by('order', '-id')
+    works_list = category.work_cases.select_related('partner').filter(is_active=True).order_by('order', '-id')
     
     paginator = Paginator(works_list, 12) # 12 работ на страницу
     page_number = request.GET.get('page')

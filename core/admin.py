@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from PIL import Image
 from unfold.admin import ModelAdmin
 
-from .models import SiteSettings, Faq, Partner, BeforeAfter, Service, TeamMember, Certificate, ServicePackage, Equipment, Chemical, Discount, CompanyFact
+from .models import SiteSettings, Faq, Partner, BeforeAfter, Service, TeamMember, Certificate, ServicePackage, Equipment, Chemical, Discount, CompanyFact, Advantage, WorkStep
 from .admin_actions import (
     compress_site_images,
     compress_partner_logos,
@@ -194,7 +194,7 @@ class SiteSettingsAdmin(ModelAdmin):
 class FaqAdmin(ModelAdmin):
     list_display = ('question', 'order', 'is_active')
     list_editable = ('order', 'is_active')
-    search_fields = ('question',)
+    search_fields = ('question', 'answer')
     list_filter = ('is_active',)
 
 
@@ -333,7 +333,7 @@ class CertificateAdmin(ModelAdmin):
     actions = [compress_images_action]
     fieldsets = (
         ("Основное", {
-            'fields': ('title', 'image', 'image_alt', 'issued_by', 'issued_date'),
+            'fields': ('title', 'category', 'image', 'image_alt', 'issued_by', 'issued_date'),
         }),
         ("Отображение", {
             'fields': ('order', 'is_active'),
@@ -347,3 +347,17 @@ class CompanyFactAdmin(ModelAdmin):
     list_editable = ('order', 'is_active')
     list_filter = ('icon', 'is_active')
     search_fields = ('label',)
+
+@admin.register(Advantage)
+class AdvantageAdmin(ModelAdmin):
+    list_display = ('title', 'icon', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
+
+@admin.register(WorkStep)
+class WorkStepAdmin(ModelAdmin):
+    list_display = ('title', 'icon', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
