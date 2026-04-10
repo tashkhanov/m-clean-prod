@@ -84,12 +84,9 @@ def services_page(request):
         'services_data': services_data,
         'all_options_data': all_options_data,
         'curtain_coeffs': curtain_coeffs_data,  # для шаблона
-        'curtain_coeffs_data': json.dumps(curtain_coeffs_data, ensure_ascii=False),  # для JS
+        'curtain_coeffs_data': curtain_coeffs_data,  # для JS
         'min_order': min_order,
-        'categories_data': json.dumps(
-            [{'id': c.id, 'name': c.name} for c in categories],
-            ensure_ascii=False
-        ),
+        'categories_data': [{'id': c.id, 'name': c.name} for c in categories],
     }
 
     return render(request, 'services/services.html', context)
