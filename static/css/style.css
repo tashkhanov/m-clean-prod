@@ -11582,13 +11582,11 @@ p:last-child { margin-bottom: 0; }
 
 
 .partners-page-grid {
-
     display: grid;
-
-    grid-template-columns: repeat(4, 1fr);
-
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--space-lg);
-
+    justify-content: center;
+    width: 100%;
 }
 
 
@@ -11703,39 +11701,15 @@ p:last-child { margin-bottom: 0; }
 
 
 
-@media (max-width: 1024px) {
-
-    .partners-page-grid {
-
-        grid-template-columns: repeat(3, 1fr);
-
-    }
-
-}
+/* Removed 1024px query for partners-page-grid since it's fluid */
 
 
 
-@media (max-width: 768px) {
-
-    .partners-page-grid {
-
-        grid-template-columns: repeat(2, 1fr);
-
-    }
-
-}
+/* Removed 768px query for partners-page-grid since it's fluid */
 
 
 
-@media (max-width: 480px) {
-
-    .partners-page-grid {
-
-        grid-template-columns: 1fr;
-
-    }
-
-}
+/* Removed 480px query for partners-page-grid since it's fluid */
 
 
 

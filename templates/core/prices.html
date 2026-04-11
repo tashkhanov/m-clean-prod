@@ -26,7 +26,7 @@
 <!-- PRICING GRID -->
 <section class="section" id="pricing" style="padding-top: var(--space-xl);">
     <div class="container">
-        <div class="compact-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg);">
+        <div class="compact-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-lg);">
             {% for service in services %}
             <a href="{% url 'services:service_detail' service.slug %}" class="glass-card compact-card-fix fade-in" style="--animation-order: {{ forloop.counter }};">
                 <div class="compact-card-fix__icon">

@@ -62,8 +62,10 @@
 /* ── PARTNERS GRID ────────────────────────────────────────── */
 .partners-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 20px;
+    justify-content: center;
+    width: 100%;
 }
 
 .partner-card {
@@ -102,12 +104,8 @@
 .partner-card__logo {
     max-width: 85%; max-height: 80%;
     object-fit: contain;
-    filter: grayscale(100%) opacity(0.65);
-    transition: filter 0.3s ease;
-}
-
-.partner-card:hover .partner-card__logo {
-    filter: grayscale(0%) opacity(1);
+    filter: none !important;
+    opacity: 1 !important;
 }
 
 .partner-card__name {
@@ -138,18 +136,6 @@
     opacity: 1;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
-@media (max-width: 1200px) {
-    .partners-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 900px) {
-    .partners-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-}
-@media (max-width: 600px) {
-    .partners-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-}
-@media (max-width: 380px) {
-    .partners-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-}
+/* Fluid grid handles responsive scaling without explicit media queries */
 </style>
 {% endblock %}
