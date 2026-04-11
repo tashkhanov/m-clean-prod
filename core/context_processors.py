@@ -22,9 +22,15 @@ def site_context(request):
     
     from services.models import Service
     
+    all_qs = Service.objects.filter(is_active=True)
+    home_services = [s for s in all_qs if s.default_client_type == 'home']
+    business_services = [s for s in all_qs if s.default_client_type == 'business']
+    
     return {
         'settings': settings,
-        'all_services': Service.objects.filter(is_active=True),
+        'all_services': all_qs,
+        'home_services': home_services,
+        'business_services': business_services,
         'nav_partners': Partner.objects.filter(is_active=True)[:5],
         'company_facts': facts,
         'global_advantages': Advantage.objects.filter(is_active=True),

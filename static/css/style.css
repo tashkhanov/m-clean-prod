@@ -3176,6 +3176,10 @@ p:last-child { margin-bottom: 0; }
 
         z-index: 100;
 
+        max-height: calc(100vh - var(--header-height));
+
+        overflow-y: auto;
+
     }
 
 

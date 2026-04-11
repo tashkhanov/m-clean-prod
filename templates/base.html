@@ -507,6 +507,18 @@
                  justify-content: space-between;
                  width: 100%;
              }
+             .mega-menu-wrapper {
+                 width: 100%;
+             }
+             .mobile-nav-group {
+                 display: flex;
+                 align-items: center;
+                 justify-content: space-between;
+                 width: 100%;
+             }
+             .mobile-nav-group .header__nav-link {
+                 width: auto;
+             }
              .dropdown-chevron {
                  display: inline-flex;
                  transition: transform 0.3s ease;
@@ -519,20 +531,20 @@
                  display: block;
                  max-height: 0;
                  overflow: hidden;
-                 transition: max-height 0.3s ease, opacity 0.3s ease;
+                 transition: max-height 0.4s ease, opacity 0.4s ease;
                  list-style: none;
-                 padding-left: 16px;
+                 padding-left: 0;
                  opacity: 0;
              }
              .mobile-dropdown-menu.active {
-                 max-height: 300px;
+                 max-height: 2000px;
                  opacity: 1;
                  margin-top: 8px;
                  margin-bottom: 8px;
              }
              .mobile-dropdown-menu a {
                  display: block;
-                 padding: 10px 0;
+                 padding: 12px 15px;
                  color: var(--color-text-secondary);
                  font-size: 15px;
                  text-decoration: none;
@@ -597,20 +609,27 @@
                             </button>
                         </div>
                         <ul class="mobile-dropdown-menu">
-                            {% for svc in all_services %}
+                            <li style="padding: 15px 15px 5px; font-weight: 800; font-size: 12px; color: var(--color-brand); text-transform: uppercase; letter-spacing: 1px;">Для дома</li>
+                            {% for svc in home_services %}
                                 <li><a href="{% url 'services:service_detail' svc.slug %}">{{ svc.name }}</a></li>
                             {% endfor %}
-                            <li><a href="{% url 'services:services' %}" style="font-weight: bold; color: var(--color-brand);">Все услуги (Калькулятор)</a></li>
+                            
+                            <li style="padding: 20px 15px 5px; font-weight: 800; font-size: 12px; color: var(--color-brand); text-transform: uppercase; letter-spacing: 1px; border-top: 2px solid #e2e8f0;">Для бизнеса</li>
+                            {% for svc in business_services %}
+                                <li><a href="{% url 'services:service_detail' svc.slug %}">{{ svc.name }}</a></li>
+                            {% endfor %}
+                            
+                            <li style="border-top: 2px solid #e2e8f0;"><a href="{% url 'services:services' %}" style="font-weight: bold; color: var(--color-brand); padding: 15px;">Все услуги (Калькулятор)</a></li>
                         </ul>
 
                         <div class="mega-menu">
                             <div class="mega-menu__inner">
                                 <div class="mega-menu__cols" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                                     
-                                    <div class="mega-menu__col" style="grid-column: span 2;">
-                                        <h4 class="mega-menu__heading">Все услуги</h4>
-                                        <ul class="mega-menu__list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                                            {% for svc in all_services %}
+                                    <div class="mega-menu__col">
+                                        <h4 class="mega-menu__heading" style="color: var(--color-brand);">Для дома</h4>
+                                        <ul class="mega-menu__list">
+                                            {% for svc in home_services %}
                                             <li>
                                                 <a href="{% url 'services:service_detail' svc.slug %}" class="mega-menu__link">
                                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -620,8 +639,26 @@
                                             {% endfor %}
                                         </ul>
                                     </div>
-
-                                    <div class="mega-menu__col mega-menu__col--cta">
+                                    
+                                    <div class="mega-menu__col">
+                                        <h4 class="mega-menu__heading" style="color: #64748b;">Для бизнеса</h4>
+                                        <ul class="mega-menu__list">
+                                            {% for svc in business_services %}
+                                            <li>
+                                                <a href="{% url 'services:service_detail' svc.slug %}" class="mega-menu__link">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                                                    {{ svc.name }}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                            <li style="margin-top: 15px; border-top: 1px dashed #e2e8f0; padding-top: 15px;">
+                                                <a href="{% url 'services:services' %}" class="mega-menu__link" style="color: var(--color-brand); font-weight: bold;">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                                                    Все услуги (Калькулятор)
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>                                    <div class="mega-menu__col mega-menu__col--cta">
                                         <div class="mega-menu__cta-box">
                                             <p class="mega-menu__cta-text">Не нашли нужную услугу?</p>
                                             <button class="btn btn--primary btn--small" data-modal="modal-lead">Получить консультацию</button>
@@ -910,6 +947,19 @@
                         // The dropdown <ul> is the next sibling after .mobile-nav-group
                         var group = this.closest('.mobile-nav-group');
                         var menu = group ? group.nextElementSibling : null;
+                        
+                        // Close all OTHER dropdowns first
+                        document.querySelectorAll('.mobile-chevron-btn').forEach(function(otherBtn) {
+                            if (otherBtn !== e.currentTarget) {
+                                otherBtn.classList.remove('active');
+                                var otherGroup = otherBtn.closest('.mobile-nav-group');
+                                var otherMenu = otherGroup ? otherGroup.nextElementSibling : null;
+                                if (otherMenu && otherMenu.classList.contains('mobile-dropdown-menu')) {
+                                    otherMenu.classList.remove('active');
+                                }
+                            }
+                        });
+
                         if (menu && menu.classList.contains('mobile-dropdown-menu')) {
                             menu.classList.toggle('active');
                         }
