@@ -1,15 +1,3 @@
-/* в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ
-
-   M-CLEAN вЂ” Premium Cleaning Website
-
-   Design System: White + Emerald Green
-
-   в•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђв•ђ */
-
-
-
-/* в”Ђв”Ђв”Ђ CSS Custom Properties в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
-
 :root {
 
      /* Colors */
@@ -124,7 +112,6 @@
 
 
 
-/* в”Ђв”Ђв”Ђ Reset & Base в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђ */
 
 *, *::before, *::after {
 
@@ -6386,8 +6373,6 @@ p:last-child { margin-bottom: 0; }
 
     }
 
-
-
     .glass-card {
 
         padding: 10px;
@@ -6612,14 +6597,6 @@ p:last-child { margin-bottom: 0; }
 
     }
 
-
-
-    .calc-params {
-
-        padding-bottom: 340px;
-
-    }
-
 }
 
 
@@ -6638,7 +6615,7 @@ p:last-child { margin-bottom: 0; }
 
     .calc-params {
 
-        padding-bottom: 340px;
+        padding-bottom: 0;
 
     }
 
@@ -6868,14 +6845,6 @@ p:last-child { margin-bottom: 0; }
 
     }
 
-
-
-    .calc-params {
-
-        padding-bottom: 340px;
-
-    }
-
 }
 
 
@@ -6999,14 +6968,6 @@ p:last-child { margin-bottom: 0; }
         padding: 12px;
 
         font-size: 12px;
-
-    }
-
-
-
-    .calc-params {
-
-        padding-bottom: 340px;
 
     }
 
@@ -13067,13 +13028,15 @@ p:last-child { margin-bottom: 0; }
 
 
 .opts-grid {
-
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 8px;
+}
 
+@media (max-width: 900px) {
+    .opts-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 
@@ -13959,8 +13922,7 @@ p:last-child { margin-bottom: 0; }
     padding: 20px 60px 60px !important;
     margin: -20px -60px;
 }
-.chemicals-swiper .swiper-button-prev {
-}
+
 
 /* Overrides for Swiper Buttons & Footer Logo */
 .chemicals-swiper {
@@ -14086,3 +14048,17 @@ p:last-child { margin-bottom: 0; }
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
+
+
+
+.gen-params-grid {
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 1130px) {
+    .gen-params-grid {
+        grid-template-columns: 1fr !important;
+    }
+}   
