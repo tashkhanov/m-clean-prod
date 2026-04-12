@@ -10,8 +10,9 @@ from django.conf import settings
 from .models import (
     SiteSettings, Faq, Partner, BeforeAfter, Service, 
     TeamMember, Certificate, ServicePackage, Equipment, 
-    Chemical, Discount, CompanyFact
+    Chemical, Discount, CompanyFact, LegalPage
 )
+from services.models import Service as ServicesService
 from portfolio.models import WorkCase, Review
 from blog.models import Post
 from leads.models import Lead
@@ -25,11 +26,11 @@ def index(request):
 
     context = {
         'settings': settings,
-        'faqs': Faq.objects.filter(is_active=True),
+        'faqs': Faq.objects.filter(is_active=True, services__isnull=True),
         'partners': Partner.objects.filter(is_active=True),
         'works': WorkCase.objects.select_related('category', 'partner').filter(is_active=True)[:6],
         'reviews': Review.objects.filter(is_active=True, is_approved=True),
-        'services': Service.objects.filter(is_active=True)[:6],
+        'services': ServicesService.objects.filter(is_active=True).order_by('order', '-id')[:6],
         'equipment': Equipment.objects.filter(is_active=True)[:4],
         'chemicals': Chemical.objects.filter(is_active=True)[:4],
         'team': TeamMember.objects.filter(is_active=True)[:6],
@@ -356,4 +357,29 @@ def get_partner_works(request, partner_id):
         'partner_description': partner.description if hasattr(partner, 'description') else '',
         'works': data
     })
+
+
+def legal_page_detail(request, slug):
+    """Отображение динамической юридической страницы (Политика, Оферта)."""
+    settings = SiteSettings.objects.first()
+    page = get_object_or_404(LegalPage, slug=slug, is_active=True)
+    
+    context = {
+        'settings': settings,
+        'page': page,
+    }
+    return render(request, 'core/legal_page.html', context)
+
+
+def notice_page(request):
+    """Страница 'Уведомление о рисках' с аккордеонами."""
+    settings = SiteSettings.objects.first()
+    # Пытаемся получить контент из базы, если админ захочет поменять текст
+    page = LegalPage.objects.filter(slug='notice', is_active=True).first()
+    
+    context = {
+        'settings': settings,
+        'page': page,
+    }
+    return render(request, 'core/notice.html', context)
 

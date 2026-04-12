@@ -1,5 +1,6 @@
 from django.db import models
 from embed_video.fields import EmbedVideoField
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class SEOMixin(models.Model):
@@ -171,6 +172,13 @@ class SiteSettings(models.Model):
 class Faq(models.Model):
     question = models.CharField("Вопрос", max_length=255)
     answer = models.TextField("Ответ")
+    services = models.ManyToManyField(
+        'services.Service',
+        blank=True,
+        verbose_name="Услуги (привязка)",
+        related_name='faqs',
+        help_text="Оставьте пустым — вопрос будет 'общим' (покажется на страницах без своих вопросов)"
+    )
     order = models.PositiveIntegerField(
         "Порядок",
         default=0,
@@ -602,3 +610,30 @@ class WorkStep(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class LegalPage(SEOMixin):
+    """Юридические и информационные страницы (Политика, Оферта, Риски и т.д.)"""
+    title = models.CharField("Заголовок страницы", max_length=150)
+    slug = models.SlugField(
+        "URL-слаг",
+        max_length=150,
+        unique=True,
+        help_text="Например: policy, terms, notice"
+    )
+    content = CKEditor5Field(
+        "Контент (Текст)",
+        config_name='extends',
+        help_text="Основной текст страницы."
+    )
+    is_active = models.BooleanField("Отображать?", default=True)
+    order = models.PositiveIntegerField("Порядок", default=0)
+
+    class Meta:
+        verbose_name = "Инфо-страница (Юридическая)"
+        verbose_name_plural = "Инфо-страницы"
+        ordering = ['order', 'title']
+
+    def __str__(self):
+        return self.title
+

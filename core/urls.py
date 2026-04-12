@@ -16,4 +16,6 @@ urlpatterns = [
     path('contacts/', views.contacts, name='contacts'),
     path('api/reviews/', views.load_more_reviews, name='load_more_reviews'),
     path('api/partners/<int:partner_id>/works/', views.get_partner_works, name='api_partner_works'),
+    path('notice/', views.notice_page, name='notice'),
+    path('info/<slug:slug>/', views.legal_page_detail, name='legal_detail'),
 ]

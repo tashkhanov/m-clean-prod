@@ -116,6 +116,13 @@ class Service(models.Model):
     
     order = models.PositiveIntegerField("Порядок", default=0)
     is_active = models.BooleanField("Отображать?", default=True)
+    featured_works = models.ManyToManyField(
+        'portfolio.WorkCase',
+        blank=True,
+        verbose_name="Избранные работы (портфолио)",
+        related_name='featured_in_services',
+        help_text="Выберите работы, которые будут показаны в блоке 'Наши работы' на странице услуги. Если пусто — показываются работы из той же категории"
+    )
 
     class Meta:
         verbose_name = "Услуга"

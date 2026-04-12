@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block meta_title %}Уведомление о рисках | {{ settings.company_name }}{% endblock %}
+{% block meta_description %}Уведомление о возможных нюансах и рисках при чистке мягкой мебели, ковролина и штор.{% endblock %}
+
+{% block content %}
+<section class="page-header" style="background-color: var(--color-bg-alt); padding: 60px 0 40px; border-bottom: 1px solid var(--color-border-light); text-align: center;">
+    <div class="container">
+        <h1 style="font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 15px;">Уведомление об особенностях и рисках</h1>
+        <div class="breadcrumbs" style="font-size: 14px; color: var(--color-text-muted);">
+            <a href="/" style="color: var(--color-brand); text-decoration: none;">Главная</a>
+            <span style="margin: 0 8px;">/</span>
+            <span>Уведомление о рисках</span>
+        </div>
+    </div>
+</section>
+
+<section class="section notice-section" style="padding: 60px 0;">
+    <div class="container" style="max-width: 900px;">
+        
+        <!-- Вводный текст -->
+        <div class="notice-intro" style="margin-bottom: 40px; text-align: center; max-width: 760px; margin-inline: auto;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-brand)" stroke-width="1.5" style="margin-bottom: 20px;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            
+            {% if page and page.content %}
+                <div class="ck-content">
+                    {{ page.content|safe }}
+                </div>
+            {% else %}
+                <p style="font-size: 17px; color: var(--color-text-secondary); line-height: 1.6;">
+                    Мы ценим ваше доверие и хотим, чтобы вы были полностью информированы обо всех нюансах и особенностях химчистки мягкой мебели, штор и ковролина. Профессиональная чистка — это сложный процесс, в котором многое зависит от состояния изделий, материалов и предыдущего ухода.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="notice-accordion-container">
+            <!-- Item 1: Мебель -->
+            <div class="n-acc-item">
+                <button class="n-acc-trigger">
+                    <div class="n-acc-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><path d="M2 13h20v4c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-4z"/><line x1="6" y1="19" x2="6" y2="22"/><line x1="18" y1="19" x2="18" y2="22"/></svg>
+                    </div>
+                    <span class="n-acc-title">1. Химчистка мягкой мебели</span>
+                    <div class="n-acc-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                </button>
+                <div class="n-acc-content">
+                    <div class="n-acc-inner">
+                        <p class="n-info-box">Результат зависит от возраста мебели, структуры ткани, глубины загрязнения, изначального состояния и материала наполнителя. Мы используем профессиональное оборудование, однако не гарантируем полное удаление абсолютно всех пятен.</p>
+                        
+                        <h5>1.1. Изменение цвета и оттенка</h5>
+                        <ul>
+                            <li>После удаления налёта и пыли ткань становится светлее, что может вызвать ощущение «выцветания».</li>
+                            <li>На сильно загрязнённых участках тон может быть заметно светлее.</li>
+                            <li>Иногда выявляется эффект «мраморности» — лёгкая неоднородность тона, связанная с износом.</li>
+                        </ul>
+
+                        <h5>1.2. Ограничения по удалению пятен</h5>
+                        <ul>
+                            <li>Красители (фломастеры, чернила, маркеры) могут впитаться необратимо.</li>
+                            <li>Пятна от ржавчины и краски практически невозможно удалить без повреждения материала.</li>
+                            <li>Органические пятна (кровь, кофе) при длительном воздействии меняют цвет ткани.</li>
+                        </ul>
+
+                        <h5>1.3. Запахи и дефекты</h5>
+                        <ul>
+                            <li>Запахи устраняются в 90–95% случаев, но при долгой влажности в помещении возможно их возвращение.</li>
+                            <li>Потёртости, порезы, зацепки могут проявиться после удаления загрязнения.</li>
+                            <li>Поролон, если он старый, может частично крошиться.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2: Ковролин -->
+            <div class="n-acc-item">
+                <button class="n-acc-trigger">
+                    <div class="n-acc-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+                    </div>
+                    <span class="n-acc-title">2. Химчистка ковролина и ковров</span>
+                    <div class="n-acc-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                </button>
+                <div class="n-acc-content">
+                    <div class="n-acc-inner">
+                        <p class="n-info-box">Результат зависит от материала ворса, плотности, наличия клеевого слоя, предыдущих самостоятельных чисток и возраста покрытия.</p>
+
+                        <h5>2.1. Фитильковый эффект и износ</h5>
+                        <ul>
+                            <li>Старые глубокие загрязнения могут подняться на поверхность даже через несколько дней после чистки.</li>
+                            <li>В местах сильного износа ворс может быть повреждён — это не исправляется чисткой.</li>
+                            <li>Чистка может выявить старые выгоревшие участки.</li>
+                        </ul>
+
+                        <h5>2.2. Высыхание покрытия</h5>
+                        <ul>
+                            <li>Толстый ковролин и ковры могут сохнуть от 6 до 48 часов в зависимости от вентиляции.</li>
+                            <li>В процессе сушки необходимо хорошо проветривать помещение для избежания затхлости.</li>
+                            <li>Не рекомендуем размещать личные вещи и мебель на влажном покрытии во избежание порчи.</li>
+                        </ul>
+
+                        <h5>2.3. Последствия непрофессиональной чистки клиента</h5>
+                        <ul>
+                            <li>Остатки бытовых средств создают липкую пленку, которая притягивает пыль.</li>
+                            <li>Сильные кислоты и бытовые отбеливатели (Vanish и т.д.) часто вызывают необратимое выцветание.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3: Шторы -->
+            <div class="n-acc-item">
+                <button class="n-acc-trigger">
+                    <div class="n-acc-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16"/><path d="M20 4v16"/><path d="M4 6h16"/><path d="M4 18h16"/><path d="M12 4v16"/></svg>
+                    </div>
+                    <span class="n-acc-title">3. Химчистка штор на весу</span>
+                    <div class="n-acc-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                </button>
+                <div class="n-acc-content">
+                    <div class="n-acc-inner">
+                        <p class="n-info-box">Производители ткани часто не предусматривают стирку, поэтому химчистка на весу является оптимальным, но деликатным процессом.</p>
+
+                        <h5>3.1. Усадка и деформация</h5>
+                        <ul>
+                            <li>Натуральные ткани (лён, хлопок, шёлк) подвержены усадке до 3–7%.</li>
+                            <li>Шторы с плотной подкладкой или blackout могут садиться неравномерно (верхний и нижний слои).</li>
+                            <li>Из-за разницы в натяжении ткани иногда образуются небольшие волны по низу шторы.</li>
+                        </ul>
+
+                        <h5>3.2. Цвет и фурнитура</h5>
+                        <ul>
+                            <li>Если ткань выгорала на солнце, после чистки разница станет более заметной.</li>
+                            <li>Металлическая фурнитура может окислиться, а пластиковая — потерять форму от температуры.</li>
+                            <li>Бахрома и кисточки состоят из тонких нитей, которые могут спутываться.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4: Памятка -->
+            <div class="n-acc-item n-acc-item--highlight">
+                <button class="n-acc-trigger">
+                    <div class="n-acc-icon" style="color: var(--color-brand); background: white;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                    </div>
+                    <span class="n-acc-title">Памятка для подготовки к химчистке</span>
+                    <div class="n-acc-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+                </button>
+                <div class="n-acc-content">
+                    <div class="n-acc-inner">
+                        <div style="display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                            <div>
+                                <h6 style="color: var(--color-brand); font-weight: 700; font-size: 16px; margin-bottom: 12px;">Для мебели:</h6>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Уберите с дивана пледы, подушки, игрушки.</li>
+                                    <li>По возможности отодвиньте мебель от стен.</li>
+                                    <li>Сообщите мастеру о скрытых дефектах (надрывы, слабые швы).</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 style="color: var(--color-brand); font-weight: 700; font-size: 16px; margin-bottom: 12px;">Для ковров:</h6>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Освободите пол от мелких предметов и проводов.</li>
+                                    <li>Пылесосить заранее не обязательно (мы сделаем это сами).</li>
+                                    <li>Уберите бытовую технику и электронику с пола.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h6 style="color: var(--color-brand); font-weight: 700; font-size: 16px; margin-bottom: 12px;">Для штор:</h6>
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Освободите доступ к окнам (уберите растения с подоконников).</li>
+                                    <li>Сообщите о наличии хрупкой фурнитуры.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<style>
+/* Стили для аккордеона уведомлений */
+.notice-accordion-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.n-acc-item {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.n-acc-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-md);
+}
+
+.n-acc-item--highlight {
+    border: 2px solid var(--color-brand);
+    background: var(--color-bg-green);
+}
+
+.n-acc-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    gap: 16px;
+    transition: background var(--transition-fast);
+}
+
+@media (max-width: 600px) {
+    .n-acc-trigger { padding: 16px; }
+}
+
+.n-acc-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg-alt);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+}
+
+.n-acc-item.active .n-acc-icon {
+    background: var(--color-brand);
+    color: white;
+}
+
+.n-acc-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-main);
+    flex-grow: 1;
+}
+
+.n-acc-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: transform var(--transition-base);
+}
+
+.n-acc-item.active .n-acc-chevron {
+    transform: rotate(180deg);
+}
+
+.n-acc-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease;
+}
+
+.n-acc-item.active .n-acc-content {
+    grid-template-rows: 1fr;
+}
+
+.n-acc-inner {
+    overflow: hidden;
+    padding: 0 24px 24px 84px; /* Align text with title */
+}
+
+@media (max-width: 600px) {
+    .n-acc-inner { padding: 0 16px 20px 16px; }
+}
+
+/* Контент внутри аккордеона */
+.n-acc-inner h5 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    color: var(--color-text-main);
+}
+
+.n-acc-inner ul {
+    margin: 0 0 16px 0;
+    padding-left: 20px;
+}
+
+.n-acc-inner li {
+    margin-bottom: 8px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+.n-info-box {
+    background: var(--color-bg-alt);
+    border-left: 4px solid var(--color-brand);
+    padding: 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    color: var(--color-text-main);
+    font-style: italic;
+    font-size: 15px;
+    margin-top: 8px;
+}
+.n-acc-item--highlight .n-info-box {
+    background: white;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const triggers = document.querySelectorAll('.n-acc-trigger');
+    triggers.forEach(t => {
+        t.addEventListener('click', function() {
+            const item = this.parentElement;
+            
+            // Если нужно чтобы открывался только один за раз — раскомментируйте код ниже
+            /*
+            document.querySelectorAll('.n-acc-item').forEach(otherItem => {
+                if(otherItem !== item) otherItem.classList.remove('active');
+            });
+            */
+            
+            item.classList.toggle('active');
+        });
+    });
+});
+</script>
+{% endblock %}

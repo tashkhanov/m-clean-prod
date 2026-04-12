@@ -124,7 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
         curtainIroning: false,
         selectedOptions: [],
         isNewClient: false,
-        isCombo: false
+        isCombo: false,
+        userInteracted: false
     };
 
 
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (furn) furn.style.display = (state.activeCalcType === 'furniture' || state.activeCalcType === 'default') ? '' : 'none';
             }
             
-            recalc();
+            recalc(true);
         }
     }
 
@@ -1432,7 +1433,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 isStaticVisible = (rect.top >= 0 && rect.bottom <= window.innerHeight);
             }
 
-            if (fin > 0 && !isStaticVisible) {
+            if (fin > 0 && !isStaticVisible && state.userInteracted) {
                 floatTotal.textContent = fmt(fin);
                 floatBar.classList.add('active');
             } else {
@@ -1485,14 +1486,15 @@ document.addEventListener('DOMContentLoaded', function() {
         renderSummary(det, total, discountInfo.join(', '));
     }
 
-    function recalc() {
+    function recalc(isQuiet) {
+        if (isQuiet !== true) state.userInteracted = true;
         if (state.activeCalcType === 'furniture') calcFurniture();
         else if (state.activeCalcType === 'carpet') calcCarpet();
         else if (state.activeCalcType === 'curtains') calcCurtains();
         else calcDefault();
     }
 
-    window.addEventListener('scroll', recalc);
+    window.addEventListener('scroll', function() { recalc(true); });
 
     // ═══════════════════════════════════════════════════════════════
     // WHATSAPP
@@ -1608,5 +1610,8 @@ document.addEventListener('DOMContentLoaded', function() {
     renderFurniture();
     initAccordion();
     bindOptionCheckboxes();
-    recalc();
+    recalc(true);
+    // Final safety: ensure no accidental interaction flag was set during load
+    state.userInteracted = false;
+    if (mobileFloatBar) mobileFloatBar.classList.remove('active');
 });

@@ -116,10 +116,10 @@
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
                     {% endif %}
                 </div>
-                <h3 class="service-card__title">{{ service.title }}</h3>
+                <h3 class="service-card__title">{{ service.name }}</h3>
                 <p class="service-card__description">{{ service.short_description }}</p>
                 <div class="service-card__price">
-                    от {{ service.price_from|default:"0" }} ₸
+                    от {{ service.base_price|default:"0" }} ₸
                     <span class="service-card__price-label">/ услуга</span>
                 </div>
             </a>
@@ -353,8 +353,8 @@
             <div class="swiper-wrapper">
                 {% for partner in partners %}
                 <div class="swiper-slide">
-                    <div class="partner-card">
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-card__logo" width="150" height="60" loading="lazy" decoding="async">
+                    <div class="partner-card" style="padding: var(--space-lg); min-height: 100px; display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="partner-card__logo" style="max-height: 80px; max-width: 180px; width: auto; object-fit: contain; filter: grayscale(100%) opacity(0.7); transition: 0.3s;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'" width="180" height="80" loading="lazy" decoding="async">
                     </div>
                 </div>
                 {% endfor %}

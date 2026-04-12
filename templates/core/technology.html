@@ -148,19 +148,18 @@
 <section class="section" id="certificates">
     <div class="container">
         <div class="section__header fade-in">
-            <h2 class="section__title">Наши сертификаты</h2>
+            <h2 class="section__title">Благодарственные письма</h2>
             <p class="section__subtitle">Подтверждение качества и безопасности наших услуг</p>
         </div>
         
         <div class="cert-grid">
             {% for cert in certificates %}
-            <div class="cert-card" data-fancybox="gallery" data-src="{{ cert.image.url }}" style="cursor: pointer;">
+            <a class="cert-card fade-in"
+               href="{% if cert.image %}{{ cert.image.url }}{% else %}https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=1600&fit=crop{% endif %}"
+               data-fancybox="letters-gallery-tech"
+               data-caption="{{ cert.title }}{% if cert.issued_by %} — {{ cert.issued_by }}{% endif %}">
                 <div class="cert-card__img">
-                    {% if cert.image %}
-                    <img src="{{ cert.image.url }}" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
-                    {% else %}
-                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
-                    {% endif %}
+                    <img src="{% if cert.image %}{{ cert.image.url }}{% else %}https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop{% endif %}" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
                 </div>
                 <div class="cert-card__body">
                     <h3 class="cert-card__title">{{ cert.title }}</h3>
@@ -168,10 +167,10 @@
                     <p class="cert-card__issuer">{{ cert.issued_by }}</p>
                     {% endif %}
                 </div>
-            </div>
+            </a>
             {% empty %}
             <div class="no-items fade-in" style="grid-column: 1 / -1; padding: var(--space-xl); text-align: center; background: var(--color-bg-light); border-radius: var(--radius-lg);">
-                <p>Сертификаты появятся здесь в ближайшее время</p>
+                <p>Благодарственные письма появятся здесь в ближайшее время</p>
             </div>
             {% endfor %}
         </div>
@@ -246,6 +245,8 @@
             slidesPerView: 1,
             spaceBetween: 24,
             loop: true,
+            watchSlidesProgress: true,
+            centerInsufficientSlides: true,
             pagination: {
                 el: '.swiper-pagination',
                 clickable: true,

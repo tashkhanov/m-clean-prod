@@ -143,14 +143,13 @@
         
         <div class="cert-grid" id="cert-grid">
             {% for cert in certificates %}
-            <div class="cert-card fade-in" data-fancybox="gallery" data-src="{% if cert.image %}{{ cert.image.url }}{% endif %}" style="cursor: pointer;"
-                 data-type="{% if 'письмо' in cert.title|lower or 'благодар' in cert.title|lower %}letter{% else %}certificate{% endif %}">
+            <a class="cert-card fade-in"
+               href="{% if cert.image %}{{ cert.image.url }}{% else %}https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=1600&fit=crop{% endif %}"
+               data-fancybox="letters-gallery"
+               data-caption="{{ cert.title }}{% if cert.issued_by %} — {{ cert.issued_by }}{% endif %}"
+               data-filter-type="{% if 'письмо' in cert.title|lower or 'благодар' in cert.title|lower %}letter{% else %}certificate{% endif %}">
                 <div class="cert-card__img">
-                    {% if cert.image %}
-                    <img src="{{ cert.image.url }}" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
-                    {% else %}
-                    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
-                    {% endif %}
+                    <img src="{% if cert.image %}{{ cert.image.url }}{% else %}https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=400&fit=crop{% endif %}" alt="{{ cert.title }}" width="300" height="400" loading="lazy">
                 </div>
                 <div class="cert-card__body">
                     <h3 class="cert-card__title">{{ cert.title }}</h3>
@@ -158,9 +157,9 @@
                     <p class="cert-card__issuer">{{ cert.issued_by }}</p>
                     {% endif %}
                 </div>
-            </div>
+            </a>
             {% empty %}
-            <p class="text-center text-muted" style="grid-column: 1/-1;">Сертификаты скоро появятся</p>
+            <p class="text-center text-muted" style="grid-column: 1/-1;">Благодарственные письма скоро появятся</p>
             {% endfor %}
         </div>
     </div>
@@ -177,8 +176,8 @@
         <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
             <div class="swiper-wrapper">
                 {% for partner in partners %}
-                <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; cursor: pointer;" onclick="openPartnerModal({{ partner.id }})">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" height="60" style="max-height: 70px; width: auto; max-width: 100%; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
+                <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;" onclick="openPartnerModal({{ partner.id }})">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" style="max-height: 90px; max-width: 180px; width: auto; height: auto; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
                 </div>
                 {% empty %}
                 <p class="text-center text-muted" style="width: 100%;">Партнёры скоро появятся</p>
@@ -214,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.classList.add('active');
                 
                 certCards.forEach(function(card) {
-                    var type = card.dataset.type || 'certificate';
+                    var type = card.dataset.filterType || 'certificate';
                     if (filter === 'all' || type === filter) {
                         card.style.display = '';
                     } else {

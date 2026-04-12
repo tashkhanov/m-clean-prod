@@ -37,23 +37,29 @@ class ServiceAdmin(ModelAdmin):
     search_fields = ('name', 'short_description', 'description')
     actions = [compress_service_images]
     inlines = []
+    filter_horizontal = ('featured_works',)
     fieldsets = (
         ('Об услуге', {
             'fields': ('category', 'icon', 'calc_type', 'default_client_type', 'default_material', 'name', 'slug', 'short_description', 'description', 'image', 'image_alt'),
-        }),
-        ("SEO-настройки", {
-            'fields': ('seo_title', 'seo_description'),
-            'classes': ('collapse',),
-            'description': "Мета-теги для поисковой оптимизации (meta title и meta description)."
         }),
         ("Цены", {
             'fields': ('base_price', 'unit'),
             'description': "Укажите базовую стоимость за единицу измерения."
         }),
+        ("Избранные работы (портфолио)", {
+            'fields': ('featured_works',),
+            'description': "Выберите работы из портфолио, которые будут показаны на странице услуги. Если не выбрано — показываются последние работы из категории услуги.",
+            'classes': ('collapse',),
+        }),
         ("Видео", {
             'fields': ('video',),
             'classes': ('collapse',),
             'description': "Вставьте полную ссылку на YouTube видео"
+        }),
+        ("SEO-настройки", {
+            'fields': ('seo_title', 'seo_description'),
+            'classes': ('collapse',),
+            'description': "Мета-теги для поисковой оптимизации (meta title и meta description)."
         }),
         ("Отображение", {
             'fields': ('order', 'is_active'),
@@ -65,7 +71,6 @@ class ServiceAdmin(ModelAdmin):
         if obj and obj.calc_type == 'carpet':
             return [ServiceTierPriceInline]
         return []
-
 
 class ServiceTierPriceInline(TabularInline):
     model = ServiceTierPrice

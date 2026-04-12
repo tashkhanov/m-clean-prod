@@ -180,8 +180,19 @@ def service_detail(request, slug):
         })
 
     # Additional context for enhanced detail page
-    faqs = Faq.objects.filter(is_active=True)
-    related_works = WorkCase.objects.select_related('partner').filter(category=service.category, is_active=True)[:4]
+    service_faqs = Faq.objects.filter(is_active=True, services=service)
+    if service_faqs.exists():
+        faqs = service_faqs
+    else:
+        faqs = Faq.objects.filter(is_active=True, services__isnull=True)
+
+    # Use featured works if admin has hand-picked them, otherwise fall back to category
+    featured = service.featured_works.filter(is_active=True)
+    if featured.exists():
+        related_works = featured[:4]
+    else:
+        related_works = WorkCase.objects.select_related('partner').filter(category=service.category, is_active=True)[:4]
+
     recommended_services = Service.objects.select_related('category').filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
     partners = Partner.objects.filter(is_active=True)
 

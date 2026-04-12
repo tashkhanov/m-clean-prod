@@ -6,7 +6,11 @@ from django.core.files.base import ContentFile
 from PIL import Image
 from unfold.admin import ModelAdmin
 
-from .models import SiteSettings, Faq, Partner, BeforeAfter, Service, TeamMember, Certificate, ServicePackage, Equipment, Chemical, Discount, CompanyFact, Advantage, WorkStep
+from .models import (
+    SiteSettings, Faq, Partner, BeforeAfter, Service, TeamMember, 
+    Certificate, ServicePackage, Equipment, Chemical, Discount, 
+    CompanyFact, Advantage, WorkStep, LegalPage
+)
 from .admin_actions import (
     compress_site_images,
     compress_partner_logos,
@@ -196,6 +200,19 @@ class FaqAdmin(ModelAdmin):
     list_editable = ('order', 'is_active')
     search_fields = ('question', 'answer')
     list_filter = ('is_active',)
+    filter_horizontal = ('services',)
+    fieldsets = (
+        ("Вопрос и ответ", {
+            'fields': ('question', 'answer'),
+        }),
+        ("Привязка к услугам", {
+            'fields': ('services',),
+            'description': "Оставьте пустым, чтобы вопрос отображался на всех страницах (‘общий’ вопрос). Укажите услуги, чтобы вопрос показывался только на странице этих услуг."
+        }),
+        ("Отображение", {
+            'fields': ('order', 'is_active'),
+        }),
+    )
 
 
 @admin.register(Partner)
@@ -361,3 +378,12 @@ class WorkStepAdmin(ModelAdmin):
     list_editable = ('order', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('title', 'description')
+
+@admin.register(LegalPage)
+class LegalPageAdmin(ModelAdmin):
+    list_display = ('title', 'slug', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    search_fields = ('title', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+    list_filter = ('is_active',)
+

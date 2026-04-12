@@ -14,8 +14,8 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
-if not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+if '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.extend(['.onrender.com', 'mclean-demo.onrender.com', 'localhost', '127.0.0.1'])
 
 INSTALLED_APPS = [
     'unfold',
@@ -148,6 +148,11 @@ UNFOLD = {
                         "title": "Настройки",
                         "icon": "settings",
                         "link": "/admin/core/sitesettings/",
+                    },
+                    {
+                        "title": "Инфо-страницы",
+                        "icon": "description",
+                        "link": "/admin/core/legalpage/",
                     },
                 ],
             },
@@ -314,9 +319,17 @@ UNFOLD = {
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # CSRF Trusted Origins for Render
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000', cast=lambda v: [s.strip() for s in v.split(',')])
-if '.onrender.com' not in str(CSRF_TRUSTED_ORIGINS):
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS', 
+    default='http://localhost:8000,http://127.0.0.1:8000,https://mclean-demo.onrender.com', 
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+# Добавляем поддержку wildcards для поддоменов render
+if 'https://*.onrender.com' not in CSRF_TRUSTED_ORIGINS:
     CSRF_TRUSTED_ORIGINS.append('https://*.onrender.com')
+if 'https://mclean-demo.onrender.com' not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append('https://mclean-demo.onrender.com')
 
 # ─── CKEditor 5 Configuration ─────────────────────────────────────
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff" # User must be staff to upload
