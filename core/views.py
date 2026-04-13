@@ -28,7 +28,10 @@ def index(request):
         'settings': settings,
         'faqs': Faq.objects.filter(is_active=True, show_on_main=True),
         'partners': Partner.objects.filter(is_active=True),
-        'works': WorkCase.objects.select_related('category', 'partner').filter(is_active=True)[:6],
+        'works': (
+            list(WorkCase.objects.select_related('category', 'partner').filter(is_active=True, show_on_homepage=True)[:4]) +
+            list(WorkCase.objects.select_related('category', 'partner').filter(is_active=True, show_on_homepage=False)[:4])
+        )[:4],
         'reviews': Review.objects.filter(is_active=True, is_approved=True),
         'services': ServicesService.objects.filter(is_active=True).order_by('order', '-id')[:6],
         'equipment': Equipment.objects.filter(is_active=True)[:4],

@@ -14,9 +14,9 @@ from core.admin_actions import compress_workcase_images
 
 @admin.register(WorkCase)
 class WorkCaseAdmin(ModelAdmin):
-    list_display = ('title', 'category', 'order', 'is_active')
-    list_editable = ('category', 'order', 'is_active')
-    list_filter = ('category', 'is_active')
+    list_display = ('title', 'category', 'order', 'is_active', 'show_on_homepage')
+    list_editable = ('category', 'order', 'is_active', 'show_on_homepage')
+    list_filter = ('category', 'is_active', 'show_on_homepage')
     search_fields = ('title', 'description', 'partner__name')
     actions = [compress_workcase_images]
     fieldsets = (
@@ -27,7 +27,7 @@ class WorkCaseAdmin(ModelAdmin):
             'fields': ('image_before', 'image_before_alt', 'image_after', 'image_after_alt'),
         }),
         ("Отображение", {
-            'fields': ('order', 'is_active'),
+            'fields': ('order', 'is_active', 'show_on_homepage'),
         }),
     )
 

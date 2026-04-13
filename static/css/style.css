@@ -7387,6 +7387,14 @@ p:last-child { margin-bottom: 0; }
 
 
 
+.portfolio-grid--home {
+
+    grid-template-columns: repeat(2, 1fr);
+
+}
+
+
+
 .portfolio-item {
 
     background: white;

@@ -27,6 +27,7 @@ class WorkCase(models.Model):
     image_after_alt = models.CharField("Alt-текст фото ПОСЛЕ", max_length=255, blank=True)
     order = models.PositiveIntegerField("Порядок", default=0)
     is_active = models.BooleanField("Отображать?", default=True)
+    show_on_homepage = models.BooleanField("Показывать на главной?", default=False)
 
     class Meta:
         verbose_name = "Работа (До/После)"
