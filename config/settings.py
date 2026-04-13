@@ -92,7 +92,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # WhiteNoise Configuration (Aggressive Caching for Lighthouse 100/100)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_MAX_AGE = 31536000 # 1 year cache
+WHITENOISE_MAX_AGE = 3600 # 1 hour cache during development/polish phase
 WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Media files
