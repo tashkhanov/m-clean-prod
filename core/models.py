@@ -179,6 +179,7 @@ class Faq(models.Model):
         related_name='faqs',
         help_text="Оставьте пустым — вопрос будет 'общим' (покажется на страницах без своих вопросов)"
     )
+    show_on_main = models.BooleanField("Показывать на главной", default=False)
     order = models.PositiveIntegerField(
         "Порядок",
         default=0,

@@ -196,10 +196,10 @@ class SiteSettingsAdmin(ModelAdmin):
 
 @admin.register(Faq)
 class FaqAdmin(ModelAdmin):
-    list_display = ('question', 'order', 'is_active')
-    list_editable = ('order', 'is_active')
+    list_display = ('question', 'order', 'is_active', 'show_on_main')
+    list_editable = ('order', 'is_active', 'show_on_main')
     search_fields = ('question', 'answer')
-    list_filter = ('is_active',)
+    list_filter = ('is_active', 'show_on_main')
     filter_horizontal = ('services',)
     fieldsets = (
         ("Вопрос и ответ", {
@@ -207,10 +207,11 @@ class FaqAdmin(ModelAdmin):
         }),
         ("Привязка к услугам", {
             'fields': ('services',),
-            'description': "Оставьте пустым, чтобы вопрос отображался на всех страницах (‘общий’ вопрос). Укажите услуги, чтобы вопрос показывался только на странице этих услуг."
+            'description': "Оставьте пустым, чтобы вопрос отображался на всех страницах ('общий' вопрос). Укажите услуги, чтобы вопрос показывался только на странице этих услуг."
         }),
         ("Отображение", {
-            'fields': ('order', 'is_active'),
+            'fields': ('order', 'is_active', 'show_on_main'),
+            'description': "Поставьте 'Показывать на главной', чтобы вопрос появлялся в FAQ на главной странице сайта."
         }),
     )
 

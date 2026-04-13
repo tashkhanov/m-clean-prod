@@ -2105,9 +2105,9 @@ p:last-child { margin-bottom: 0; }
 
     object-fit: contain;
 
-    filter: grayscale(100%);
+    filter: grayscale(0%);
 
-    opacity: 0.7;
+    opacity: 1;
 
     transition: all 0.3s ease;
 
@@ -2210,47 +2210,25 @@ p:last-child { margin-bottom: 0; }
 
 
 .faq-item summary::after {
-
-    content: '+';
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    width: 28px;
-
-    height: 28px;
-
-    background: var(--color-brand-pale);
-
-    color: var(--color-brand);
-
-    font-size: 20px;
-
-    font-weight: 700;
-
-    border-radius: 50%;
-
-    flex-shrink: 0;
-
+    content: '';
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    margin-right: 8px;
     transition: all var(--transition-base);
-
 }
 
-
-
 .faq-item[open] summary::after {
+    transform: rotate(-135deg);
+    margin-top: 5px;
+}
 
-    content: 'в€’';
-
-    background: var(--color-brand);
-
-    color: white;
-
-    transform: rotate(180deg);
-
+.faq-item summary {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -9339,9 +9317,9 @@ p:last-child { margin-bottom: 0; }
 
     justify-content: center;
 
-    filter: grayscale(100%);
+    filter: grayscale(0%);
 
-    opacity: 0.6;
+    opacity: 1;
 
     transition: all var(--transition-base);
 
@@ -11658,9 +11636,9 @@ p:last-child { margin-bottom: 0; }
 
     object-fit: contain;
 
-    filter: grayscale(100%);
+    filter: grayscale(0%);
 
-    opacity: 0.8;
+    opacity: 1;
 
     transition: all 0.3s ease;
 
@@ -13459,8 +13437,9 @@ p:last-child { margin-bottom: 0; }
 }
 
 .chemicals-swiper .swiper-slide {
-    height: auto;
     display: flex;
+    justify-content: center;
+    height: auto;
 }
 
 .chemicals-swiper .chemical-card {

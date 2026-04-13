@@ -31,9 +31,9 @@
             <p class="section__subtitle">Итальянская техника Santoemma и Kärcher</p>
         </div>
         
-        <div class="equipment-grid">
+        <div class="equipment-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-lg);">
             {% for item in equipment %}
-            <div class="equipment-card fade-in">
+            <div class="equipment-card fade-in" style="flex: 0 1 400px; height: auto;">
                 <div class="equipment-card__image">
                     {% if item.photo %}
                     <img src="{{ item.photo.url }}" alt="{{ item.name }}" width="400" height="300" loading="lazy" style="object-fit: contain;">
@@ -148,13 +148,13 @@
 <section class="section" id="certificates">
     <div class="container">
         <div class="section__header fade-in">
-            <h2 class="section__title">Благодарственные письма</h2>
+            <h2 class="section__title">Сертификаты на химию</h2>
             <p class="section__subtitle">Подтверждение качества и безопасности наших услуг</p>
         </div>
         
-        <div class="cert-grid">
+        <div class="cert-grid" style="display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-lg);">
             {% for cert in certificates %}
-            <a class="cert-card fade-in"
+            <a class="cert-card fade-in" style="flex: 0 1 300px;"
                href="{% if cert.image %}{{ cert.image.url }}{% else %}https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=1600&fit=crop{% endif %}"
                data-fancybox="letters-gallery-tech"
                data-caption="{{ cert.title }}{% if cert.issued_by %} — {{ cert.issued_by }}{% endif %}">
@@ -245,6 +245,7 @@
             slidesPerView: 1,
             spaceBetween: 24,
             loop: true,
+            centeredSlides: true,
             watchSlidesProgress: true,
             centerInsufficientSlides: true,
             pagination: {

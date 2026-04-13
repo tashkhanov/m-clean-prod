@@ -26,7 +26,7 @@ def index(request):
 
     context = {
         'settings': settings,
-        'faqs': Faq.objects.filter(is_active=True, services__isnull=True),
+        'faqs': Faq.objects.filter(is_active=True, show_on_main=True),
         'partners': Partner.objects.filter(is_active=True),
         'works': WorkCase.objects.select_related('category', 'partner').filter(is_active=True)[:6],
         'reviews': Review.objects.filter(is_active=True, is_approved=True),

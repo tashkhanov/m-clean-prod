@@ -177,7 +177,7 @@
             <div class="swiper-wrapper">
                 {% for partner in partners %}
                 <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;" onclick="openPartnerModal({{ partner.id }})">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" style="max-height: 90px; max-width: 180px; width: auto; height: auto; filter: grayscale(100%) opacity(0.7); transition: 0.3s; object-fit: contain;" onmouseover="this.style.filter='grayscale(0%) opacity(1)'" onmouseout="this.style.filter='grayscale(100%) opacity(0.7)'">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" style="max-height: 90px; max-width: 180px; width: auto; height: auto; object-fit: contain; transition: 0.3s;">>
                 </div>
                 {% empty %}
                 <p class="text-center text-muted" style="width: 100%;">Партнёры скоро появятся</p>
