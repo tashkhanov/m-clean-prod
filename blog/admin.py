@@ -34,7 +34,7 @@ class PostAdmin(ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ('title', 'excerpt')
     actions = [compress_blog_images]
-    readonly_fields = ('views',)
+    readonly_fields = ('views', 'published_at')
     filter_horizontal = ('tags', 'faqs')
     
     fieldsets = (
