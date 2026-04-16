@@ -43,17 +43,23 @@ class SiteSettings(models.Model):
         blank=True,
         help_text="Белый/светлый логотип для тёмного футера"
     )
-    favicon = models.ImageField(
+    favicon = models.FileField(
         "Favicon",
         upload_to="branding/",
         blank=True,
-        help_text="Иконка сайта (PNG, 32x32)"
+        help_text="Иконка сайта (PNG, SVG, ICO)"
     )
     hero_image = models.ImageField(
         "Фото Hero (справа)",
         upload_to="branding/",
         blank=True,
         help_text="Главное фото справа на первом экране (рекомендуется 600x500)"
+    )
+    hero_badge_text = models.CharField(
+        "Текст бейджа Hero",
+        max_length=100,
+        default="Работаем с 2015 года",
+        help_text="Текст в маленькой плашке над заголовком. Если оставить пустым, будет 'Работаем X лет'."
     )
     hero_title = models.TextField(
         "Заголовок Hero (H1)",

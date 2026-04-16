@@ -193,7 +193,17 @@ def service_detail(request, slug):
     else:
         related_works = WorkCase.objects.select_related('partner').filter(category=service.category, is_active=True)[:4]
 
-    recommended_services = Service.objects.select_related('category').filter(category=service.category, is_active=True).exclude(id=service.id).order_by('?')[:3]
+    # Рекомендованные услуги (3 штуки): сначала из той же категории, если не хватает — добиваем другими
+    recommended_services = list(Service.objects.select_related('category').filter(
+        category=service.category, is_active=True
+    ).exclude(id=service.id).order_by('?')[:3])
+    
+    if len(recommended_services) < 3:
+        current_ids = [service.id] + [s.id for s in recommended_services]
+        additional_services = Service.objects.select_related('category').filter(
+            is_active=True
+        ).exclude(id__in=current_ids).order_by('?')[:3 - len(recommended_services)]
+        recommended_services.extend(additional_services)
     partners = Partner.objects.filter(is_active=True)
 
     context = {

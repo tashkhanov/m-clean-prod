@@ -213,7 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                     }
 
-                    setTimeout(closeModal, 4000);
+                    setTimeout(() => {
+                        closeModal();
+                        if (leadForm) leadForm.reset();
+                    }, 2500);
                 } else {
                     showFormError(leadForm, result.error || 'Ошибка отправки данных. Попробуйте еще раз.');
                 }

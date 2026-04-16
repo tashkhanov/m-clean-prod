@@ -14,7 +14,7 @@
             <div class="hero__content">
                 <div class="hero__badge hero-animate" data-delay="0">
                     <span class="hero__badge-dot"></span>
-                    <span>Работаем {{ experience_count }} лет</span>
+                    <span>{% if settings.hero_badge_text %}{{ settings.hero_badge_text }}{% else %}Работаем {{ experience_count }} лет{% endif %}</span>
                 </div>
                 
                 <h1 class="hero__title hero-animate" data-delay="100">
@@ -485,3 +485,4 @@
 </section>
 
 {% endblock %}
+

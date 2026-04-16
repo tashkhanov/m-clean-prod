@@ -1382,8 +1382,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var fin = total;
         if (total > 0 && total < MIN_ORDER) {
-            fin = MIN_ORDER;
-            if (minNote) { minNote.style.display = 'block'; minNote.textContent = '* Применён минимальный заказ — ' + MIN_ORDER.toLocaleString('ru-RU') + ' ₸'; }
+            if (state.userInteracted) {
+                fin = MIN_ORDER;
+                if (minNote) { minNote.style.display = 'block'; minNote.textContent = '* Применён минимальный заказ — ' + MIN_ORDER.toLocaleString('ru-RU') + ' ₸'; }
+            } else {
+                if (minNote) minNote.style.display = 'none';
+            }
         } else {
             if (minNote) minNote.style.display = 'none';
         }

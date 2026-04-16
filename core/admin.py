@@ -163,7 +163,7 @@ class SiteSettingsAdmin(ModelAdmin):
             'description': "Логотипы и главное фото Hero-секции"
         }),
         ("Hero секция (Главный экран)", {
-            'fields': ('hero_title', 'hero_subtitle'),
+            'fields': ('hero_badge_text', 'hero_title', 'hero_subtitle'),
             'description': "Заголовок и подзаголовок на первом экране. HTML разрешён."
         }),
         ("О компании", {

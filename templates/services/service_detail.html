@@ -2,7 +2,8 @@
 {% load static %}
 {% load embed_video_tags %}
 
-{% block meta_title %}{% if service.seo_title %}{{ service.seo_title }}{% else %}{{ service.name }} - Химчистка в Алматы | M-Clean{% endif %}{% endblock %}
+{% block meta_title %}{% if service.seo_title %}{{ service.seo_title }}{% else %}{{ service.name }} - Химчистка в Алматы
+| M-Clean{% endif %}{% endblock %}
 {% block meta_description %}{% if service.seo_description %}{{ service.seo_description }}{% elif service.short_description %}{{ service.short_description|striptags|truncatewords:25 }}{% else %}{{ service.description|striptags|truncatewords:25 }}{% endif %}{% endblock %}
 
 {% block extra_head %}
@@ -15,6 +16,7 @@
             gap: 32px !important;
             align-items: start !important;
         }
+
         .calc-total-panel {
             position: sticky !important;
             top: 100px !important;
@@ -40,11 +42,13 @@
         line-height: 1 !important;
         box-sizing: border-box !important;
     }
+
     .cbtn:hover {
         border-color: #28C460 !important;
         color: #28C460 !important;
         background: #edfaf3 !important;
     }
+
     .cqty {
         font-size: 15px !important;
         font-weight: 800 !important;
@@ -53,6 +57,7 @@
         color: #1e293b !important;
         margin: 0 4px !important;
     }
+
     .counter-mini {
         display: flex !important;
         align-items: center !important;
@@ -62,11 +67,13 @@
         border-top: 1px dashed rgba(40, 196, 96, 0.2) !important;
         margin-top: 8px !important;
     }
+
     .counter-mini-label {
         font-size: 12px !important;
         font-weight: 600 !important;
         color: #64748b !important;
     }
+
     .info-badge {
         display: flex !important;
         align-items: center !important;
@@ -78,16 +85,19 @@
         margin-bottom: 8px !important;
         border: 1px solid transparent !important;
     }
+
     .info-badge--warning {
         background: rgba(255, 248, 225, 0.8) !important;
         border-color: rgba(255, 224, 130, 0.6) !important;
         color: #856404 !important;
     }
+
     .info-badge--success {
         background: rgba(40, 196, 96, 0.08) !important;
         border-color: rgba(40, 196, 96, 0.2) !important;
         color: #166534 !important;
     }
+
     .info-badge svg {
         flex-shrink: 0 !important;
     }
@@ -124,7 +134,8 @@
 {% block content %}
 
 <!-- HERO -->
-<section class="hero hero--service" {% if service.image_alt %}aria-label="{{ service.image_alt }}"{% endif %} {% if service.image %}style="background-image: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(249,250,251,0.88) 100%), url('{{ service.image.url }}');"{% endif %}>
+<section class="hero hero--service" {% if service.image_alt %}aria-label="{{ service.image_alt }}" {% endif %}
+    {% if service.image %}style="background-image: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(249,250,251,0.88) 100%), url('{{ service.image.url }}');"{% endif %}>
     <div class="container">
         <div class="hero__content hero__content--service">
             <nav class="breadcrumb" aria-label="Хлебные крошки">
@@ -134,11 +145,11 @@
                 <span>/</span>
                 <span>{{ service.name }}</span>
             </nav>
-            
+
             <h1 class="hero__title">
                 {{ service.name }}
             </h1>
-            
+
             {% if service.short_description %}
             <p class="hero__description">
                 {{ service.short_description }}
@@ -148,7 +159,7 @@
                 {{ service.description|striptags|truncatewords:25 }}
             </p>
             {% endif %}
-            
+
             <div class="hero__meta">
                 <div class="hero__price">
                     <span class="hero__price-label">от</span>
@@ -157,19 +168,27 @@
                 <div class="hero__rating">
                     <div class="stars">
                         {% for i in "12345" %}
-                        {% if forloop.counter <= avg_rating %}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        {% else %}
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                        {% endif %}
-                        {% endfor %}
+                        {% if forloop.counter <= avg_rating %} <svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                            {% else %}
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                            {% endif %}
+                            {% endfor %}
                     </div>
                     <span>{{ avg_rating }} / 5.0 ({{ review_count }} отзыв{{ review_count|pluralize:"ов,а" }})</span>
                 </div>
             </div>
-            
+
             <div class="hero__actions">
-                <button class="btn btn--primary btn--large" data-modal="modal-lead" data-service-name="{{ service.name }}" data-total-price="от {{ service.base_price }} ₸">
+                <button class="btn btn--primary btn--large" data-modal="modal-lead"
+                    data-service-name="{{ service.name }}" data-total-price="от {{ service.base_price }} ₸">
                     Заказать услугу
                 </button>
                 <a href="{% url 'services:services' %}" class="btn btn--ghost btn--large">
@@ -188,10 +207,9 @@
             <p class="section__subtitle">Настройте параметры и узнайте точную цену</p>
         </div>
 
-        <div id="single-service-calc" 
-             data-service-id="{{ service.id }}" 
-             data-default-client="{{ service.default_client_type|default:'home' }}" 
-             data-default-material="{{ service.default_material|default:'fabric' }}">
+        <div id="single-service-calc" data-service-id="{{ service.id }}"
+            data-default-client="{{ service.default_client_type|default:'home' }}"
+            data-default-material="{{ service.default_material|default:'fabric' }}">
             <div class="calc-wrapper fade-in">
                 <!-- LEFT: PARAMS -->
                 <div class="calc-params">
@@ -202,7 +220,11 @@
                             <div class="master-seg">
                                 <div class="seg-group">
                                     <div class="seg-label">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                                            <polyline points="9 22 9 12 15 12 15 22" />
+                                        </svg>
                                         Тип объекта
                                     </div>
                                     <div class="seg">
@@ -212,7 +234,11 @@
                                 </div>
                                 <div class="seg-group">
                                     <div class="seg-label">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3"/><line x1="4" y1="3" x2="20" y2="3"/></svg>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M6 3v7a6 6 0 006 6 6 6 0 006-6V3" />
+                                            <line x1="4" y1="3" x2="20" y2="3" />
+                                        </svg>
                                         Тип обивки
                                     </div>
                                     <div class="seg">
@@ -221,11 +247,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="leather-note" id="leather-note" style="display:none; font-size:12px; color:#e67e22; margin-top:8px;">Кожа / экокожа — цена выше на 50%</div>
+                            <div class="leather-note" id="leather-note"
+                                style="display:none; font-size:12px; color:#e67e22; margin-top:8px;">Кожа / экокожа —
+                                цена выше на 50%</div>
 
                             <div class="dirt-opts" style="margin-top:20px;">
-                                <div class="dirt-title" style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">Состояние загрязнения</div>
-                                <div class="dirt-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                                <div class="dirt-title"
+                                    style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">
+                                    Состояние загрязнения</div>
+                                <div class="dirt-grid"
+                                    style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
                                     <div class="radio-opt dirt-btn active" data-coeff="0">Обычное</div>
                                     <div class="radio-opt dirt-btn" data-coeff="0.2">Сильное (+20%)</div>
                                     <div class="radio-opt dirt-btn" data-coeff="0.5">Сложное (+50%)</div>
@@ -237,48 +268,102 @@
                             <div id="furn-home" class="furn-panel active">
                                 <div class="calc-accordion">
                                     <div class="accordion-item active">
-                                        <div class="accordion-header"><span>Диваны</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-sofas" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Диваны</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-sofas" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Кресла и стулья</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-chairs" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Кресла и стулья</span><svg width="20"
+                                                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-chairs" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Кровати</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-beds" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Кровати</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-beds" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Матрасы</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-mattress" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Матрасы</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-mattress" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Прочее</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-misc" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Прочее</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-misc" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div id="furn-business" class="furn-panel">
                                 <div class="calc-accordion">
                                     <div class="accordion-item active">
-                                        <div class="accordion-header"><span>Офисные стулья</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-biz-chairs" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Офисные стулья</span><svg width="20"
+                                                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-biz-chairs" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Диваны</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-biz-sofas" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Диваны</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-biz-sofas" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Конференц-мебель</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-biz-conf" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Конференц-мебель</span><svg width="20"
+                                                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-biz-conf" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Лаунж-зона</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-biz-lounge" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Лаунж-зона</span><svg width="20" height="20"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-biz-lounge" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                     <div class="accordion-item">
-                                        <div class="accordion-header"><span>Мягкие панели</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-                                        <div class="accordion-content"><div id="cat-biz-panels" class="cat-grid"></div></div>
+                                        <div class="accordion-header"><span>Мягкие панели</span><svg width="20"
+                                                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2">
+                                                <polyline points="6 9 12 15 18 9" />
+                                            </svg></div>
+                                        <div class="accordion-content">
+                                            <div id="cat-biz-panels" class="cat-grid"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -290,76 +375,112 @@
                         <div class="glass-card">
                             <div class="form-field">
                                 <label class="form-field__label">Общая площадь (м²)</label>
-                                <input type="number" id="carpet-area" class="form-field__input" placeholder="Например: 50">
+                                <input type="number" id="carpet-area" class="form-field__input"
+                                    placeholder="Например: 50">
                             </div>
                             <div style="font-size: 11px; color: #64748b; margin-top: -10px; margin-bottom: 20px;">
-                                Ступенчатые цены: до 25м² — 2000 ₸/м², до 50м² — 1750 ₸/м², до 100м² — 1500 ₸/м², 100м²+ — 1250 ₸/м²
+                                Ступенчатые цены: до 25м² — 2000 ₸/м², до 50м² — 1750 ₸/м², до 100м² — 1500 ₸/м², 100м²+
+                                — 1250 ₸/м²
                             </div>
 
-                            <div class="seg-label" style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">Вариант чистки:</div>
-                            <div class="carpet-mode-toggle" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                            <div class="seg-label"
+                                style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">Вариант
+                                чистки:</div>
+                            <div class="carpet-mode-toggle"
+                                style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
                                 <label class="radio-opt carpet-mode-btn active" data-mode="general">
-                                    <input type="radio" name="carpet-mode" id="mode-general" value="general" checked style="display:none;">
+                                    <input type="radio" name="carpet-mode" id="mode-general" value="general" checked
+                                        style="display:none;">
                                     Генеральная
                                 </label>
                                 <label class="radio-opt carpet-mode-btn" data-mode="eco">
-                                    <input type="radio" name="carpet-mode" id="mode-eco" value="eco" style="display:none;">
+                                    <input type="radio" name="carpet-mode" id="mode-eco" value="eco"
+                                        style="display:none;">
                                     Эконом
                                 </label>
                             </div>
-                            <div id="carpet-mode-desc" style="font-size:12px; border-left:3px solid var(--color-primary); padding-left:10px; margin-bottom:20px; color:#475569;">
-                                <b style="color:#28C460;">Генеральная (IICRC S100)</b> — капитальная чистка с полным циклом удаления грязи.
+                            <div id="carpet-mode-desc"
+                                style="font-size:12px; border-left:3px solid var(--color-primary); padding-left:10px; margin-bottom:20px; color:#475569;">
+                                <b style="color:#28C460;">Генеральная (IICRC S100)</b> — капитальная чистка с полным
+                                циклом удаления грязи.
                             </div>
 
-                            <div class="seg-label" style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">Тип покрытия:</div>
-                            <div class="carpet-material-toggle" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                            <div class="seg-label"
+                                style="font-size:13px; font-weight:700; color:#64748b; margin-bottom:10px;">Тип
+                                покрытия:</div>
+                            <div class="carpet-material-toggle"
+                                style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
                                 <label class="radio-opt carpet-material-btn active" data-material="synthetic">
-                                    <input type="radio" name="carpet-material" id="mat-synthetic" value="synthetic" checked style="display:none;">
+                                    <input type="radio" name="carpet-material" id="mat-synthetic" value="synthetic"
+                                        checked style="display:none;">
                                     СИНТЕТИКА
                                 </label>
                                 <label class="radio-opt carpet-material-btn" data-material="natural">
-                                    <input type="radio" name="carpet-material" id="mat-natural" value="natural" style="display:none;">
+                                    <input type="radio" name="carpet-material" id="mat-natural" value="natural"
+                                        style="display:none;">
                                     ШЕРСТЬ / ШЕЛК
                                 </label>
                             </div>
-                            <div id="carpet-material-desc" style="font-size:12px; border-left:3px solid #e67e22; padding-left:10px; color:#475569; margin-bottom:30px;">
+                            <div id="carpet-material-desc"
+                                style="font-size:12px; border-left:3px solid #e67e22; padding-left:10px; color:#475569; margin-bottom:30px;">
                                 Стандартные офисные и домашние покрытия из полиамида или полипропилена.
                             </div>
 
                             <div class="calc-options">
                                 <label class="calc-option">
                                     <input type="checkbox" class="carpet-addon" data-price="3000" data-addon="odor">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Удаление запаха мочи животных</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+3000 ₸</span>
                                 </label>
                                 <label class="calc-option" style="margin-top:10px;">
                                     <input type="checkbox" class="carpet-addon" data-price="2000" data-addon="stain">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Выведение сложных пятен</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+2000 ₸</span>
                                 </label>
                                 <label class="calc-option" style="margin-top:10px;">
-                                    <input type="checkbox" class="carpet-addon" data-price="2500" data-addon="antibacterial">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <input type="checkbox" class="carpet-addon" data-price="2500"
+                                        data-addon="antibacterial">
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Антибактериальная обработка</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+2500 ₸</span>
                                 </label>
                                 <label class="calc-option" style="margin-top:10px;">
-                                    <input type="checkbox" class="carpet-addon" data-price="1500" data-addon="antistatic">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <input type="checkbox" class="carpet-addon" data-price="1500"
+                                        data-addon="antistatic">
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Защитное покрытие (антистатик)</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+1500 ₸</span>
                                 </label>
                                 <label class="calc-option" style="margin-top:10px;">
                                     <input type="checkbox" class="carpet-addon" data-price="2000" data-addon="mites">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Обработка от пылевых клещей</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+2000 ₸</span>
                                 </label>
                                 <label class="calc-option" style="margin-top:10px;">
-                                    <input type="checkbox" class="carpet-addon" data-price="1000" data-addon="weak_odor">
-                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <input type="checkbox" class="carpet-addon" data-price="1000"
+                                        data-addon="weak_odor">
+                                    <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <span class="calc-option__name">Дополнительная обработка слабого запаха</span>
                                     <span class="calc-option__price" style="margin-left:auto;">+1000 ₸</span>
                                 </label>
@@ -374,16 +495,22 @@
                                 <div class="curtain-mode-btn active" data-mode="weight">Ввести вес</div>
                                 <div class="curtain-mode-btn" data-mode="windows">По окнам</div>
                             </div>
-                            
+
                             <div class="info-badge info-badge--warning" style="margin-top:16px; margin-bottom:0;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
                                 ПРИМЕРНЫЙ РАСЧЁТ: Точная стоимость фиксируется мастером после взвешивания.
                             </div>
 
                             <div id="curtain-weight-mode" style="margin-top:20px;">
                                 <div class="form-field">
                                     <label class="form-field__label">Общий вес (кг)</label>
-                                    <input type="number" id="curtain-weight" class="form-field__input" placeholder="Введите вес" step="0.1">
+                                    <input type="number" id="curtain-weight" class="form-field__input"
+                                        placeholder="Введите вес" step="0.1">
                                 </div>
                             </div>
 
@@ -391,65 +518,91 @@
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
                                     <div class="form-field">
                                         <label class="form-field__label">Ширина (м)</label>
-                                        <input type="number" id="curtain-w" class="form-field__input" placeholder="Ширина" step="0.01">
+                                        <input type="number" id="curtain-w" class="form-field__input"
+                                            placeholder="Ширина" step="0.01">
                                     </div>
                                     <div class="form-field">
                                         <label class="form-field__label">Высота (м)</label>
-                                        <input type="number" id="curtain-h" class="form-field__input" placeholder="Высота" step="0.01">
+                                        <input type="number" id="curtain-h" class="form-field__input"
+                                            placeholder="Высота" step="0.01">
                                     </div>
                                 </div>
                                 <div class="form-field">
                                     <label class="form-field__label">Тип ткани</label>
-                                    <select id="curtain-fabric-select" class="form-field__input" style="appearance:auto; padding-right:30px;">
+                                    <select id="curtain-fabric-select" class="form-field__input"
+                                        style="appearance:auto; padding-right:30px;">
                                         <option value="">Выберите тип ткани...</option>
                                     </select>
                                 </div>
-                                <button type="button" id="add-window-btn" class="btn btn--secondary btn--block" style="margin-top:10px; background:#edfaf3; color:var(--color-primary); border:1px dashed var(--color-primary);">
+                                <button type="button" id="add-window-btn" class="btn btn--secondary btn--block"
+                                    style="margin-top:10px; background:#edfaf3; color:var(--color-primary); border:1px dashed var(--color-primary);">
                                     + Добавить в список
                                 </button>
                                 <div id="window-list" style="margin-top:16px;"></div>
                             </div>
 
-                            <div class="curtain-addons" style="margin-top:32px; border-top:1px solid var(--color-border-light); padding-top:20px;">
+                            <div class="curtain-addons"
+                                style="margin-top:32px; border-top:1px solid var(--color-border-light); padding-top:20px;">
                                 <div class="calc-options">
                                     <label class="calc-option">
                                         <input type="checkbox" id="curtain-removal">
-                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="3">
+                                                <path d="M20 6L9 17l-5-5" />
+                                            </svg></span>
                                         <span class="calc-option__name">Снятие штор</span>
                                         <span class="calc-option__price" style="margin-left:auto;">+400 ₸/кг</span>
                                     </label>
                                     <label class="calc-option" style="margin-top:10px;">
                                         <input type="checkbox" id="curtain-hanging">
-                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="3">
+                                                <path d="M20 6L9 17l-5-5" />
+                                            </svg></span>
                                         <span class="calc-option__name">Навеска и стяжка</span>
                                         <span class="calc-option__price" style="margin-left:auto;">+600 ₸/кг</span>
                                     </label>
                                     <label class="calc-option" style="margin-top:10px;">
                                         <input type="checkbox" id="curtain-ironing">
-                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                        <span class="calc-option__check"><svg width="14" height="14" viewBox="0 0 24 24"
+                                                fill="none" stroke="white" stroke-width="3">
+                                                <path d="M20 6L9 17l-5-5" />
+                                            </svg></span>
                                         <span class="calc-option__name">Глажка / Отпаривание</span>
                                         <span class="calc-option__price" style="margin-left:auto;">+500 ₸/м²</span>
                                     </label>
                                     <div class="gen-param-card" style="margin-top:10px;">
                                         <label class="glass-checkbox">
                                             <input type="checkbox" id="curtain-roman-mount">
-                                            <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                            <span class="glass-checkbox__box"><svg width="12" height="12"
+                                                    viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                                                    <path d="M20 6L9 17l-5-5" />
+                                                </svg></span>
                                             <div class="gen-param-info">
                                                 <div style="display:flex; align-items:center; gap:8px;">
                                                     <span style="font-weight:700; font-size:13px;">Монтаж Римских</span>
                                                 </div>
                                                 <span style="font-size:11px; color:#64748b;">шт</span>
                                             </div>
-                                            <span class="gen-param-price" style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">3 000/шт</span>
+                                            <span class="gen-param-price"
+                                                style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">3
+                                                000/шт</span>
                                         </label>
                                         <!-- COUNTER BOX -->
-                                        <div id="curtain-roman-adj" class="counter-panel" style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
-                                            <div style="display:flex; align-items:center; justify-content:space-between;">
-                                                <span style="font-size:13px; font-weight:700;">Кол-во римских штор:</span>
-                                                <div class="counter-box" style="display:flex; align-items:center; background:white; border:1px solid #e2e8f0; border-radius:30px; overflow:hidden;">
-                                                    <button class="qa-btn" data-action="minus" data-param="roman" style="width:36px; height:32px; border:none; background:none; font-size:18px; cursor:pointer; color:#64748b;">−</button>
-                                                    <span class="qa-val" id="curtain-roman-val" style="width:32px; text-align:center; font-weight:700;">1</span>
-                                                    <button class="qa-btn plus" data-action="plus" data-param="roman" style="width:36px; height:32px; border:none; background:#28C460; color:white; font-size:18px; cursor:pointer;">+</button>
+                                        <div id="curtain-roman-adj" class="counter-panel"
+                                            style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
+                                            <div
+                                                style="display:flex; align-items:center; justify-content:space-between;">
+                                                <span style="font-size:13px; font-weight:700;">Кол-во римских
+                                                    штор:</span>
+                                                <div class="counter-box"
+                                                    style="display:flex; align-items:center; background:white; border:1px solid #e2e8f0; border-radius:30px; overflow:hidden;">
+                                                    <button class="qa-btn" data-action="minus" data-param="roman"
+                                                        style="width:36px; height:32px; border:none; background:none; font-size:18px; cursor:pointer; color:#64748b;">−</button>
+                                                    <span class="qa-val" id="curtain-roman-val"
+                                                        style="width:32px; text-align:center; font-weight:700;">1</span>
+                                                    <button class="qa-btn plus" data-action="plus" data-param="roman"
+                                                        style="width:36px; height:32px; border:none; background:#28C460; color:white; font-size:18px; cursor:pointer;">+</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -459,11 +612,17 @@
 
                             <div class="curtain-badges" style="margin-top:24px;">
                                 <div class="info-badge info-badge--warning">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 8v4M12 16h.01"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 8v4M12 16h.01" />
+                                    </svg>
                                     <span>Услуги ателье: Ремонт, подшив (индивидуально)</span>
                                 </div>
                                 <div class="info-badge info-badge--success">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
                                     <span>Крючки: Бесплатная замена сломанных креплений</span>
                                 </div>
                             </div>
@@ -478,34 +637,40 @@
                         <div class="calc-options">
                             {# 1. Global options #}
                             {% for opt in all_options %}
-                                {% if service.calc_type == 'curtains' and opt.show_in_curtains or service.calc_type == 'furniture' and opt.show_in_furniture or service.calc_type == 'default' and opt.show_in_furniture %}
-                                <label class="calc-option">
-                                    <input type="checkbox" name="calc-option" value="{{ opt.id }}"
-                                           data-price="{{ opt.price }}"
-                                           data-calc-unit="{{ opt.calc_unit }}">
-                                    <span class="calc-option__check">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-                                    </span>
-                                    <span class="calc-option__name">{{ opt.name }}</span>
-                                    <span class="calc-option__price" style="margin-left:auto; font-weight:700; color:var(--color-primary);">+{{ opt.price }} ₸</span>
-                                </label>
-                                {% endif %}
+                            {% if service.calc_type == 'curtains' and opt.show_in_curtains or service.calc_type == 'furniture' and opt.show_in_furniture or service.calc_type == 'default' and opt.show_in_furniture %}
+                            <label class="calc-option">
+                                <input type="checkbox" name="calc-option" value="{{ opt.id }}"
+                                    data-price="{{ opt.price }}" data-calc-unit="{{ opt.calc_unit }}">
+                                <span class="calc-option__check">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white"
+                                        stroke-width="3">
+                                        <path d="M20 6L9 17l-5-5" />
+                                    </svg>
+                                </span>
+                                <span class="calc-option__name">{{ opt.name }}</span>
+                                <span class="calc-option__price"
+                                    style="margin-left:auto; font-weight:700; color:var(--color-primary);">+{{ opt.price }} ₸</span>
+                            </label>
+                            {% endif %}
                             {% endfor %}
 
                             {# 2. Specific options #}
                             {% for opt in options %}
-                                {% if not opt.show_in_carpet and not opt.show_in_furniture and not opt.show_in_curtains %}
-                                <label class="calc-option">
-                                    <input type="checkbox" name="calc-option" value="{{ opt.id }}"
-                                           data-price="{{ opt.price }}"
-                                           data-calc-unit="{{ opt.calc_unit }}">
-                                    <span class="calc-option__check">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
-                                    </span>
-                                    <span class="calc-option__name">{{ opt.name }}</span>
-                                    <span class="calc-option__price" style="margin-left:auto; font-weight:700; color:var(--color-primary);">+{{ opt.price }} ₸</span>
-                                </label>
-                                {% endif %}
+                            {% if not opt.show_in_carpet and not opt.show_in_furniture and not opt.show_in_curtains %}
+                            <label class="calc-option">
+                                <input type="checkbox" name="calc-option" value="{{ opt.id }}"
+                                    data-price="{{ opt.price }}" data-calc-unit="{{ opt.calc_unit }}">
+                                <span class="calc-option__check">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white"
+                                        stroke-width="3">
+                                        <path d="M20 6L9 17l-5-5" />
+                                    </svg>
+                                </span>
+                                <span class="calc-option__name">{{ opt.name }}</span>
+                                <span class="calc-option__price"
+                                    style="margin-left:auto; font-weight:700; color:var(--color-primary);">+{{ opt.price }} ₸</span>
+                            </label>
+                            {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -513,23 +678,35 @@
 
                     <!-- GENERAL PARAMETERS (NEW) -->
                     <div class="glass-card" style="margin-top:32px;">
-                        <h4 style="margin-bottom:16px; font-weight:800; text-transform:uppercase; font-size:12px; color:#64748b; letter-spacing:0.05em;">Общие параметры</h4>
+                        <h4
+                            style="margin-bottom:16px; font-weight:800; text-transform:uppercase; font-size:12px; color:#64748b; letter-spacing:0.05em;">
+                            Общие параметры</h4>
                         <div class="gen-params-grid">
                             <div class="gen-param-card">
                                 <label class="glass-checkbox">
                                     <input type="checkbox" id="furn-hair">
-                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <div class="gen-param-info">
                                         <div style="display:flex; align-items:center; gap:8px;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="M12 8v4M12 16h.01" />
+                                            </svg>
                                             <span style="font-weight:700; font-size:13px;">Шерсть животных</span>
                                         </div>
                                         <span style="font-size:11px; color:#64748b;">погонный метр</span>
                                     </div>
-                                    <span class="gen-param-price" style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">5 000/м</span>
+                                    <span class="gen-param-price"
+                                        style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">5
+                                        000/м</span>
                                 </label>
                                 <!-- COUNTER BOX -->
-                                <div id="hair-adj" class="counter-panel" style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div id="hair-adj" class="counter-panel"
+                                    style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
                                         <span style="font-size:13px; font-weight:700;">Кол-во погонных метров:</span>
                                         <div class="counter-box">
@@ -544,18 +721,27 @@
                             <div class="gen-param-card">
                                 <label class="glass-checkbox">
                                     <input type="checkbox" id="furn-box">
-                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <div class="gen-param-info">
                                         <div style="display:flex; align-items:center; gap:8px;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8V21H3V8M1 3H23V8H1V3ZM10 12H14"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M21 8V21H3V8M1 3H23V8H1V3ZM10 12H14" />
+                                            </svg>
                                             <span style="font-weight:700; font-size:13px;">Чистка ящиков</span>
                                         </div>
                                         <span style="font-size:11px; color:#64748b;">шт</span>
                                     </div>
-                                    <span class="gen-param-price" style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">1 000/шт</span>
+                                    <span class="gen-param-price"
+                                        style="margin-left:auto; background:#edfaf3; color:#28C460; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">1
+                                        000/шт</span>
                                 </label>
                                 <!-- COUNTER BOX -->
-                                <div id="box-adj" class="counter-panel" style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <div id="box-adj" class="counter-panel"
+                                    style="display:none; margin-top:12px; background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0;">
                                     <div style="display:flex; align-items:center; justify-content:space-between;">
                                         <span style="font-size:13px; font-weight:700;">Количество ящиков:</span>
                                         <div class="counter-box">
@@ -570,29 +756,45 @@
                             <div class="gen-param-card">
                                 <label class="glass-checkbox">
                                     <input type="checkbox" id="furn-night">
-                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <div class="gen-param-info">
                                         <div style="display:flex; align-items:center; gap:8px;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                                            </svg>
                                             <span style="font-weight:700; font-size:13px;">Работа после 21:00</span>
                                         </div>
                                     </div>
-                                    <span class="gen-param-price" style="margin-left:auto; background:#fff7ed; color:#ea580c; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">+5 000</span>
+                                    <span class="gen-param-price"
+                                        style="margin-left:auto; background:#fff7ed; color:#ea580c; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">+5
+                                        000</span>
                                 </label>
                             </div>
 
                             <div class="gen-param-card">
                                 <label class="glass-checkbox">
                                     <input type="checkbox" id="furn-faraway">
-                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                                    <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="white" stroke-width="3">
+                                            <path d="M20 6L9 17l-5-5" />
+                                        </svg></span>
                                     <div class="gen-param-info">
                                         <div style="display:flex; align-items:center; gap:8px;">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                                                <circle cx="12" cy="10" r="3" />
+                                            </svg>
                                             <span style="font-weight:700; font-size:13px;">Выезд за 10 км</span>
                                         </div>
                                         <span style="font-size:11px; color:#64748b;">50 тг/км от 11-го</span>
                                     </div>
-                                    <span class="gen-param-price" style="margin-left:auto; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">уточним</span>
+                                    <span class="gen-param-price"
+                                        style="margin-left:auto; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:700;">уточним</span>
                                 </label>
                             </div>
                         </div>
@@ -602,12 +804,18 @@
                         <h4 class="discounts-title">Скидки</h4>
                         <label class="glass-checkbox">
                             <input type="checkbox" id="calc-new-client">
-                            <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="white" stroke-width="3">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg></span>
                             <span class="glass-checkbox__label">Я новый клиент (−5%)</span>
                         </label>
                         <label class="glass-checkbox" style="margin-top:12px;">
                             <input type="checkbox" id="calc-combo-order">
-                            <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></span>
+                            <span class="glass-checkbox__box"><svg width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="white" stroke-width="3">
+                                    <path d="M20 6L9 17l-5-5" />
+                                </svg></span>
                             <span class="glass-checkbox__label">Доп. заказ (−15% на мебель)</span>
                         </label>
                     </div>
@@ -633,10 +841,14 @@
                             <strong>⚠️ Предварительный расчёт.</strong> Точная стоимость определяется на месте.
                         </div>
                         <button class="btn-wa" id="calc-whatsapp-btn" type="button">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                            </svg>
                             ЗАБРОНИРОВАТЬ ВЫЕЗД
                         </button>
-                        <button class="btn btn--primary btn--block" id="calc-order" data-modal="modal-lead" type="button" style="margin-top:12px;">
+                        <button class="btn btn--primary btn--block" id="calc-order" data-modal="modal-lead"
+                            type="button" style="margin-top:12px;">
                             Оставить заявку
                         </button>
                     </div>
@@ -655,7 +867,9 @@
         </div>
         <div class="mfb-right">
             <span>Детали</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+            </svg>
         </div>
     </div>
 </div>
@@ -667,7 +881,7 @@
             <h2 class="section__title">Как мы работаем</h2>
             <p class="section__subtitle">Простой и понятный процесс от заявки до результата</p>
         </div>
-        
+
         <div class="timeline">
             {% for step in global_work_steps %}
             <div class="timeline__item fade-in stagger-{{ forloop.counter }}">
@@ -680,17 +894,53 @@
                 <div class="timeline__content">
                     <div class="timeline__icon">
                         {% if step.icon == 'phone' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                        </svg>
                         {% elif step.icon == 'calculator' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20" rx="2" />
+                            <line x1="8" y1="6" x2="16" y2="6" />
+                            <line x1="16" y1="14" x2="16" y2="18" />
+                            <line x1="8" y1="10" x2="8" y2="10.01" />
+                            <line x1="12" y1="10" x2="12" y2="10.01" />
+                            <line x1="16" y1="10" x2="16" y2="10.01" />
+                            <line x1="8" y1="14" x2="8" y2="14.01" />
+                            <line x1="12" y1="14" x2="12" y2="14.01" />
+                            <line x1="8" y1="18" x2="8" y2="18.01" />
+                            <line x1="12" y1="18" x2="12" y2="18.01" />
+                        </svg>
                         {% elif step.icon == 'calendar' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
                         {% elif step.icon == 'truck' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13" />
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                            <circle cx="5.5" cy="18.5" r="2.5" />
+                            <circle cx="18.5" cy="18.5" r="2.5" />
+                        </svg>
                         {% elif step.icon == 'sparkles' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
                         {% elif step.icon == 'check-circle' %}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
                         {% endif %}
                     </div>
                     <h3 class="timeline__title">{{ step.title }}</h3>
@@ -705,7 +955,11 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Заявка</h3>
                     <p class="timeline__description">Оставьте заявку на сайте или позвоните нам</p>
@@ -718,7 +972,19 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><line x1="8" y1="10" x2="8" y2="10.01"/><line x1="12" y1="10" x2="12" y2="10.01"/><line x1="16" y1="10" x2="16" y2="10.01"/><line x1="8" y1="14" x2="8" y2="14.01"/><line x1="12" y1="14" x2="12" y2="14.01"/><line x1="8" y1="18" x2="8" y2="18.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20" rx="2" />
+                            <line x1="8" y1="6" x2="16" y2="6" />
+                            <line x1="16" y1="14" x2="16" y2="18" />
+                            <line x1="8" y1="10" x2="8" y2="10.01" />
+                            <line x1="12" y1="10" x2="12" y2="10.01" />
+                            <line x1="16" y1="10" x2="16" y2="10.01" />
+                            <line x1="8" y1="14" x2="8" y2="14.01" />
+                            <line x1="12" y1="14" x2="12" y2="14.01" />
+                            <line x1="8" y1="18" x2="8" y2="18.01" />
+                            <line x1="12" y1="18" x2="12" y2="18.01" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Консультация и расчёт</h3>
                     <p class="timeline__description">Менеджер рассчитает стоимость и ответит на вопросы</p>
@@ -731,7 +997,13 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Согласование времени</h3>
                     <p class="timeline__description">Выберите удобное время для выезда мастера</p>
@@ -744,7 +1016,13 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="1" y="3" width="15" height="13" />
+                            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                            <circle cx="5.5" cy="18.5" r="2.5" />
+                            <circle cx="18.5" cy="18.5" r="2.5" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Выезд мастера</h3>
                     <p class="timeline__description">Мастер приедет вовремя со всем необходимым оборудованием</p>
@@ -757,7 +1035,11 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Проведение работ</h3>
                     <p class="timeline__description">Профессиональная чистка с гарантией результата</p>
@@ -769,7 +1051,11 @@
                 </div>
                 <div class="timeline__content">
                     <div class="timeline__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
                     </div>
                     <h3 class="timeline__title">Сдача и оплата</h3>
                     <p class="timeline__description">Вы проверяете результат и оплачиваете работу</p>
@@ -787,7 +1073,7 @@
             <h2 class="section__title">Стоимость услуги</h2>
             <p class="section__subtitle">Прозрачное ценообразование без скрытых платежей</p>
         </div>
-        
+
         <div class="pricing-card fade-in">
             <div class="pricing-card__header">
                 <h3 class="pricing-card__title">{{ service.name }}</h3>
@@ -796,14 +1082,17 @@
                     <span class="pricing-card__value">{{ service.base_price }} ₸</span>
                 </div>
             </div>
-            
+
             {% if options %}
             <div class="pricing-card__options">
                 <h4 class="pricing-card__subtitle">Дополнительные опции</h4>
                 <ul class="pricing-card__list">
                     {% for option in options %}
                     <li class="pricing-card__item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
                         <span>{{ option.name }}</span>
                         <span class="pricing-card__item-price">+{{ option.price }} ₸</span>
                     </li>
@@ -811,9 +1100,10 @@
                 </ul>
             </div>
             {% endif %}
-            
+
             <div class="pricing-card__footer">
-                <button class="btn btn--primary btn--large" data-modal="modal-lead" data-service-name="{{ service.name }}" data-total-price="от {{ service.base_price }} ₸">
+                <button class="btn btn--primary btn--large" data-modal="modal-lead"
+                    data-service-name="{{ service.name }}" data-total-price="от {{ service.base_price }} ₸">
                     Заказать за эту цену
                 </button>
             </div>
@@ -830,23 +1120,67 @@
             <h2 class="section__title">Видео процесса</h2>
             <p class="section__subtitle">Посмотрите, как мы выполняем {{ service.name|lower }}</p>
         </div>
-        
-        <div class="video-block fade-in" onclick="let url='{{ my_video.url }}'; let embedUrl = url.includes('?') ? url + '&autoplay=1&mute=1&rel=0' : url + '?autoplay=1&mute=1&rel=0'; this.innerHTML='<iframe src=\'' + embedUrl + '\' style=\'position:absolute;top:0;left:0;width:100%;height:100%;border:none;\' allow=\'autoplay; encrypted-media; picture-in-picture\' allowfullscreen></iframe>'">
-            <img src="{{ my_video.thumbnail }}" 
-                 alt="Видео-просмотр процесса услуги {{ service.name }}" 
-                 class="video-block__thumb"
-                 width="1280" 
-                 height="720"
-                 loading="lazy"
-                 decoding="async">
+
+        <div class="video-block fade-in"
+            onclick="let url='{{ my_video.url }}'; let embedUrl = url.includes('?') ? url + '&autoplay=1&mute=1&rel=0' : url + '?autoplay=1&mute=1&rel=0'; this.innerHTML='<iframe src=\'' + embedUrl + '\' style=\'position:absolute;top:0;left:0;width:100%;height:100%;border:none;\' allow=\'autoplay; encrypted-media; picture-in-picture\' allowfullscreen></iframe>'">
+            <img src="{{ my_video.thumbnail }}" alt="Видео-просмотр процесса услуги {{ service.name }}"
+                class="video-block__thumb" width="1280" height="720" loading="lazy" decoding="async">
             <button class="video-block__play" aria-label="Воспроизвести видео">
-                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
             </button>
         </div>
     </div>
 </section>
 {% endvideo %}
 {% endif %}
+
+<section class="section section--green">
+    
+
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Вас также может заинтересовать</h2>
+            <p class="section__subtitle">Дополните заказ другими услугами для идеальной чистоты</p>
+        </div>
+
+        <div class="recommended-grid">
+            {% for s in recommended_services %}
+            <a href="{% url 'services:service_detail' s.slug %}" class="rec-card fade-in stagger-{{ forloop.counter }}">
+                <div class="rec-card__img-wrapper">
+                    {% if s.image %}
+                    <img src="{{ s.image.url }}" alt="{{ s.name }}" class="rec-card__img" loading="lazy">
+                    {% else %}
+                    <div
+                        style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #ecfdf5; color: #10b981;">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3" />
+                            <path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-4 0v2H6v-2a2 2 0 00-4 0z" />
+                            <path d="M4 18v2M20 18v2" />
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="rec-card__content">
+                    <div class="rec-card__category">{{ s.category.name }}</div>
+                    <h3 class="rec-card__name">{{ s.name }}</h3>
+                    <div class="rec-card__price">
+                        <span class="rec-card__price-val">от {{ s.base_price }} ₸</span>
+                        <div class="rec-card__arrow">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
 {% if service.description %}
 <!-- SERVICE FULL DESCRIPTION -->
@@ -870,17 +1204,19 @@
             <h2 class="section__title">Примеры наших работ</h2>
             <p class="section__subtitle">Результаты чистки в категории «{{ service.category.name }}»</p>
         </div>
-        
+
         <div class="portfolio-grid">
             {% for work in related_works %}
             <div class="portfolio-item fade-in stagger-{{ forloop.counter }}">
                 <div class="portfolio-item__title">{{ work.title }}</div>
                 <div class="portfolio-slider">
                     {% if work.image_after %}
-                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800" height="500" loading="lazy" decoding="async">
+                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800"
+                        height="500" loading="lazy" decoding="async">
                     {% endif %}
                     {% if work.image_before %}
-                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800" height="500" loading="lazy" decoding="async">
+                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800"
+                        height="500" loading="lazy" decoding="async">
                     {% endif %}
                     <div class="portfolio-slider__line"></div>
                     <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
@@ -889,7 +1225,7 @@
             </div>
             {% endfor %}
         </div>
-        
+
         <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
             <a href="{% url 'core:portfolio' %}" class="btn btn--secondary">Смотреть всё портфолио</a>
         </div>
@@ -897,43 +1233,6 @@
 </section>
 {% endif %}
 
-<!-- RECOMMENDED SERVICES -->
-{% if recommended_services %}
-<section class="section section--green">
-    <div class="container">
-        <div class="section__header fade-in">
-            <h2 class="section__title">С этой услугой заказывают</h2>
-            <p class="section__subtitle">Дополните заказ другими услугами из категории «{{ service.category.name }}»</p>
-        </div>
-        
-        <div class="compact-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg);">
-            {% for s in recommended_services %}
-            <a href="{% url 'services:service_detail' s.slug %}" class="compact-card fade-in stagger-{{ forloop.counter }}">
-                <div class="compact-card__icon">
-                    {% if s.icon == 'sofa' %}
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-4 0v2H6v-2a2 2 0 00-4 0z"/><path d="M4 18v2M20 18v2"/></svg>
-                    {% elif s.icon == 'carpet' %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
-                    {% elif s.icon == 'mattress' %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6V4M18 6V4M2 12h20"/></svg>
-                    {% elif s.icon == 'chair' %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9V6a2 2 0 00-2-2H7a2 2 0 00-2 2v3"/><path d="M3 11v5a2 2 0 002 2h14a2 2 0 002-2v-5a2 2 0 00-4 0H7a2 2 0 00-4 0z"/></svg>
-                    {% elif s.icon == 'curtain' %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16a2 2 0 002 2h12a2 2 0 002-2V4"/><path d="M4 12h16"/></svg>
-                    {% elif s.icon == 'car' %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h14a2 2 0 012 2v6a2 2 0 01-2 2M5 17v2m14-2v2"/></svg>
-                    {% else %}<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
-                    {% endif %}
-                </div>
-                <div class="compact-card__body">
-                    <h3 class="compact-card__name">{{ s.name }}</h3>
-                    <p class="compact-card__desc">{{ s.description|truncatewords:8 }}</p>
-                    <div class="compact-card__footer">
-                        <span class="compact-card__price">от {{ s.base_price }} ₸</span>
-                        <span class="compact-card__link">→</span>
-                    </div>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
 
 <!-- FAQ SECTION -->
 {% if faqs %}
@@ -943,7 +1242,7 @@
             <h2 class="section__title">Часто задаваемые вопросы</h2>
             <p class="section__subtitle">Ответы на популярные вопросы о химчистке</p>
         </div>
-        
+
         <div class="faq-list">
             {% for faq in faqs %}
             <details class="faq-item fade-in stagger-{{ forloop.counter }}">
@@ -958,28 +1257,7 @@
 </section>
 {% endif %}
 
-<style>
-/* CSS for Recommended cards on details page */
-.compact-card {
-    display: flex;
-    gap: var(--space-md);
-    padding: var(--space-md);
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #edf2f7;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    color: inherit;
-    height: 100%;
-}
-.compact-card:hover { transform: translateY(-3px); border-color: var(--color-primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.compact-card__icon { flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: rgba(40,196,96,0.1); color: var(--color-primary); border-radius: 10px; }
-.compact-card__name { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
-.compact-card__desc { font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 8px; }
-.compact-card__footer { display: flex; justify-content: space-between; align-items: center; }
-.compact-card__price { font-weight: 700; color: var(--color-primary); font-size: 0.95rem; }
-.compact-card__link { font-size: 1.2rem; color: var(--color-primary); opacity: 0.6; }
-</style>
+
 
 <!-- BLOG SECTION -->
 {% if blog_posts %}
@@ -989,13 +1267,14 @@
             <h2 class="section__title">Полезно знать о чистке</h2>
             <p class="section__subtitle">Советы экспертов и полезные статьи</p>
         </div>
-        
+
         <div class="blog-grid">
             {% for post in blog_posts %}
             <a href="{% url 'blog:post_detail' post.slug %}" class="blog-card fade-in">
                 {% if post.image %}
                 <div class="blog-card__image">
-                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy" decoding="async">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" width="400" height="250" loading="lazy"
+                        decoding="async">
                 </div>
                 {% endif %}
                 <div class="blog-card__body">
@@ -1009,7 +1288,7 @@
             </a>
             {% endfor %}
         </div>
-        
+
         <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
             <a href="{% url 'blog:blog_list' %}" class="btn btn--secondary btn--large">Все статьи</a>
         </div>
@@ -1025,12 +1304,16 @@
             <h2 class="section__title">Наши клиенты и партнёры</h2>
             <p class="section__subtitle">Организации и компании, которые нам доверяют</p>
         </div>
-        
+
         <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
             <div class="swiper-wrapper">
                 {% for partner in partners %}
-                <div class="swiper-slide partner-slide" style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;" onclick="openPartnerModal({{ partner.id }})">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" loading="lazy" decoding="async" style="max-height: 90px; max-width: 180px; width: auto; height: auto; object-fit: contain; transition: 0.3s;">
+                <div class="swiper-slide partner-slide"
+                    style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;"
+                    onclick="openPartnerModal({{ partner.id }})">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" loading="lazy"
+                        decoding="async"
+                        style="max-height: 90px; max-width: 180px; width: auto; height: auto; object-fit: contain; transition: 0.3s;">
                 </div>
                 {% endfor %}
             </div>
@@ -1056,26 +1339,26 @@
 {% endif %}
 <script src="{% static 'js/calculator.js' %}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof Swiper !== 'undefined') {
-        new Swiper('.partners-swiper', {
-            slidesPerView: 2,
-            spaceBetween: 20,
-            loop: true,
-            freeMode: { enabled: true, sticky: false },
-            autoplay: {
-                delay: 1,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-            },
-            speed: 3500,
-            breakpoints: {
-                480: { slidesPerView: 3, spaceBetween: 30 },
-                768: { slidesPerView: 4, spaceBetween: 40 },
-                1024: { slidesPerView: 5, spaceBetween: 50 },
-            }
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof Swiper !== 'undefined') {
+            new Swiper('.partners-swiper', {
+                slidesPerView: 2,
+                spaceBetween: 20,
+                loop: true,
+                freeMode: { enabled: true, sticky: false },
+                autoplay: {
+                    delay: 1,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                speed: 3500,
+                breakpoints: {
+                    480: { slidesPerView: 3, spaceBetween: 30 },
+                    768: { slidesPerView: 4, spaceBetween: 40 },
+                    1024: { slidesPerView: 5, spaceBetween: 50 },
+                }
+            });
+        }
+    });
 </script>
 {% endblock %}
