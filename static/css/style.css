@@ -14218,3 +14218,22 @@ p:last-child { margin-bottom: 0; }
 /* Final Polish Overrides */
 .min-note { color: #64748b !important; }
 .form-field__input, .form-field__select { caret-color: var(--color-brand) !important; color: #1e293b !important; }
+
+
+/* Form Footnote */
+.form-footnote {
+    font-size: 11px;
+    color: var(--color-text-light);
+    text-align: center;
+    margin-top: var(--space-md);
+    line-height: 1.4;
+}
+
+.form-footnote a {
+    color: var(--color-brand);
+    text-decoration: underline;
+}
+
+.form-footnote a:hover {
+    color: var(--color-brand-dark);
+}
