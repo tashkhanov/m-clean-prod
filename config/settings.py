@@ -99,7 +99,7 @@ STORAGES = {
     },
 }
 WHITENOISE_MAX_AGE = 3600 # 1 hour cache during development/polish phase
-WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+# WHITENOISE_KEEP_ONLY_HASHED_FILES = True
 
 # Media files
 MEDIA_URL = '/media/'
