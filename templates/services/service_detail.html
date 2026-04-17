@@ -3,7 +3,7 @@
 {% load embed_video_tags %}
 
 {% block meta_title %}{% if service.seo_title %}{{ service.seo_title }}{% else %}{{ service.name }} - Химчистка в Алматы
-| M-Clean{% endif %}{% endblock %}
+| Magic Clean{% endif %}{% endblock %}
 {% block meta_description %}{% if service.seo_description %}{{ service.seo_description }}{% elif service.short_description %}{{ service.short_description|striptags|truncatewords:25 }}{% else %}{{ service.description|striptags|truncatewords:25 }}{% endif %}{% endblock %}
 
 {% block extra_head %}
@@ -113,7 +113,7 @@
     "description": "{{ service.description|truncatewords:30 }}",
     "provider": {
         "@type": "LocalBusiness",
-        "name": "{{ settings.company_name|default:'M-Clean' }}",
+        "name": "{{ settings.company_name|default:'Magic Clean' }}",
         "telephone": "{{ settings.phone|default:'' }}",
         "address": {
             "@type": "PostalAddress",
@@ -1066,50 +1066,6 @@
     </div>
 </section>
 
-<!-- PRICING SECTION -->
-<section class="section" id="pricing">
-    <div class="container">
-        <div class="section__header fade-in">
-            <h2 class="section__title">Стоимость услуги</h2>
-            <p class="section__subtitle">Прозрачное ценообразование без скрытых платежей</p>
-        </div>
-
-        <div class="pricing-card fade-in">
-            <div class="pricing-card__header">
-                <h3 class="pricing-card__title">{{ service.name }}</h3>
-                <div class="pricing-card__price">
-                    <span class="pricing-card__label">от</span>
-                    <span class="pricing-card__value">{{ service.base_price }} ₸</span>
-                </div>
-            </div>
-
-            {% if options %}
-            <div class="pricing-card__options">
-                <h4 class="pricing-card__subtitle">Дополнительные опции</h4>
-                <ul class="pricing-card__list">
-                    {% for option in options %}
-                    <li class="pricing-card__item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        <span>{{ option.name }}</span>
-                        <span class="pricing-card__item-price">+{{ option.price }} ₸</span>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            <div class="pricing-card__footer">
-                <button class="btn btn--primary btn--large" data-modal="modal-lead"
-                    data-service-name="{{ service.name }}" data-total-price="от {{ service.base_price }} ₸">
-                    Заказать за эту цену
-                </button>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- VIDEO SECTION -->
 {% if service.video %}
@@ -1135,6 +1091,118 @@
 </section>
 {% endvideo %}
 {% endif %}
+
+
+{% if service.description %}
+<!-- SERVICE FULL DESCRIPTION -->
+<section class="section">
+    <div class="container">
+        <div class="prose-content fade-in" style="max-width: 860px; margin: 0 auto;">
+            {{ service.description|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+
+
+
+
+<!-- RELATED PORTFOLIO -->
+{% if related_works %}
+<section class="section" id="portfolio">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Примеры наших работ</h2>
+            <p class="section__subtitle">Результаты чистки в категории «{{ service.category.name }}»</p>
+        </div>
+
+        <div class="portfolio-grid">
+            {% for work in related_works %}
+            <div class="portfolio-item fade-in stagger-{{ forloop.counter }}">
+                <div class="portfolio-item__title">{{ work.title }}</div>
+                <div class="portfolio-slider">
+                    {% if work.image_after %}
+                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800"
+                        height="500" loading="lazy" decoding="async">
+                    {% endif %}
+                    {% if work.image_before %}
+                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800"
+                        height="500" loading="lazy" decoding="async">
+                    {% endif %}
+                    <div class="portfolio-slider__line"></div>
+                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
+                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:portfolio' %}" class="btn btn--secondary">Смотреть всё портфолио</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if partners %}
+<!-- PARTNERS SECTION -->
+<section class="section" id="partners">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Наши клиенты и партнёры</h2>
+            <p class="section__subtitle">Организации и компании, которые нам доверяют</p>
+        </div>
+
+        <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
+            <div class="swiper-wrapper">
+                {% for partner in partners %}
+                <div class="swiper-slide partner-slide"
+                    style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;"
+                    onclick="openPartnerModal({{ partner.id }})">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" loading="lazy"
+                        decoding="async"
+                        style="max-height: 90px; max-width: 180px; width: auto; height: auto; object-fit: contain; transition: 0.3s;">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'core:partners' %}" class="btn btn--secondary btn--large">Смотреть всех партнеров</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+<!-- FAQ SECTION -->
+{% if faqs %}
+<section class="section" id="faq">
+    <div class="container">
+        <div class="section__header fade-in">
+            <h2 class="section__title">Часто задаваемые вопросы</h2>
+            <p class="section__subtitle">Ответы на популярные вопросы о химчистке</p>
+        </div>
+
+        <div class="faq-list">
+            {% for faq in faqs %}
+            <details class="faq-item fade-in stagger-{{ forloop.counter }}">
+                <summary>{{ faq.question }}</summary>
+                <div class="faq-item__answer">
+                    <p>{{ faq.answer }}</p>
+                </div>
+            </details>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+
+
 
 <section class="section section--green">
     
@@ -1182,83 +1250,6 @@
     </div>
 </section>
 
-{% if service.description %}
-<!-- SERVICE FULL DESCRIPTION -->
-<section class="section">
-    <div class="container">
-        <div class="prose-content fade-in" style="max-width: 860px; margin: 0 auto;">
-            {{ service.description|safe }}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-
-
-
-<!-- RELATED PORTFOLIO -->
-{% if related_works %}
-<section class="section" id="portfolio">
-    <div class="container">
-        <div class="section__header fade-in">
-            <h2 class="section__title">Примеры наших работ</h2>
-            <p class="section__subtitle">Результаты чистки в категории «{{ service.category.name }}»</p>
-        </div>
-
-        <div class="portfolio-grid">
-            {% for work in related_works %}
-            <div class="portfolio-item fade-in stagger-{{ forloop.counter }}">
-                <div class="portfolio-item__title">{{ work.title }}</div>
-                <div class="portfolio-slider">
-                    {% if work.image_after %}
-                    <img src="{{ work.image_after.url }}" alt="После" class="portfolio-slider__after" width="800"
-                        height="500" loading="lazy" decoding="async">
-                    {% endif %}
-                    {% if work.image_before %}
-                    <img src="{{ work.image_before.url }}" alt="До" class="portfolio-slider__before" width="800"
-                        height="500" loading="lazy" decoding="async">
-                    {% endif %}
-                    <div class="portfolio-slider__line"></div>
-                    <span class="portfolio-slider__label portfolio-slider__label--before">До</span>
-                    <span class="portfolio-slider__label portfolio-slider__label--after">После</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
-            <a href="{% url 'core:portfolio' %}" class="btn btn--secondary">Смотреть всё портфолио</a>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-
-<!-- FAQ SECTION -->
-{% if faqs %}
-<section class="section" id="faq">
-    <div class="container">
-        <div class="section__header fade-in">
-            <h2 class="section__title">Часто задаваемые вопросы</h2>
-            <p class="section__subtitle">Ответы на популярные вопросы о химчистке</p>
-        </div>
-
-        <div class="faq-list">
-            {% for faq in faqs %}
-            <details class="faq-item fade-in stagger-{{ forloop.counter }}">
-                <summary>{{ faq.question }}</summary>
-                <div class="faq-item__answer">
-                    <p>{{ faq.answer }}</p>
-                </div>
-            </details>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-
-
 <!-- BLOG SECTION -->
 {% if blog_posts %}
 <section class="section section--green" id="blog">
@@ -1291,36 +1282,6 @@
 
         <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
             <a href="{% url 'blog:blog_list' %}" class="btn btn--secondary btn--large">Все статьи</a>
-        </div>
-    </div>
-</section>
-{% endif %}
-
-{% if partners %}
-<!-- PARTNERS SECTION -->
-<section class="section" id="partners">
-    <div class="container">
-        <div class="section__header fade-in">
-            <h2 class="section__title">Наши клиенты и партнёры</h2>
-            <p class="section__subtitle">Организации и компании, которые нам доверяют</p>
-        </div>
-
-        <div class="partners-swiper swiper fade-in" style="padding: 20px 0;">
-            <div class="swiper-wrapper">
-                {% for partner in partners %}
-                <div class="swiper-slide partner-slide"
-                    style="display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 12px;"
-                    onclick="openPartnerModal({{ partner.id }})">
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.logo_alt|default:partner.name }}" loading="lazy"
-                        decoding="async"
-                        style="max-height: 90px; max-width: 180px; width: auto; height: auto; object-fit: contain; transition: 0.3s;">
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="section__cta fade-in" style="text-align: center; margin-top: var(--space-xl);">
-            <a href="{% url 'core:partners' %}" class="btn btn--secondary btn--large">Смотреть всех партнеров</a>
         </div>
     </div>
 </section>

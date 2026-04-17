@@ -627,7 +627,7 @@
     {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
-        "name": "{{ settings.company_name|default:'M-Clean' }}",
+        "name": "{{ settings.company_name|default:'Magic Clean' }}",
         "description": "{{ settings.seo_description|default:'Профессиональная химчистка мебели в Алматы' }}",
         "telephone": "{{ settings.phone|default:'' }}",
         "email": "{{ settings.email|default:'' }}",
@@ -654,10 +654,10 @@
             <div class="header__inner">
                 <a href="/" class="header__logo">
                     {% if settings.logo %}
-                    <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'M-Clean' }}"
+                    <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'Magic Clean' }}"
                         class="header__logo-img" width="160" height="40" fetchpriority="high" decoding="async">
                     {% else %}
-                    M<span class="header__logo-accent">-Clean</span>
+                    Magic<span class="header__logo-accent"> Clean</span>
                     {% endif %}
                 </a>
 
@@ -918,13 +918,13 @@
                 <div class="footer__brand">
                     <div class="footer__logo">
                         {% if settings.logo_footer %}
-                        <img src="{{ settings.logo_footer.url }}" alt="{{ settings.company_name|default:'M-Clean' }}"
+                        <img src="{{ settings.logo_footer.url }}" alt="{{ settings.company_name|default:'Magic Clean' }}"
                             class="footer__logo-img" width="160" height="40" loading="lazy" decoding="async">
                         {% elif settings.logo %}
-                        <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'M-Clean' }}"
+                        <img src="{{ settings.logo.url }}" alt="{{ settings.company_name|default:'Magic Clean' }}"
                             class="footer__logo-img" width="160" height="40" loading="lazy" decoding="async">
                         {% else %}
-                        <span class="footer__logo-text">{{ settings.company_name|default:'M-Clean' }}</span>
+                        <span class="footer__logo-text">{{ settings.company_name|default:'Magic Clean' }}</span>
                         {% endif %}
 
                         {% if settings.tagline %}
@@ -1034,7 +1034,7 @@
             </div>
 
             <div class="footer__bottom">
-                <p>&copy; 2026 M-Clean. Все права защищены.</p>
+                <p>&copy; 2026 Magic Clean. Все права защищены.</p>
                 <div class="footer__docs">
                     <a href="{% url 'core:legal_detail' 'policy' %}">Политика конфиденциальности</a>
                     <a href="{% url 'core:legal_detail' 'terms' %}">Договор оферты</a>

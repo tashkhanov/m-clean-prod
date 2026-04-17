@@ -76,7 +76,7 @@ class SiteSettings(models.Model):
     company_name = models.CharField(
         "Название компании",
         max_length=100,
-        default="M-Clean"
+        default="Magic Clean"
     )
     tagline = models.CharField(
         "Слоган",
